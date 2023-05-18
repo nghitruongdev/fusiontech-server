@@ -1,3 +1,5 @@
 rootProject.name = 'app'
 include 'cart'
+include 'product'
+include 'common'
 

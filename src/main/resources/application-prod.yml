@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/fusiontech
+    username: spring_user
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: update

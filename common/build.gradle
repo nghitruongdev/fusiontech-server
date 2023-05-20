@@ -1,6 +1,5 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' apply false
 }
 
 group 'com.vnco.fusiontech.common'

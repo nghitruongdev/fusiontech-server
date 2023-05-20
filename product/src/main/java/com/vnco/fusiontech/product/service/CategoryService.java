@@ -1,9 +1,6 @@
 package com.vnco.fusiontech.product.service;
 
 import com.vnco.fusiontech.product.entity.Category;
-import com.vnco.fusiontech.product.entity.Product;
-import com.vnco.fusiontech.product.web.request.NewProductRequest;
-import com.vnco.fusiontech.product.web.request.UpdateProductRequest;
 
 import java.util.List;
 

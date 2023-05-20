@@ -1,8 +1,8 @@
 package com.vnco.fusiontech.product.service;
 
 import com.vnco.fusiontech.product.entity.Product;
-import com.vnco.fusiontech.product.web.request.NewProductRequest;
-import com.vnco.fusiontech.product.web.request.UpdateProductRequest;
+import com.vnco.fusiontech.product.web.rest.request.NewProductRequest;
+import com.vnco.fusiontech.product.web.rest.request.UpdateProductRequest;
 
 import java.util.List;
 

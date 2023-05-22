@@ -1,4 +1,4 @@
-package com.vnco.fusiontech.cart.app;
+package com.vnco.fusiontech.app;
 
 import com.vnco.fusiontech.cart.CartModuleConfiguration;
 import com.vnco.fusiontech.product.ProductModuleConfiguration;

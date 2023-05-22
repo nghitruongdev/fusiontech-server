@@ -1,4 +1,4 @@
-package com.vnco.fusiontech.cart.app;
+package com.vnco.fusiontech.app;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

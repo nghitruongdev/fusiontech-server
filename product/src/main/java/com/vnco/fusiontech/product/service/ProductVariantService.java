@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface ProductVariantService {
     List<ProductVariant> getAllProductVariants();
-    ProductVariant getProductVariantById(Long id);
+    ProductVariant getProductVariantById(int id);
     ProductVariant createProductVariant(ProductVariant productVariant);
     ProductVariant updateProductVariant(ProductVariant productVariant);
-    void deleteProductVariant(Long id);
+    void deleteProductVariant(int id);
 }

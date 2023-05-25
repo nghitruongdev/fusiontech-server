@@ -19,7 +19,7 @@ public class ProductVariantServiceImpl implements ProductVariantService {
     }
 
     @Override
-    public ProductVariant getProductVariantById(Long id) {
+    public ProductVariant getProductVariantById(int id) {
         return productVariantRepository.findById(id).orElse(null);
     }
 
@@ -34,7 +34,7 @@ public class ProductVariantServiceImpl implements ProductVariantService {
     }
 
     @Override
-    public void deleteProductVariant(Long id) {
+    public void deleteProductVariant(int id) {
         productVariantRepository.deleteById(id);
     }
 }

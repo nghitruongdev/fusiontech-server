@@ -11,17 +11,13 @@ import java.io.Serializable;
 public class ProductVariant implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    int id;
+    private int id;
 
-    @Column(name = "price")
-    double price;
+    private double price;
 
-    @Column(name = "available_quantity")
-    int available_quantity;
+    private int available_quantity;
 
-    @Column(name = "stock_quantity")
-    int stock_quantity;
+    private int stock_quantity;
 
     @ManyToOne
     @JoinColumn(name = "product_id")

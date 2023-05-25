@@ -11,20 +11,15 @@ import java.io.Serializable;
 public class Product implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    int id;
+    private int id;
 
-    @Column(name = "name", length = 255)
-    String name;
+    private String name;
 
-    @Column(name = "description", length = 255)
-    String description;
+    private String description;
 
-    @Column(name = "image", length = 255)
-    String image;
+    private String image;
 
-    @Column(name = "quantity")
-    int quantity;
+    private int quantity;
 
     @ManyToOne
     @JoinColumn(name = "category_id")

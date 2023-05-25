@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface ProductAttributeService {
     List<ProductAttribute> getAllProductAttributes();
-    ProductAttribute getProductAttributeById(Long id);
+    ProductAttribute getProductAttributeById(int id);
     ProductAttribute createProductAttribute(ProductAttribute productAttribute);
     ProductAttribute updateProductAttribute(ProductAttribute productAttribute);
-    void deleteProductAttribute(Long id);
+    void deleteProductAttribute(int id);
 }

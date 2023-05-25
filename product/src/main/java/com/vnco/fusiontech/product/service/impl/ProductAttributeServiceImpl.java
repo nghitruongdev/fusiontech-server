@@ -19,7 +19,7 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
     }
 
     @Override
-    public ProductAttribute getProductAttributeById(Long id) {
+    public ProductAttribute getProductAttributeById(int id) {
         return productAttributeRepository.findById(id).orElse(null);
     }
 
@@ -34,7 +34,7 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
     }
 
     @Override
-    public void deleteProductAttribute(Long id) {
+    public void deleteProductAttribute(int id) {
         productAttributeRepository.deleteById(id);
     }
 }

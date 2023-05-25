@@ -3,16 +3,16 @@ package com.vnco.fusiontech.product.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @SuppressWarnings("serial")
 @Data
 @Entity
 @Table(name = "attribute")
-public class Attribute {
+public class Attribute implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    int id;
+    private int id;
 
-    @Column(name = "name", length = 255)
-    String name;
+    private String name;
 }

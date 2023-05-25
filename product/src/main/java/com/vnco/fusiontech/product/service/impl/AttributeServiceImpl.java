@@ -19,7 +19,7 @@ public class AttributeServiceImpl implements AttributeService {
     }
 
     @Override
-    public Attribute getAttributeById(Long id) {
+    public Attribute getAttributeById(int id) {
         return attributeRepository.findById(id).orElse(null);
     }
 
@@ -34,7 +34,7 @@ public class AttributeServiceImpl implements AttributeService {
     }
 
     @Override
-    public void deleteAttribute(Long id) {
+    public void deleteAttribute(int id) {
         attributeRepository.deleteById(id);
     }
 }

@@ -1,15 +1,22 @@
 package com.vnco.fusiontech.product.impl;
 
+<<<<<<< HEAD
 import com.vnco.fusiontech.common.exception.RecordNotFoundException;
 import com.vnco.fusiontech.product.entity.Brand;
 import com.vnco.fusiontech.product.repository.BrandRepository;
 import com.vnco.fusiontech.product.repository.ProductRepository;
 import com.vnco.fusiontech.product.service.BrandService;
 import lombok.extern.slf4j.Slf4j;
+=======
+import com.vnco.fusiontech.product.entity.Brand;
+import com.vnco.fusiontech.product.repository.BrandRepository;
+import com.vnco.fusiontech.product.service.BrandService;
+>>>>>>> 81600d8 (rebase to dev)
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+<<<<<<< HEAD
 import java.util.Optional;
 
 @Service
@@ -18,12 +25,20 @@ public class BrandServiceImpl implements BrandService {
     @Autowired
     BrandRepository brandRepository;
     ProductRepository productRepository;
+=======
+
+@Service
+public class BrandServiceImpl implements BrandService {
+    @Autowired
+    BrandRepository brandRepository;
+>>>>>>> 81600d8 (rebase to dev)
 
     @Override
     public Brand save(Brand brand) {
         return brandRepository.save(brand);
     }
 
+<<<<<<< HEAD
     /* Optional là gì?
             - Optional là 1 lớp được dùng để giải quyết vấn đề về gtri null
             - Optional giải quyết vấn đề null bằng cách bọc giá trị của biến trong 1 đối tượng Optional
@@ -47,10 +62,21 @@ public class BrandServiceImpl implements BrandService {
         } else {
             throw new RecordNotFoundException();
         }
+=======
+    @Override
+    public Brand update(Brand brand, Integer id) {
+        Brand existingBrand = brandRepository.findById(id).orElse(null);
+        if (existingBrand != null) {
+            existingBrand.setName(brand.getName());
+            return brandRepository.save(existingBrand);
+        }
+        return null;
+>>>>>>> 81600d8 (rebase to dev)
     }
 
     @Override
     public void delete(int id) {
+<<<<<<< HEAD
 //        brandRepository.deleteById(id);
 
         /*
@@ -70,10 +96,14 @@ public class BrandServiceImpl implements BrandService {
 //        }else {
 //            throw new NotFoundException("Brand not found with id: "+id);
 //        }
+=======
+        brandRepository.deleteById(id);
+>>>>>>> 81600d8 (rebase to dev)
     }
 
     @Override
     public Brand findById(int id) {
+<<<<<<< HEAD
 //        return brandRepository.findById(id).orElse(null);
 
         /*
@@ -89,6 +119,9 @@ public class BrandServiceImpl implements BrandService {
         } else {
             throw new RecordNotFoundException();
         }
+=======
+        return brandRepository.findById(id).orElse(null);
+>>>>>>> 81600d8 (rebase to dev)
     }
 
     @Override

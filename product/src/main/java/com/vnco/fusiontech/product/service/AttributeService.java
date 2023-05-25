@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface AttributeService {
     List<Attribute> getAllAttributes();
-    Attribute getAttributeById(int id);
+    Attribute getAttributeById(Long id);
     Attribute createAttribute(Attribute attribute);
     Attribute updateAttribute(Attribute attribute);
-    void deleteAttribute(int id);
+    void deleteAttribute(Long id);
 }

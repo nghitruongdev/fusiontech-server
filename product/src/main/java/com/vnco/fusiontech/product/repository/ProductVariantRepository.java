@@ -4,6 +4,6 @@ import com.vnco.fusiontech.product.entity.Product;
 import com.vnco.fusiontech.product.entity.ProductVariant;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ProductVariantRepository extends JpaRepository<ProductVariant, Integer> {
+public interface ProductVariantRepository extends JpaRepository<ProductVariant, Long> {
 
 }

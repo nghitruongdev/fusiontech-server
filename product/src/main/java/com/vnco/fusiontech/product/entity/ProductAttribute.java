@@ -6,6 +6,8 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+import java.io.Serializable;
+
 @SuppressWarnings("serial")
 @Data
 @Entity
@@ -18,4 +20,10 @@ public class ProductAttribute implements Serializable {
     @ManyToOne
     @JoinColumn(name = "variant_id")
     ProductVariant variant;
+
+    @ManyToOne
+    @JoinColumn(name = "attribute_id")
+    Attribute attribute;
+
+    private String value;
 }

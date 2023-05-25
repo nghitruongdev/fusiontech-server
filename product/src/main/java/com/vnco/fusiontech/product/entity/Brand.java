@@ -10,7 +10,7 @@ import java.util.Objects;
 @Entity
 @Getter
 @Setter
-public class Category {
+public class Brand {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
@@ -18,10 +18,7 @@ public class Category {
     @Basic
     @Column(name = "name")
     private String name;
-    @Basic
-    @Column(name = "parten_id")
-    private Integer partenId;
-//    @OneToMany(mappedBy = "categoryByCategoryId")
+//    @OneToMany(mappedBy = "brandByBrandId")
 //    private Collection<Product> productsById;
 
 
@@ -29,13 +26,13 @@ public class Category {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Category category = (Category) o;
-        return id == category.id && Objects.equals(name, category.name) && Objects.equals(partenId, category.partenId);
+        Brand brand = (Brand) o;
+        return id == brand.id && Objects.equals(name, brand.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, partenId);
+        return Objects.hash(id, name);
     }
 
 }

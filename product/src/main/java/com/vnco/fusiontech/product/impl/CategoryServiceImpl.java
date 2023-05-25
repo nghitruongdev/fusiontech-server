@@ -1,15 +1,22 @@
 package com.vnco.fusiontech.product.impl;
 
+<<<<<<< HEAD
 import com.vnco.fusiontech.common.exception.RecordNotFoundException;
 import com.vnco.fusiontech.product.entity.Category;
 import com.vnco.fusiontech.product.repository.CategoryRepository;
 import com.vnco.fusiontech.product.repository.ProductRepository;
 import com.vnco.fusiontech.product.service.CategoryService;
 import lombok.AllArgsConstructor;
+=======
+import com.vnco.fusiontech.product.entity.Category;
+import com.vnco.fusiontech.product.repository.CategoryRepository;
+import com.vnco.fusiontech.product.service.CategoryService;
+>>>>>>> 81600d8 (rebase to dev)
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+<<<<<<< HEAD
 import java.util.Optional;
 
 
@@ -23,12 +30,20 @@ public class CategoryServiceImpl implements CategoryService {
     @Autowired
     CategoryRepository categoryRepository;
     ProductRepository productRepository;
+=======
+
+@Service
+public class CategoryServiceImpl implements CategoryService {
+    @Autowired
+    CategoryRepository categoryRepository;
+>>>>>>> 81600d8 (rebase to dev)
 
     @Override
     public Category save(Category category) {
         return categoryRepository.save(category);
     }
 
+<<<<<<< HEAD
 
     /* Optional là gì?
             - Optional là 1 lớp được dùng để giải quyết vấn đề về gtri null
@@ -53,10 +68,26 @@ public class CategoryServiceImpl implements CategoryService {
         } else {
             throw new RecordNotFoundException();
         }
+=======
+    public Category update(Category category, Integer id) {
+        /*
+        - tìm category dựa vào id -> nếu tìm thấy sẽ lưu vào existingCategory, nếu không thì existingCategory sẽ null
+        - ktra existingCategory khác null hay không
+            + Khác: category_id đã tồn tại trong DB -> lấy thông tin của category_id này bằng setName
+            + Null: ko tìm thấy category trong DB và trả về null
+        * */
+        Category existingCategory = categoryRepository.findById(id).orElse(null);
+        if (existingCategory != null) {
+            existingCategory.setName(category.getName());
+            return categoryRepository.save(existingCategory);
+        }
+        return null;
+>>>>>>> 81600d8 (rebase to dev)
     }
 
     @Override
     public void delete(int id) {
+<<<<<<< HEAD
         //!todo: check if category_id is valid
         //!todo: check if category has any products before deleting
         // todo: uncomment delete khi xong entity product
@@ -79,11 +110,15 @@ public class CategoryServiceImpl implements CategoryService {
 //        } else {
 //            throw new NotFoundException("Category not found with id: " + id);
 //        }
+=======
+        categoryRepository.deleteById(id);
+>>>>>>> 81600d8 (rebase to dev)
 
     }
 
     @Override
     public Category findById(int id) {
+<<<<<<< HEAD
         /*
          *Trong phương thức findById:
          * - Optional được dùng để ktra category có tồn tại hay không:
@@ -99,6 +134,9 @@ public class CategoryServiceImpl implements CategoryService {
         } else {
             throw new RecordNotFoundException();
         }
+=======
+        return categoryRepository.findById(id).orElse(null);
+>>>>>>> 81600d8 (rebase to dev)
     }
 
     @Override

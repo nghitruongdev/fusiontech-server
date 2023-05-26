@@ -10,6 +10,7 @@ import java.util.List;
 @CrossOrigin("*")
 @RestController
 @RequestMapping("/rest/categories")
+//!todo: change the mapping to ("/api/...")
 public class CategoryRestController {
     @Autowired
     CategoryService categoryService;

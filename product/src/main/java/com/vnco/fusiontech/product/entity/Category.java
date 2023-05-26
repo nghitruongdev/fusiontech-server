@@ -18,6 +18,7 @@ public class Category {
     @Basic
     @Column(name = "name")
     private String name;
+    //!todo: fix wrong name
     @Basic
     @Column(name = "parten_id")
     private Integer partenId;

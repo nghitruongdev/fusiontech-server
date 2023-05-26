@@ -11,6 +11,9 @@ import java.util.List;
 @Service
 public class CategoryServiceImpl implements CategoryService {
     @Autowired
+    //!todo: remove @Autowired
+    //!todo: convert to private final CategoryRepository ....
+    //!todo: add annotation @RequiredArgsConstructor or @AllArgsConstructor
     CategoryRepository categoryRepository;
 
     @Override
@@ -25,6 +28,7 @@ public class CategoryServiceImpl implements CategoryService {
             + Khác: category_id đã tồn tại trong DB -> lấy thông tin của category_id này bằng setName
             + Null: ko tìm thấy category trong DB và trả về null
         * */
+        //!todo: throw exception if not found
         Category existingCategory = categoryRepository.findById(id).orElse(null);
         if (existingCategory != null) {
             existingCategory.setName(category.getName());
@@ -35,12 +39,15 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void delete(int id) {
+        //!todo: check if category_id is valid
+        //!todo: check if category has any products before deleting
         categoryRepository.deleteById(id);
 
     }
 
     @Override
     public Category findById(int id) {
+        //!todo: throw Exception if not found instead of null
         return categoryRepository.findById(id).orElse(null);
     }
 

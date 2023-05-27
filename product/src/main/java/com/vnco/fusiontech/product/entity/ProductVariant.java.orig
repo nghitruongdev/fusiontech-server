@@ -1,0 +1,52 @@
+package com.vnco.fusiontech.product.entity;
+
+<<<<<<< HEAD
+import com.vnco.fusiontech.common.constant.DBConstant;
+=======
+>>>>>>> 4a9bc9c (update service)
+import jakarta.persistence.*;
+import lombok.Data;
+
+import java.io.Serializable;
+<<<<<<< HEAD
+
+@SuppressWarnings("serial")
+@Data
+@Entity
+@Table(name = DBConstant.PRODUCT_VARIANT_TABLE)
+public class ProductVariant implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    private double price;
+
+    private int available_quantity;
+
+    private int stock_quantity;
+=======
+@SuppressWarnings("serial")
+@Data
+@Entity
+@Table(name = "productvariant")
+public class ProductVariant implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    int id;
+
+    @Column(name = "price")
+    double price;
+
+    @Column(name = "available_quantity")
+    int available_quantity;
+
+    @Column(name = "stock_quantity")
+    int stock_quantity;
+>>>>>>> 4a9bc9c (update service)
+
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    Product product;
+
+}

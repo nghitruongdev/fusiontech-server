@@ -1,0 +1,15 @@
+package com.vnco.fusiontech.product.repository;
+
+import com.vnco.fusiontech.product.entity.Product;
+import com.vnco.fusiontech.product.entity.ProductVariant;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+<<<<<<< HEAD
+public interface ProductVariantRepository extends JpaRepository<ProductVariant, Integer> {
+
+}
+=======
+public interface ProductVariantRepository extends JpaRepository<ProductVariant, Long> {
+
+}
+>>>>>>> 4a9bc9c (update service)

@@ -1,0 +1,37 @@
+package com.vnco.fusiontech.product.entity;
+
+<<<<<<< HEAD
+import com.vnco.fusiontech.common.constant.DBConstant;
+import jakarta.persistence.*;
+import lombok.Data;
+
+import java.io.Serializable;
+
+@SuppressWarnings("serial")
+@Data
+@Entity
+@Table (name = DBConstant.ATTRIBUTE_TABLE)
+public class Attribute implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    private String name;
+=======
+import jakarta.persistence.*;
+import lombok.Data;
+
+@SuppressWarnings("serial")
+@Data
+@Entity
+@Table(name = "attribute")
+public class Attribute {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    int id;
+
+    @Column(name = "name", length = 255)
+    String name;
+>>>>>>> 4a9bc9c (update service)
+}

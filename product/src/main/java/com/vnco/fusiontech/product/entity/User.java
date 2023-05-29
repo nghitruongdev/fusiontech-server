@@ -13,13 +13,4 @@ public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
-    private String username;
-
-    private String password_hash;
-
-    private String email;
-
-    private String phone;
-
 }

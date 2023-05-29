@@ -51,8 +51,4 @@ public class ProductRestController {
         return products;
     }
 
-
-
-
-
 }

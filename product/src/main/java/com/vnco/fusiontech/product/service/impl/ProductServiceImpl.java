@@ -37,4 +37,12 @@ public class ProductServiceImpl implements ProductService {
     public void deleteProduct(int id) {
         productRepository.deleteById(id);
     }
+
+    @Override
+    public List<Product> searchProduct(String keyword) {
+        // tìm kiếm sản phẩm dựa trên từ khóa (keyword)
+        List<Product> products = productRepository.searchByKeyword(keyword);
+        return products;
+    }
+
 }

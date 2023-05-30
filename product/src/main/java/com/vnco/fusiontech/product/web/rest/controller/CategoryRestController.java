@@ -9,33 +9,33 @@ import java.util.List;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping("/rest/categories")
-//!todo: change the mapping to ("/api/...")
+@RequestMapping("/api/categories")
+//!todo: change the mapping to ("/api/...") -> done
 public class CategoryRestController {
     @Autowired
     CategoryService categoryService;
 
-    @GetMapping("/findAll")
+    @GetMapping()
     public List<Category> getAll() {
         return categoryService.findAll();
     }
 
-    @GetMapping("/findById/{id}")
+    @GetMapping("/findCategoryById/{id}")
     public Category findById(@PathVariable int id) {
         return categoryService.findById(id);
     }
 
-    @PostMapping("/save")
+    @PostMapping("/saveCategory")
     public Category save(@RequestBody Category category) {
         return categoryService.save(category);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/updateCategory/{id}")
     public Category update(@PathVariable("id") Integer id, @RequestBody Category category) {
         return categoryService.update(category, id);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/deleteCategory/{id}")
     public void delete(@PathVariable("id") Integer id) {
         categoryService.delete(id);
     }

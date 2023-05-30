@@ -9,32 +9,32 @@ import java.util.List;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping("/rest/brand")
+@RequestMapping("/api/brands")
 public class BrandRestController {
     @Autowired
     BrandService brandService;
 
-    @GetMapping("/findAll")
+    @GetMapping()
     public List<Brand> getAll() {
         return brandService.findAll();
     }
 
-    @GetMapping("/findById/{id}")
+    @GetMapping("/findBrandById/{id}")
     public Brand findById(@PathVariable("id") int id) {
         return brandService.findById(id);
     }
 
-    @PostMapping("/save")
+    @PostMapping("/saveBrand")
     public Brand save(@RequestBody Brand brand) {
         return brandService.save(brand);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/updateBrand/{id}")
     public Brand update(@PathVariable("id") int id, @RequestBody Brand brand) {
         return brandService.update(brand, id);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/deleteBrand/{id}")
     public void delete(@PathVariable("id") int id) {
         brandService.delete(id);
     }

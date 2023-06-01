@@ -29,7 +29,6 @@ public class ReviewRestController {
         return reviewService.getReviewById(id);
     }
 
-    // them moi review
     @PostMapping
     public Review createReview(@RequestBody Review review) {
         return reviewService.createReview(review);

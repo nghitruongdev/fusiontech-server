@@ -14,7 +14,6 @@ import java.time.Instant;
 import java.util.List;
 
 @Slf4j
-@Slf4j
 @Service
 public class ReviewServiceImpl implements ReviewService {
     @Autowired
@@ -46,11 +45,5 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public List<Review> findAllByProductId(Integer productId) {
         return reviewRepository.findReviewsByProductIdIs(productId);
-    public List<Review> findAllByProductId(Integer productId) {
-        return reviewRepository.findReviewsByProductIdIs(productId);
     }
-
-
-
-
 }

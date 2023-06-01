@@ -36,6 +36,4 @@ public class Review implements Serializable{
     Product product;
 
 
-
-
 }

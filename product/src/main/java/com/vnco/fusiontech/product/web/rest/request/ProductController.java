@@ -13,11 +13,11 @@ public class ProductController {
     @Autowired
     ProductService productService;
 
-    @RequestMapping("/product/detail/{id}")
-    public String detail(Model model, @PathVariable("id")Integer id )
-    {
-        Product item = productService.getProductById(id);
-        model.addAttribute("item",item);
-        return "product/detail";
-    }
+//    @RequestMapping("/product/detail/{id}")
+//    public String detail(Model model, @PathVariable("id")Integer id )
+//    {
+//        Product item = productService.getProductById(id);
+//        model.addAttribute("item",item);
+//        return "product/detail";
+//    }
 }

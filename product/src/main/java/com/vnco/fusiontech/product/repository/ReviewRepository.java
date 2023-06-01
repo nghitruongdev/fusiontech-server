@@ -9,6 +9,5 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface ReviewRepository extends JpaRepository<Review,Integer> {
-    @Query("SELECT r FROM Review r WHERE 'r.product' LIKE %:keyword% ")
-    List<Review> getAllReviewByProduct(@Param("keyword") String keyword);
+    List<Review> findReviewsByProductIdIs(Integer productId);
 }

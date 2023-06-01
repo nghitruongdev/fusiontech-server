@@ -1,14 +1,19 @@
 package com.vnco.fusiontech.product.entity;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.io.Serializable;
 import java.time.Instant;
 
 @SuppressWarnings("serial")
-@Data
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "Review")
+@ToString
 public class Review implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,4 +32,6 @@ public class Review implements Serializable{
     @ManyToOne
     @JoinColumn(name = "product_id")
     Product product;
+
+
 }

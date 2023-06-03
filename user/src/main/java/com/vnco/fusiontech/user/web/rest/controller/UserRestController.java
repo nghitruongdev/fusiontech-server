@@ -17,7 +17,6 @@ public class UserRestController {
     @Autowired
     private UserRepository userRepository;
 
-
 //    // get all users
 ////    @GetMapping("/users")
 ////    public List<User> getUsers() {

@@ -4,16 +4,22 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.io.Serializable;
+
 @SuppressWarnings("serial")
 @Data
 @Entity
-@Table(name = "category")
-public class Category implements Serializable {
+@Table(name = "User")
+public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private String name;
+    private String username;
 
-    // Constructors, getters, setters, and other methods
+    private String password_hash;
+
+    private String email;
+
+    private String phone;
+
 }

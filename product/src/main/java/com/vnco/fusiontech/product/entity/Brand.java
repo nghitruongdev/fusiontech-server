@@ -7,8 +7,8 @@ import java.io.Serializable;
 @SuppressWarnings("serial")
 @Data
 @Entity
-@Table(name = "category")
-public class Category implements Serializable {
+@Table(name = "brand")
+public class Brand implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -17,3 +17,4 @@ public class Category implements Serializable {
 
     // Constructors, getters, setters, and other methods
 }
+

@@ -1,20 +1,16 @@
 package com.vnco.fusiontech.product.service;
 
 import com.vnco.fusiontech.product.entity.Product;
-import com.vnco.fusiontech.product.web.rest.request.NewProductRequest;
-import com.vnco.fusiontech.product.web.rest.request.UpdateProductRequest;
+import com.vnco.fusiontech.product.entity.Review;
 
 import java.util.List;
 
 public interface ProductService {
+    List<Product> getAllProducts();
+    Product getProductById(int id);
+    Product createProduct(Product product);
+    Product updateProduct(Product product);
+    void deleteProduct(int id);
+    List<Product> searchProduct(String keyword);
 
-    Long save(NewProductRequest request);
-    
-    void update(UpdateProductRequest request);
-    
-    void delete(Long id);
-    
-    Product findById(Long id);
-    
-    List<Product> findAll();
 }

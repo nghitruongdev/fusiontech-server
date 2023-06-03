@@ -14,7 +14,7 @@ spring:
 #    additional-location:
 #      -classpath:imageKit.yml
   profiles:
-    active: prod
+    active: dev, prod
   jpa:
     open-in-view: false
   mvc:

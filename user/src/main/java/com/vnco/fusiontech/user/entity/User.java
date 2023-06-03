@@ -1,14 +1,17 @@
 package com.vnco.fusiontech.user.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Objects;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)

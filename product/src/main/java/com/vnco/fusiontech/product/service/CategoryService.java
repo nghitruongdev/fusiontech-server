@@ -5,13 +5,13 @@ import com.vnco.fusiontech.product.entity.Category;
 import java.util.List;
 
 public interface CategoryService {
-    Long save(Category category);
-    
-    void update(Category category);
-    
-    void delete(Long id);
-    
-    Category findById(Long id);
-    
+    Category save(Category category);
+
+    Category update(Category category, Integer id);
+
+    void delete(int id);
+
+    Category findById(int id);
+
     List<Category> findAll();
 }

@@ -1,4 +1,7 @@
 package com.vnco.fusiontech.product.repository;
 
-public interface CategoryRepository {
+import com.vnco.fusiontech.product.entity.Category;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface CategoryRepository extends JpaRepository<Category, Integer> {
 }

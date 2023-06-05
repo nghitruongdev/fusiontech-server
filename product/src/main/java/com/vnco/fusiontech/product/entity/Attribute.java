@@ -16,8 +16,8 @@ import java.io.Serializable;
 @AllArgsConstructor
 @ToString
 @Entity
-@Table (name = DBConstant.ATTRIBUTE_TABLE)
 
+@Table (name = DBConstant.ATTRIBUTE_TABLE)
 public class Attribute implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

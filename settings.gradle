@@ -4,4 +4,5 @@ include 'product'
 include 'common'
 include 'user'
 include 'order'
+include 'security'
 

@@ -77,6 +77,7 @@ dependencies {
     implementation project(":cart")
     implementation project(":product")
     implementation project(":user")
+    implementation project(":security")
 
     runtimeOnly "com.h2database:h2"
     runtimeOnly "com.mysql:mysql-connector-j"

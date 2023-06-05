@@ -6,6 +6,7 @@ import com.vnco.fusiontech.product.ProductModuleConfiguration;
 import com.vnco.fusiontech.user.UserModuleConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.SecurityDataConfiguration;
 import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
@@ -14,7 +15,8 @@ import org.springframework.context.annotation.Import;
                 CommonModuleConfiguration.class,
                 CartModuleConfiguration.class,
                 ProductModuleConfiguration.class,
-                UserModuleConfiguration.class
+                UserModuleConfiguration.class,
+                SecurityDataConfiguration.class
         }
 )
 public class FusionTechApplication {

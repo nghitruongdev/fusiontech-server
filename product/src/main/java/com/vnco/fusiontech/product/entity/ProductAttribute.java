@@ -22,6 +22,7 @@ public class ProductAttribute implements Serializable {
     @ManyToOne
     @JoinColumn(name = "attribute_id")
     Attribute attribute;
-
+    
+    @Column(name = "attribute_value")
     private String value;
 }

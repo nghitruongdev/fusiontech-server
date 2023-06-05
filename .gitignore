@@ -38,3 +38,4 @@ out/
 
 ### H2 DB Files ###
 *.mv.db
+*.trace.db

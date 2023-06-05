@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Objects;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -14,10 +15,10 @@ import java.util.Objects;
 @Data
 @Table(name = DBConstant.USER_TABLE)
 public class User {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Id
     @Column(name = "id")
-    private int id;
+    private UUID   id;
     @Basic
     @Column(name = "username")
     private String username;

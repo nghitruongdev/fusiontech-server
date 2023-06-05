@@ -11,8 +11,6 @@ spring:
     name: "FusionTech"
   config:
     import:
-#    additional-location:
-#      -classpath:imageKit.yml
   profiles:
     active: dev, prod
   jpa:

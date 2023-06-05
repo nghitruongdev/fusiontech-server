@@ -4,7 +4,6 @@ import com.vnco.fusiontech.cart.CartModuleConfiguration;
 import com.vnco.fusiontech.common.CommonModuleConfiguration;
 import com.vnco.fusiontech.product.ProductModuleConfiguration;
 import com.vnco.fusiontech.user.UserModuleConfiguration;
-import com.vnco.fusiontech.auth.AuthModuleConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.SecurityDataConfiguration;

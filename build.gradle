@@ -52,6 +52,7 @@ allprojects {
         implementation "org.springframework.boot:spring-boot-starter-data-rest"
         implementation "org.springframework.boot:spring-boot-starter-hateoas"
         implementation "org.springframework.boot:spring-boot-starter-validation"
+        implementation 'org.springframework.boot:spring-boot-starter-security'
 
         implementation('com.github.javafaker:javafaker:1.0.2') {
             exclude group: 'org.yaml', module: 'snakeyaml'
@@ -62,7 +63,7 @@ allprojects {
         annotationProcessor "org.mapstruct.extensions.spring:mapstruct-spring-extensions:${structExtVersion}"
         // If you are using MapStruct Spring Extensions in test code
         testAnnotationProcessor "org.mapstruct.extensions.spring:mapstruct-spring-extensions:${structExtVersion}"
-
+        testImplementation 'org.springframework.security:spring-security-test'
         testImplementation "org.springframework.boot:spring-boot-starter-test"
     }
 
@@ -76,7 +77,8 @@ dependencies {
     implementation project(":cart")
     implementation project(":product")
     implementation project(":user")
-
+    implementation project(":auth")
+    implementation project(":security")
     runtimeOnly "com.h2database:h2"
     runtimeOnly "com.mysql:mysql-connector-j"
 

@@ -3,4 +3,6 @@ include 'cart'
 include 'product'
 include 'common'
 include 'user'
+include 'auth'
+include 'security'
 

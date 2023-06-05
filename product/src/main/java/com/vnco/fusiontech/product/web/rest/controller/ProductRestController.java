@@ -2,7 +2,6 @@ package com.vnco.fusiontech.product.web.rest.controller;
 
 import com.vnco.fusiontech.product.entity.Product;
 import com.vnco.fusiontech.product.service.ProductService;
-import com.vnco.fusiontech.product.web.rest.request.AddProductReviewRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

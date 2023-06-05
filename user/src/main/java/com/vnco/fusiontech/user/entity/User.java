@@ -1,10 +1,7 @@
 package com.vnco.fusiontech.user.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Objects;
 
@@ -13,6 +10,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Data
 public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id

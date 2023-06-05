@@ -44,7 +44,7 @@ public class CategoryServiceImpl implements CategoryService {
          *      + Nếu tồn tại: cập nhật thông tin và lưu vào DB.
          *      + Nếu ko tồn tại: trả về NotFoundException.
          * */
-        //!todo: throw exception if not found
+        //!todo: throw service if not found
         Optional<Category> existingCategory = categoryRepository.findById(id);
         if (existingCategory.isPresent()) {
             Category updateCategory = existingCategory.get();

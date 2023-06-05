@@ -1,7 +1,7 @@
 package com.vnco.fusiontech.product.impl;
 
+import com.vnco.fusiontech.common.exception.RecordNotFoundException;
 import com.vnco.fusiontech.product.entity.Brand;
-import com.vnco.fusiontech.product.exception.NotFoundException;
 import com.vnco.fusiontech.product.repository.BrandRepository;
 import com.vnco.fusiontech.product.repository.ProductRepository;
 import com.vnco.fusiontech.product.service.BrandService;
@@ -45,7 +45,7 @@ public class BrandServiceImpl implements BrandService {
             updateBrand.setName(brand.getName());
             return brandRepository.save(updateBrand);
         } else {
-            throw new NotFoundException("Brand not found id: " + id);
+            throw new RecordNotFoundException();
         }
     }
 
@@ -87,7 +87,7 @@ public class BrandServiceImpl implements BrandService {
             log.debug("sai roi: {} ",brand);
             return brand.get();
         } else {
-            throw new NotFoundException("Brand not found id: " + id);
+            throw new RecordNotFoundException();
         }
     }
 

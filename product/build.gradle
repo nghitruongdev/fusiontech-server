@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group 'com.vnco.fusiontech'
+group 'com.vnco.fusiontech.product'
 version '0.0.1-SNAPSHOT'
 
 repositories {

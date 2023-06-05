@@ -1,5 +1,6 @@
 package com.vnco.fusiontech.product.entity;
 
+import com.vnco.fusiontech.common.constant.DBConstant;
 import jakarta.persistence.*;
 
 import java.util.Collection;
@@ -10,10 +11,11 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.io.Serializable;
+
 @SuppressWarnings("serial")
 @Data
 @Entity
-@Table(name = "product")
+@Table(name = DBConstant.PRODUCT_TABLE)
 public class Product implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

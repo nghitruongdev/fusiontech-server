@@ -1,5 +1,6 @@
 package com.vnco.fusiontech.user.entity;
 
+import com.vnco.fusiontech.common.constant.DBConstant;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,6 +12,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @Entity
 @Data
+@Table(name = DBConstant.USER_TABLE)
 public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id

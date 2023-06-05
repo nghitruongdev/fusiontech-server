@@ -1,4 +1,6 @@
 package com.vnco.fusiontech.product.entity;
+import com.vnco.fusiontech.common.constant.DBConstant;
+import com.vnco.fusiontech.product.entity.proxy.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,7 +14,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "Review")
+@Table(name = DBConstant.REVIEW_TABLE)
 @ToString
 public class Review implements Serializable{
     @Id

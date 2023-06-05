@@ -15,6 +15,10 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }
 
+configurations.implementation {
+    exclude group: 'com.vnco.fusiontech.common'
+}
+
 test {
     useJUnitPlatform()
 }

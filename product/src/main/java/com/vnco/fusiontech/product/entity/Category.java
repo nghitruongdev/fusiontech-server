@@ -16,5 +16,7 @@ public class Category implements Serializable {
 
     private String name;
 
+    private int parent_id;
+
     // Constructors, getters, setters, and other methods
 }

@@ -45,3 +45,11 @@ management:
     web:
       exposure:
         include: 'startup'
+
+firebase:
+  projectId: "fusiontech-afd82"
+  clientId: "1:992997713903:web:99bace107b73424587f81a"
+  databaseUrl: "https://console.firebase.google.com/u/1/project/fusiontech-afd82/firestore/data/~2F"
+  storageBucket: "fusiontech-afd82.appspot.com"
+  apiKey: "AIzaSyDPlncKDneM6FqVrLRpHl8M-UGiIriU16w"
+  authDomain: "fusiontech-afd82.firebaseapp.com"

@@ -1,5 +1,4 @@
 package com.vnco.fusiontech.product.web.rest.controller;
-
 import com.vnco.fusiontech.product.entity.Category;
 import com.vnco.fusiontech.product.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,32 +10,34 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/categories")
 //!todo: change the mapping to ("/api/...") -> done
+
 public class CategoryRestController {
     @Autowired
     CategoryService categoryService;
 
-    @GetMapping()
-    public List<Category> getAll() {
+
+    @GetMapping
+    public List<Category> getAllCategory() {
         return categoryService.findAll();
     }
 
-    @GetMapping("/findCategoryById/{id}")
-    public Category findById(@PathVariable int id) {
+    @GetMapping("/{id}")
+    public Category getCategoryById(@PathVariable long id) {
         return categoryService.findById(id);
     }
 
-    @PostMapping("/saveCategory")
-    public Category save(@RequestBody Category category) {
-        return categoryService.save(category);
+    @PostMapping
+    public Category createCategory(@RequestBody Category category) {
+        return categoryService.create(category);
     }
 
-    @PutMapping("/updateCategory/{id}")
-    public Category update(@PathVariable("id") Integer id, @RequestBody Category category) {
-        return categoryService.update(category, id);
+    @PutMapping("/{id}")
+    public Category updateCategory(@PathVariable("id") Integer id,@RequestBody Category category) {
+        return categoryService.update(category);
     }
 
-    @DeleteMapping("/deleteCategory/{id}")
-    public void delete(@PathVariable("id") Integer id) {
+    @DeleteMapping("/{id}")
+    public void deleteCategory(@PathVariable long id) {
         categoryService.delete(id);
     }
 

@@ -9,6 +9,7 @@ import java.util.Objects;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 import java.io.Serializable;
 
@@ -29,11 +30,11 @@ public class Product implements Serializable {
 
     private int quantity;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id")
-    Category category;
+    @ManyToOne (fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private Category category;
 
-    @ManyToOne
-    @JoinColumn(name = "brand_id")
-    Brand brand;
+    @ManyToOne (fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private Brand brand;
 }

@@ -4,6 +4,8 @@ import com.vnco.fusiontech.user.entity.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public class UserServiceImpl implements UserService{
     @Override
@@ -12,7 +14,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public ResponseEntity<User> findUserById(Long id) {
+    public ResponseEntity<User> findUserById(UUID id) {
         return null;
     }
 }

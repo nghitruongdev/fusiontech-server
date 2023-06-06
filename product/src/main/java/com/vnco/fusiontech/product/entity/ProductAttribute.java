@@ -26,6 +26,7 @@ public class ProductAttribute implements Serializable {
     @ToString.Exclude
     private ProductVariant variant;
 
+
     @ManyToOne (fetch = FetchType.LAZY)
     @ToString.Exclude
     private Attribute attribute;

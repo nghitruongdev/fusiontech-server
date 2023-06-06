@@ -12,7 +12,7 @@ spring:
   config:
     import:
   profiles:
-    active: dev, prod
+    active: dev
   jpa:
     open-in-view: false
   mvc:

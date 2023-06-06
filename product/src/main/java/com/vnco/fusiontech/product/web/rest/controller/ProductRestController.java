@@ -1,5 +1,6 @@
 package com.vnco.fusiontech.product.web.rest.controller;
 
+import com.vnco.fusiontech.product.DTO.ProductDTO;
 import com.vnco.fusiontech.product.entity.Product;
 import com.vnco.fusiontech.product.service.ProductService;
 import com.vnco.fusiontech.product.web.rest.request.AddProductReviewRequest;
@@ -55,65 +56,12 @@ public class ProductRestController {
         return products;
     }
 
-//    @PostMapping("/products/{productId}/images")
-//    public ResponseEntity<String> uploadProductImages(@PathVariable Long productId,
-//                                                      @RequestParam("images") List<MultipartFile> images) {
-//        // Xử lý lưu trữ các hình ảnh lên Firebase Storage
-//        for (MultipartFile image : images) {
-//            // Upload image lên Firebase Storage và nhận URL của nó
-//            String imageUrl = uploadImageToFirebase(image);
-//
-//            // Lưu URL của hình ảnh vào cơ sở dữ liệu hoặc xử lý khác theo nhu cầu của bạn
-//            // Ví dụ:
-//            ProductImage productImage = new ProductImage();
-//            productImage.setProductId(productId);
-//            productImage.setImageUrl(imageUrl);
-//            productImageRepository.save(productImage);
-//        }
-//
-//        // Trả về thông báo thành công
-//        return ResponseEntity.ok("Images uploaded successfully.");
-//    }
-//
-//    private String uploadImageToFirebase(MultipartFile image) {
-//        try {
-//            // Tạo tên ngẫu nhiên cho hình ảnh để tránh xung đột tên file
-//            String fileName = UUID.randomUUID().toString();
-//
-//            // Lấy đường dẫn của hình ảnh trong Firebase Storage
-//            String firebasePath = "products/" + fileName;
-//
-//            // Tạo tệp tin tạm trong hệ thống tệp tin
-//            File tempFile = File.createTempFile(fileName, ".tmp");
-//
-//            // Ghi dữ liệu hình ảnh từ MultipartFile vào tệp tin tạm
-//            image.transferTo(tempFile);
-//
-//            // Tạo đối tượng StorageReference để tham chiếu đến Firebase Storage
-//            StorageReference storageRef = storage.getReference(firebasePath);
-//
-//            // Upload hình ảnh lên Firebase Storage
-//            UploadTask uploadTask = storageRef.putFile(Uri.fromFile(tempFile));
-//
-//            // Chờ cho đến khi quá trình upload hoàn thành
-//            Tasks.await(uploadTask);
-//
-//            // Lấy URL của hình ảnh sau khi upload thành công
-//            String imageUrl = storageRef.getDownloadUrl().getResult().toString();
-//
-//            // Xóa tệp tin tạm
-//            tempFile.delete();
-//
-//            return imageUrl;
-//        } catch (Exception e) {
-//            // Xử lý lỗi nếu có
-//            e.printStackTrace();
-//            return null;
-//        }
-//    }
-
-
-
+    // xem danh sách sản phẩm theo danh mục
+    @GetMapping("/findByCategory/{categoryId}")
+    public ResponseEntity<List<ProductDTO>> getProductsByCategory(@PathVariable int categoryId) {
+        List<ProductDTO> products = productService.getProductsByCategoryId(categoryId);
+        return ResponseEntity.ok(products);
+    }
 
 
 }

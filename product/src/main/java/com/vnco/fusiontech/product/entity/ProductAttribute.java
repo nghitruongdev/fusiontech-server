@@ -31,5 +31,6 @@ public class ProductAttribute implements Serializable {
     @ToString.Exclude
     private Attribute attribute;
 
+    @Column(name = "attribute_value")
     private String value;
 }

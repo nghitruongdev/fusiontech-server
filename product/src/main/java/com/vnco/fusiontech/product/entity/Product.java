@@ -1,5 +1,6 @@
 package com.vnco.fusiontech.product.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vnco.fusiontech.common.constant.DBConstant;
 import jakarta.persistence.*;
 
@@ -36,11 +37,11 @@ public class Product implements Serializable {
 
     private int quantity;
 
-    @ManyToOne (fetch = FetchType.LAZY)
+    @ManyToOne (fetch = FetchType.EAGER)
     @ToString.Exclude
     private Category category;
 
-    @ManyToOne (fetch = FetchType.LAZY)
+    @ManyToOne (fetch = FetchType.EAGER)
     @ToString.Exclude
     private Brand brand;
 }

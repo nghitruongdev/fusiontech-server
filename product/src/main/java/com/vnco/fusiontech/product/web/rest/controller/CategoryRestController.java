@@ -22,7 +22,7 @@ public class CategoryRestController {
     }
 
     @GetMapping("/{id}")
-    public Category getCategoryById(@PathVariable long id) {
+    public Category getCategoryById(@PathVariable int id) {
         return categoryService.findById(id);
     }
 
@@ -37,7 +37,7 @@ public class CategoryRestController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteCategory(@PathVariable long id) {
+    public void deleteCategory(@PathVariable int id) {
         categoryService.delete(id);
     }
 

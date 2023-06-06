@@ -4,6 +4,7 @@ import com.vnco.fusiontech.common.constant.DBConstant;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 @SuppressWarnings("serial")

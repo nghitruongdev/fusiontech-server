@@ -5,11 +5,14 @@ import com.vnco.fusiontech.user.entity.Role;
 import com.vnco.fusiontech.user.exception.InvalidRoleException;
 import com.vnco.fusiontech.user.repository.RoleRepository;
 import com.vnco.fusiontech.user.service.RoleService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class RoleServiceImpl implements RoleService {
 
     // injecting the RoleRepository
@@ -20,10 +23,38 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Role createRole(Role role) {
-        return repo.save(role);
+    public List<Role> getAllRoles() {
+        return repo.findAll();
     }
 
+    /**
+     * Save user role to database
+     * @param role new role to be saved
+     * @return saved role
+     */
+    @Override
+    public Role createRole(Role role) {
+        // check if role is null or empty
+        if (role == null || role.getName().isEmpty() || repo.findByNameIgnoreCase(role.getName()).isPresent()) {
+            throw new InvalidRoleException("Already existed role");
+        }
+
+        // check if role name is existed
+        Optional<Role> roleOptional = repo.findByNameIgnoreCase(role.getName());
+
+        if (roleOptional.isPresent()) {
+            throw new InvalidRoleException("Already existed role");
+        }
+        return repo.save(new Role(role.getName().toUpperCase()));
+    }
+
+
+    /**
+     * Get a specific role.
+     * @param roleName which is a string, this method will take this string and find the role with the same name.
+     * @throws InvalidRoleException if role name is not valid.
+     * @return an {@link Optional<Role>} , existed role.
+     */
     @Override
     public Optional<Role> getRole(String roleName) {
         Optional<Role> myOptional = repo.findByNameIgnoreCase(roleName);
@@ -34,46 +65,46 @@ public class RoleServiceImpl implements RoleService {
         }
     }
 
-    //TODO: Something is wrong with this method, try to find out what is wrong
+    /**
+     * Update a role.
+     * @param oldRoleName which is a string, this method will take this string and find the role with the same name.
+     * @param newRoleName this is the new role name that will be updated.
+     *                    this method will remove the old role and create a new role with the new name.
+     * @return new role and delete the old role.
+     */
     @Override
-    public Role updateRole(String updateRole) {
+    public Role updateRole(String oldRoleName, String newRoleName) {
         // check null or empty
-        if (updateRole == null || updateRole.isEmpty()) {
+        if (newRoleName == null || newRoleName.isEmpty() || repo.findByNameIgnoreCase(newRoleName).isPresent()) {
             throw new IllegalArgumentException("Invalid role name");
         }
 
-        // check if role name exists
-        Optional<Role> roleOptional = repo.findByNameIgnoreCase(updateRole);
-        //TODO this is the problem
-        if (roleOptional.isPresent()) {
-            String existingRoleName = roleOptional.get().getName();
-            // check if role name is the same
-            if (!existingRoleName.equalsIgnoreCase(updateRole)) {
-                repo.updateRoleName(existingRoleName, updateRole);
-            }
-
-            Role updatedRole = new Role();
-            updatedRole.setName(updateRole);
-            return updatedRole;
-        } else {
-            throw new InvalidRoleException("Role name is not valid");
+        // Find existing role
+        Optional<Role> oldRoleOptional = repo.findByNameIgnoreCase(oldRoleName);
+        if (oldRoleOptional.isEmpty()) {
+            log.debug("Old role name not found" + oldRoleName);
+            throw new InvalidRoleException("Old role name not found");
         }
-//        Optional<Role> myOptional = repo.findByNameIgnoreCase(updateRole);
-//        if (myOptional.isPresent()) {
-//            Role existingRole = myOptional.get();
-//            // update the role name
-//            existingRole.setName(updateRole);
-//            // save the updated role to database
-//            return repo.save(existingRole);
-//        } else {
-//            throw new InvalidRoleException("Role name is not valid");
-//        }
+
+        // create a new role with a new name
+        Role newRole = new Role(newRoleName.toUpperCase());
+        repo.save(newRole);
+        log.info("New role created: " + newRole.getName());
+        // delete the old role
+        repo.delete(oldRoleOptional.get());
+
+        return newRole;
     }
 
+    /**
+     * Delete a role from database.
+     * @param roleName an object of {@link Role} which is the role name to be deleted.
+     * @throws InvalidRoleException if role name is not valid.
+     */
     @Override
     public void deleteRole(Role roleName) {
         if (roleName == null || roleName.getName().isEmpty()) {
-            throw new IllegalArgumentException("Invalid role name");
+            throw new IllegalArgumentException("Role name cannot be blank");
         }
 
         Optional<Role> myOptional = repo.findByNameIgnoreCase(roleName.getName());

@@ -1,5 +1,7 @@
 package com.vnco.fusiontech.user.entity;
 
+import com.vnco.fusiontech.common.constant.DBConstant;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -16,11 +18,12 @@ import java.util.Objects;
 @AllArgsConstructor
 @ToString
 @Builder
-@Table(name = "role")
+@Table(name = DBConstant.ROLE_TABLE)
 public class Role {
     @Id
     @NonNull
     @Size(max = 20)
+    @Column(name = "role_name")
     private String name;
 
     @Override

@@ -5,16 +5,24 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 
-@Repository
+//@RepositoryRestResource
 public interface RoleRepository extends JpaRepository<Role, String> {
 
      Optional<Role> findByNameIgnoreCase(String name);
 
-     @Modifying
-     @Query("UPDATE Role r SET r.name = :newName WHERE LOWER(r.name) = LOWER(:existingName)")
-     void updateRoleName(@Param("existingName") String existingName, @Param("newName") String newName);
+
+     /**
+      * The custom query is used to define an update operation to change the name of a role in the database
+      * @param existingName
+      *
+      * @param newName
+      * parameters are named parameters that correspond to the existingName and newName arguments of the {@code updateRoleName} method, respectively.
+      */
+
 }

@@ -17,7 +17,6 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Data
 @Table(name = DBConstant.USER_TABLE)
 public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,40 +49,40 @@ public class User {
         return Objects.hash(id, username, passwordHash, email, phone);
     }
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "authority", joinColumns = {
-            @JoinColumn(name = "user_id", referencedColumnName = "id") }, inverseJoinColumns = {
-            @JoinColumn(name = "role_name", referencedColumnName = "role_name") })
-    @BatchSize(size = 20)
-    @Builder.Default
-    @ToString.Exclude
-    private Set<Role> authorities = new HashSet<>();
-
-    boolean hasAuthority(Role role) {
-        return authorities.contains(role);
-    }
-
-    public User addAuthority(Role role) {
-        authorities.add(role);
-        return this;
-    }
-
-    public User removeAuthority(String aName) {
-        authorities.removeIf(auth -> auth.getName().equalsIgnoreCase(aName));
-        return this;
-    }
-
-
-    /**
-     * Get granted authorities
-     * @return List of {@link SimpleGrantedAuthority} object that contains role name.
-     *
-     */
-    public List<? extends GrantedAuthority> getGrantedAuthorities() {
-        return authorities
-                .stream()
-                .map(Role::getName)
-                .map(SimpleGrantedAuthority::new)
-                .toList();
-    }
+//    @ManyToMany(fetch = FetchType.LAZY)
+//    @JoinTable(name = "authority", joinColumns = {
+//            @JoinColumn(name = "user_id", referencedColumnName = "id") }, inverseJoinColumns = {
+//            @JoinColumn(name = "role_name", referencedColumnName = "role_name") })
+//    @BatchSize(size = 20)
+//    @Builder.Default
+//    @ToString.Exclude
+//    private Set<Role> authorities = new HashSet<>();
+//
+//    boolean hasAuthority(Role role) {
+//        return authorities.contains(role);
+//    }
+//
+//    public User addAuthority(Role role) {
+//        authorities.add(role);
+//        return this;
+//    }
+//
+//    public User removeAuthority(String aName) {
+//        authorities.removeIf(auth -> auth.getName().equalsIgnoreCase(aName));
+//        return this;
+//    }
+//
+//
+//    /**
+//     * Get granted authorities
+//     * @return List of {@link SimpleGrantedAuthority} object that contains role name.
+//     *
+//     */
+//    public List<? extends GrantedAuthority> getGrantedAuthorities() {
+//        return authorities
+//                .stream()
+//                .map(Role::getName)
+//                .map(SimpleGrantedAuthority::new)
+//                .toList();
+//    }
 }

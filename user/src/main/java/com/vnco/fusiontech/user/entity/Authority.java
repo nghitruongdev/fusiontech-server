@@ -23,27 +23,27 @@ public class Authority {
     private String id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User userId;
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
 
     @ManyToOne
-    @JoinColumn(name = "role_name")
-    private String roleName;
+    @JoinColumn(name = "role_name", referencedColumnName = "role_name")
+    private Role role;
 
-    public Authority(User userId, String roleName) {
-        this.userId = userId;
-        this.roleName = roleName;
+    public Authority(User user, Role role) {
+        this.user = user;
+        this.role = role;
     }
 
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Authority authority = (Authority) o;
-        return id == authority.id && Objects.equals(userId, authority.userId) && Objects.equals(roleName, authority.roleName);
+        return id == authority.id && Objects.equals(user, authority.user) && Objects.equals(role, authority.role);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userId, roleName);
+        return Objects.hash(id, user, role);
     }
 }

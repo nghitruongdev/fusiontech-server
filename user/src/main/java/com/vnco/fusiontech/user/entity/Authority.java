@@ -18,32 +18,28 @@ import java.util.Objects;
 @Entity
 @Table(name = DBConstant.AUTHORITY_TABLE)
 public class Authority {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
-
+    private Long id;
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "role_name", referencedColumnName = "role_name")
+    @JoinColumn(name = "role_name")
     private Role role;
 
-    public Authority(User user, Role role) {
-        this.user = user;
-        this.role = role;
-    }
-
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Authority authority = (Authority) o;
-        return id == authority.id && Objects.equals(user, authority.user) && Objects.equals(role, authority.role);
+        return Objects.equals(user, authority.user) && Objects.equals(role, authority.role);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, user, role);
+        return Objects.hash(user, role);
     }
 }

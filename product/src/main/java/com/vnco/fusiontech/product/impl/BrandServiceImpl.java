@@ -2,7 +2,6 @@ package com.vnco.fusiontech.product.impl;
 
 import com.vnco.fusiontech.common.exception.RecordNotFoundException;
 import com.vnco.fusiontech.product.entity.Brand;
-import com.vnco.fusiontech.product.exception.NotFoundException;
 import com.vnco.fusiontech.product.repository.BrandRepository;
 import com.vnco.fusiontech.product.repository.ProductRepository;
 import com.vnco.fusiontech.product.service.BrandService;

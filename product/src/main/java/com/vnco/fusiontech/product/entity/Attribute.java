@@ -6,6 +6,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+
 @SuppressWarnings("serial")
 @Data
 @Entity
@@ -14,6 +15,6 @@ public class Attribute implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
+    
     private String name;
 }

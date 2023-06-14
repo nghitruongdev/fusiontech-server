@@ -21,7 +21,6 @@ public class CategoryServiceImpl implements CategoryService {
     //!todo: remove @Autowired
     //!todo: convert to private final CategoryRepository ....
     //!todo: add annotation @RequiredArgsConstructor or @AllArgsConstructor
-    @Autowired
     //!todo: remove @Autowired
     //!todo: convert to private final CategoryRepository ....
     //!todo: add annotation @RequiredArgsConstructor or @AllArgsConstructor

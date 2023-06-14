@@ -13,4 +13,8 @@ public interface DBConstant {
     String PRODUCT_TABLE = "product";
     String PRODUCT_ATTRIBUTE_TABLE = "product_attribute";
     String PRODUCT_VARIANT_TABLE = "product_variant";
+    
+    String ORDER_TABLE      = "app_order";
+    String ORDER_ITEM_TABLE       = "order_item";
+    String    SHIPPING_ADDRESS_TABLE = "shipping_address";
 }

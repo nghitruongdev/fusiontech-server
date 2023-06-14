@@ -18,12 +18,12 @@ public class BrandServiceImpl implements BrandService {
     @Autowired
     BrandRepository brandRepository;
     ProductRepository productRepository;
-
+    
     @Override
     public Brand save(Brand brand) {
         return brandRepository.save(brand);
     }
-
+    
     /* Optional là gì?
             - Optional là 1 lớp được dùng để giải quyết vấn đề về gtri null
             - Optional giải quyết vấn đề null bằng cách bọc giá trị của biến trong 1 đối tượng Optional
@@ -48,34 +48,34 @@ public class BrandServiceImpl implements BrandService {
             throw new RecordNotFoundException();
         }
     }
-
+    
     @Override
     public void delete(int id) {
-//        brandRepository.deleteById(id);
-
+        //        brandRepository.deleteById(id);
+        
         /*
          * Phương thức sử dụng brandRepository.findById(id) để tìm kiếm Brand với id tương ứng
          *  +  Nếu Category tồn tại, phương thức tiếp tục kiểm tra xem có sản phẩm nào thuộc về Brand này không bằng cách sử dụng productRepository.findByCategoryId(id)
          *  +  Nếu danh sách sản phẩm không rỗng, phương thức sẽ ném ra một ngoại lệ ConflictException "Cannot delete Brand with products".
          *  +  Nếu danh sách sản phẩm rỗng, phương thức sử dụng brandRepository.deleteById(id) để xóa Category với id tương ứng.
          * */
-
-//        Optional<Brand> brand = brandRepository.findById(id);
-//        if (brand.isPresent()){
-//            List<Product> products = productRepository.findByBrandId(id);
-//            if (!products.isEmpty()){
-//                throw new ConflictException("Cannot delete brand with products");
-//            }
-//            brandRepository.deleteById(id);
-//        }else {
-//            throw new NotFoundException("Brand not found with id: "+id);
-//        }
+        
+        //        Optional<Brand> brand = brandRepository.findById(id);
+        //        if (brand.isPresent()){
+        //            List<Product> products = productRepository.findByBrandId(id);
+        //            if (!products.isEmpty()){
+        //                throw new ConflictException("Cannot delete brand with products");
+        //            }
+        //            brandRepository.deleteById(id);
+        //        }else {
+        //            throw new NotFoundException("Brand not found with id: "+id);
+        //        }
     }
-
+    
     @Override
     public Brand findById(int id) {
-//        return brandRepository.findById(id).orElse(null);
-
+        //        return brandRepository.findById(id).orElse(null);
+        
         /*
          *Trong phương thức findById:
          * - Optional được dùng để ktra brand có tồn tại hay không:
@@ -90,7 +90,7 @@ public class BrandServiceImpl implements BrandService {
             throw new RecordNotFoundException();
         }
     }
-
+    
     @Override
     public List<Brand> findAll() {
         return brandRepository.findAll();

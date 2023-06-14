@@ -2,7 +2,6 @@ package com.vnco.fusiontech.product.service;
 
 import com.vnco.fusiontech.product.entity.Product;
 
-
 import java.util.List;
 
 public interface ProductService {

@@ -8,7 +8,6 @@ import java.util.Objects;
 
 
 import jakarta.persistence.*;
-<<<<<<< HEAD
 import lombok.Data;
 
 import java.io.Serializable;
@@ -37,13 +36,4 @@ public class Product implements Serializable {
     @ManyToOne
     @JoinColumn(name = "brand_id")
     Brand brand;
-=======
-
-import java.util.Collection;
-import java.util.Objects;
-
-
-public class Product {
-
->>>>>>> 0f50ac4 (done API category vs brand)
 }

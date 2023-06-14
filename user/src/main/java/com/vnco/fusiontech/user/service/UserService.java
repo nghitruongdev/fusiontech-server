@@ -12,6 +12,8 @@ import java.util.UUID;
 
 public interface UserService extends PublicUserService {
     ResponseEntity<User> createUser(@RequestBody User user);
+
     ResponseEntity<User> findUserById(@PathVariable UUID id);
-    void updateDefaultShippingAddress(ShippingAddress address);
+
+    void updateDefaultShippingAddress(UUID userId, Long addressId);
 }

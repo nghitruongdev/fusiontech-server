@@ -2,12 +2,19 @@ package com.vnco.fusiontech.product.entity;
 
 import com.vnco.fusiontech.common.constant.DBConstant;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 
 @SuppressWarnings("serial")
-@Data
+@Accessors(chain = true)
+@Builder
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 @Entity
 @Table(name = DBConstant.PRODUCT_TABLE)
 public class Product implements Serializable {
@@ -23,11 +30,11 @@ public class Product implements Serializable {
 
     private int quantity;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id")
-    Category category;
+    @ManyToOne (fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private Category category;
 
-    @ManyToOne
-    @JoinColumn(name = "brand_id")
-    Brand brand;
+    @ManyToOne (fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private Brand brand;
 }

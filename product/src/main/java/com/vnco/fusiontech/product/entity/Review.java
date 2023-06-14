@@ -27,13 +27,19 @@ public class Review implements Serializable{
 
     private Instant create_at;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    User user;
+    @ManyToOne (fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    Product product;
+    @ManyToOne (fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private Product product;
+
+
+
+
+
+
 
 
 

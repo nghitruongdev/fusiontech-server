@@ -15,18 +15,25 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @RequiredArgsConstructor
 @RepositoryRestController
 public class OrderRestController {
-    
+
     private final OrderService service;
-    
-    @PostMapping ("/orders")
-    @ResponseStatus (HttpStatus.CREATED)
+
+//    @PostMapping("/cart/checkout")
+//    @ResponseStatus(HttpStatus.CREATED)
+//    public ResponseEntity<?> checkout(@RequestBody CreateOrderRequest request) {
+//        var id = service.createOrder(request);
+//        return ResponseEntity.ok(id);
+//    }
+
+    @PostMapping("/orders")
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> createOrder(@RequestBody CreateOrderRequest request) {
         var id = service.createOrder(request);
         return ResponseEntity.ok(id);
     }
-    
+
     @GetMapping("/orders/status")
-    public ResponseEntity<OrderStatus[]> status(){
+    public ResponseEntity<OrderStatus[]> status() {
         return ResponseEntity.ok(OrderStatus.values());
     }
 }

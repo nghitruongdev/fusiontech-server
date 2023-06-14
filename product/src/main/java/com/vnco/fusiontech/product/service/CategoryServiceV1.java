@@ -4,14 +4,13 @@ import com.vnco.fusiontech.product.entity.Category;
 
 import java.util.List;
 
-public interface CategoryService {
+@Deprecated
+public interface CategoryServiceV1  {
     Category save(Category category);
-
-    Category update(Category category);
     
-    void delete(Long id);
+    void delete(int id);
     
-    Category findById(Long id);
-
+    Category findById(int id);
+    
     List<Category> findAll();
 }

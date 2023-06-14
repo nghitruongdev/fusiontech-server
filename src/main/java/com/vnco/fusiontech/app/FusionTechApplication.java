@@ -4,6 +4,7 @@ import com.github.javafaker.Faker;
 import com.vnco.fusiontech.cart.CartModuleConfiguration;
 import com.vnco.fusiontech.common.CommonModuleConfiguration;
 import com.vnco.fusiontech.order.OrderModuleConfiguration;
+import com.vnco.fusiontech.security.SecurityModuleConfiguration;
 import com.vnco.fusiontech.user.entity.ShippingAddress;
 import com.vnco.fusiontech.user.entity.User;
 import com.vnco.fusiontech.user.repository.ShippingAddressRepository;
@@ -17,7 +18,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.boot.autoconfigure.security.SecurityDataConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
@@ -25,15 +27,15 @@ import org.springframework.context.annotation.Profile;
 import java.util.List;
 import java.util.stream.IntStream;
 
-@SpringBootApplication
+@SpringBootApplication (exclude = {SecurityAutoConfiguration.class, ErrorMvcAutoConfiguration.class})
 @Import (
         {
                 CommonModuleConfiguration.class,
                 CartModuleConfiguration.class,
                 ProductModuleConfiguration.class,
                 UserModuleConfiguration.class,
-                SecurityDataConfiguration.class,
                 OrderModuleConfiguration.class,
+                SecurityModuleConfiguration.class
         }
 )
 @EntityScan (basePackages = "com.vnco.fusiontech.common.entity")

@@ -25,7 +25,6 @@ logging:
 #    name: spring.log
   level:
     web: debug
-
     com:
       vnco: debug
     org:

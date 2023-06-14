@@ -82,7 +82,7 @@ dependencies {
     implementation project(":product")
     implementation project(":user")
     implementation project(":security")
-
+    implementation project(":order")
     runtimeOnly "com.h2database:h2"
     runtimeOnly "com.mysql:mysql-connector-j"
 

@@ -6,15 +6,18 @@ import com.vnco.fusiontech.user.web.request.UserInfo;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public class UserServiceImpl implements UserService {
+
     @Override
-    public User registerUser(UserInfo userInfo) {
+    public ResponseEntity<User> createUser(User user) {
         return null;
     }
 
     @Override
-    public User createUser() {
+    public ResponseEntity<User> findUserById(UUID id) {
         return null;
     }
 }

@@ -1,20 +1,13 @@
 package com.vnco.fusiontech.product.web.rest.controller;
 
 import com.vnco.fusiontech.product.entity.Review;
-import com.vnco.fusiontech.product.entity.User;
-import com.vnco.fusiontech.product.service.ProductService;
 import com.vnco.fusiontech.product.service.ReviewService;
-import com.vnco.fusiontech.product.service.UserService;
-import com.vnco.fusiontech.product.web.rest.request.AddProductReviewRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Slf4j
 @Slf4j
 @CrossOrigin("*")
 @RestController

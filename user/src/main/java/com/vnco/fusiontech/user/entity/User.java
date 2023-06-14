@@ -5,19 +5,21 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
-@Data
 @Table(name = DBConstant.USER_TABLE)
 public class User {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Id
     @Column(name = "id")
-    private int id;
+    private UUID id;
     @Basic
     @Column(name = "username")
     private String username;
@@ -31,16 +33,20 @@ public class User {
     @Column(name = "phone")
     private String phone;
 
+    @OneToMany(mappedBy = "user")
+    private Set<Authority> authorities;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return id == user.id && Objects.equals(username, user.username) && Objects.equals(passwordHash, user.passwordHash) && Objects.equals(email, user.email) && Objects.equals(phone, user.phone);
+        return Objects.equals(id, user.id) && Objects.equals(username, user.username) && Objects.equals(passwordHash, user.passwordHash) && Objects.equals(email, user.email) && Objects.equals(phone, user.phone);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(id, username, passwordHash, email, phone);
     }
+
 }

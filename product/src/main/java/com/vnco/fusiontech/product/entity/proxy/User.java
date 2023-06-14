@@ -4,15 +4,22 @@ import com.vnco.fusiontech.common.constant.DBConstant;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 @SuppressWarnings("serial")
 @Entity(name = "ProductUser")
 @Table(name = DBConstant.USER_TABLE)
-public class User implements Serializable {
+public class User2 implements Serializable {
     
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
-    private UUID   id;
+    private int   id;
+
+    private String username;
+
+    private String password_hash;
+
+    private String email;
+
+    private String phone;
 }

@@ -6,6 +6,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 @Accessors (chain = true)
@@ -21,7 +22,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Id
     @Column(name = "id")
-    private UUID   id;
+    private UUID id;
     @Basic
     @Column(name = "username")
     private String username;
@@ -40,12 +41,15 @@ public class User {
     @ToString.Exclude
     private ShippingAddress defaultAddress;
 
+    @OneToMany(mappedBy = "user")
+    private Set<Authority> authorities;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return id == user.id && Objects.equals(username, user.username) && Objects.equals(passwordHash, user.passwordHash) && Objects.equals(email, user.email) && Objects.equals(phone, user.phone);
+        return Objects.equals(id, user.id) && Objects.equals(username, user.username) && Objects.equals(passwordHash, user.passwordHash) && Objects.equals(email, user.email) && Objects.equals(phone, user.phone);
     }
 
     @Override

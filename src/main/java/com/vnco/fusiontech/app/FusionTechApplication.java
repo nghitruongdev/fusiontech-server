@@ -33,7 +33,7 @@ import java.util.stream.IntStream;
                 ProductModuleConfiguration.class,
                 UserModuleConfiguration.class,
                 SecurityDataConfiguration.class,
-                OrderModuleConfiguration.class
+                OrderModuleConfiguration.class,
         }
 )
 @EntityScan (basePackages = "com.vnco.fusiontech.common.entity")

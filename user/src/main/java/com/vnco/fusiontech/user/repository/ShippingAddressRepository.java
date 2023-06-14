@@ -11,4 +11,6 @@ import java.util.UUID;
 public interface ShippingAddressRepository extends JpaRepository<ShippingAddress, Long> {
     List<ShippingAddress> findAllByUserId(UUID uid);
     
+    boolean existsByIdAndUserId(Long id, UUID userId);
+    
 }

@@ -23,6 +23,12 @@ public class ReviewRestController {
         return reviewService.createReview(review);
     }
 
+    // lay review theo id
+    @GetMapping("/{id}")
+    public Review getReviewById(@PathVariable int id) {
+        return reviewService.getReviewById(id);
+    }
+
     @PostMapping
     public Review createReview(@RequestBody Review review) {
         return reviewService.createReview(review);

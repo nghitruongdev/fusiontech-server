@@ -4,4 +4,8 @@ public class RecordNotFoundException extends jakarta.persistence.EntityNotFoundE
     public RecordNotFoundException() {
         super("No record was found with the given id.");
     }
+    
+    public RecordNotFoundException(String message) {
+        super(message);
+    }
 }

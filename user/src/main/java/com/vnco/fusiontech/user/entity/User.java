@@ -3,16 +3,19 @@ package com.vnco.fusiontech.user.entity;
 import com.vnco.fusiontech.common.constant.DBConstant;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.Accessors;
 
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
+@Accessors (chain = true)
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@ToString
 @Entity
 @Table(name = DBConstant.USER_TABLE)
 public class User {
@@ -32,6 +35,11 @@ public class User {
     @Basic
     @Column(name = "phone")
     private String phone;
+    
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn (name = "default_address_id")
+    @ToString.Exclude
+    private ShippingAddress defaultAddress;
 
     @OneToMany(mappedBy = "user")
     private Set<Authority> authorities;
@@ -48,5 +56,4 @@ public class User {
     public int hashCode() {
         return Objects.hash(id, username, passwordHash, email, phone);
     }
-
 }

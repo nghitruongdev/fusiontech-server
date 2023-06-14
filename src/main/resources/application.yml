@@ -37,8 +37,8 @@ spring:
     multipart:
       max-file-size: '10MB'
       max-request-size: '50MB'
-  main:
-    lazy-initialization: true
+#  main:
+#    lazy-initialization: true
 
 management:
   endpoints:

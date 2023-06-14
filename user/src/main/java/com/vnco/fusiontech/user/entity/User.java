@@ -3,16 +3,19 @@ package com.vnco.fusiontech.user.entity;
 import com.vnco.fusiontech.common.constant.DBConstant;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.Accessors;
 
 import java.util.Objects;
 import java.util.UUID;
 
+@Accessors (chain = true)
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @Entity
-@Data
 @Table(name = DBConstant.USER_TABLE)
 public class User {
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -31,6 +34,11 @@ public class User {
     @Basic
     @Column(name = "phone")
     private String phone;
+    
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn (name = "default_address_id")
+    @ToString.Exclude
+    private ShippingAddress defaultAddress;
 
     @Override
     public boolean equals(Object o) {

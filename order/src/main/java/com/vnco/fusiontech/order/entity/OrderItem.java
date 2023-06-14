@@ -1,6 +1,7 @@
-package com.vnco.fusiontech.common.entity;
+package com.vnco.fusiontech.order.entity;
 
 import com.vnco.fusiontech.common.constant.DBConstant;
+import com.vnco.fusiontech.common.entity.ManyToOneRelation;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;

@@ -1,6 +1,5 @@
-package com.vnco.fusiontech.common.entity;
+package com.vnco.fusiontech.order.entity;
 
-import com.vnco.fusiontech.common.AbstractAuditingEntity;
 import com.vnco.fusiontech.common.constant.DBConstant;
 import com.vnco.fusiontech.common.constant.OrderStatus;
 import jakarta.persistence.*;
@@ -8,7 +7,6 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
-import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -22,6 +20,7 @@ import static com.vnco.fusiontech.common.utils.ManyToOneUtils.*;
 @ToString
 @Entity
 @Table(name = DBConstant.ORDER_TABLE)
+@EntityListeners(OrderListener.class)
 public class Order implements Serializable {
     
     @Id
@@ -32,18 +31,16 @@ public class Order implements Serializable {
     
     private String note;
     
+    private String email;
+    
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
     
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn (name = "user_id")
-    @ToString.Exclude
-    private AppUser user;
+    @JoinColumn (name = "user_id", table = DBConstant.USER_TABLE)
+    private UUID userId;
     
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn (name = "address_id")
-    @ToString.Exclude
-    private ShippingAddress address;
+    @JoinColumn (name = "address_id", table = DBConstant.SHIPPING_ADDRESS_TABLE)
+    private Long addressId;
     
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, orphanRemoval = true)
     @ToString.Exclude
@@ -63,4 +60,5 @@ public class Order implements Serializable {
     public void setOrderItems(Set<OrderItem> items){
         replace(this, this.items, items);
     }
+    
 }

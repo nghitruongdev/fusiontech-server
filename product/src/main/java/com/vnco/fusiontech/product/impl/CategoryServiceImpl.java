@@ -4,7 +4,7 @@ import com.vnco.fusiontech.common.exception.RecordNotFoundException;
 import com.vnco.fusiontech.product.entity.Category;
 import com.vnco.fusiontech.product.repository.CategoryRepository;
 import com.vnco.fusiontech.product.repository.ProductRepository;
-import com.vnco.fusiontech.product.service.CategoryService;
+import com.vnco.fusiontech.product.service.CategoryServiceV1;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class CategoryServiceImpl implements CategoryService {
+public abstract class CategoryServiceImpl implements CategoryServiceV1 {
 
     //!todo: remove @Autowired
     //!todo: convert to private final CategoryRepository ....

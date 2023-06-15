@@ -14,7 +14,6 @@ import com.vnco.fusiontech.product.repository.ProductVariantRepository;
 import com.vnco.fusiontech.user.UserModuleConfiguration;
 import com.vnco.fusiontech.user.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;

@@ -2,6 +2,7 @@ package com.vnco.fusiontech.product.web.rest.controller;
 import com.vnco.fusiontech.product.entity.Category;
 import com.vnco.fusiontech.product.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

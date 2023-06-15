@@ -1,6 +1,6 @@
 package com.vnco.fusiontech.order.mapper;
 
-import com.vnco.fusiontech.common.entity.*;
+import com.vnco.fusiontech.order.entity.*;
 import com.vnco.fusiontech.order.web.rest.request.CreateOrderRequest;
 import com.vnco.fusiontech.order.web.rest.request.OrderItemRequest;
 import org.springframework.stereotype.Component;
@@ -11,12 +11,15 @@ import java.util.stream.Collectors;
 @Component
 public class OrderMapper {
     
-   public  Order toOrder(CreateOrderRequest request) {
+    public Order toOrder(CreateOrderRequest request) {
         Set<OrderItem> items = request.items().stream().map(this::toOrderItem).collect(Collectors.toSet());
         return Order.builder()
-                    .user(new AppUser(request.userId()))
-                    .address(new ShippingAddress(request.addressId()))
-                    //                       .note(request.notes())
+                    .email(request.email())
+                    .note(request.note())
+                    .userId(request.userId())
+                    .addressId(request.addressId())
+                    //                    .user(new AppUser(request.userId()))
+//                    .address(new ShippingAddress(request.addressId()))
                     //                       .total()
                     //                       .status()
                     .items(items)

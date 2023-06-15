@@ -3,16 +3,17 @@ package com.vnco.fusiontech.app;
 import com.github.javafaker.Faker;
 import com.vnco.fusiontech.cart.CartModuleConfiguration;
 import com.vnco.fusiontech.common.CommonModuleConfiguration;
-import com.vnco.fusiontech.common.entity.AppUser;
-import com.vnco.fusiontech.common.entity.ShippingAddress;
 import com.vnco.fusiontech.order.OrderModuleConfiguration;
-import com.vnco.fusiontech.order.repository.AppUserRepository;
-import com.vnco.fusiontech.order.repository.ShippingAddressRepository;
+import com.vnco.fusiontech.user.entity.ShippingAddress;
+import com.vnco.fusiontech.user.entity.User;
+import com.vnco.fusiontech.user.repository.ShippingAddressRepository;
 import com.vnco.fusiontech.product.ProductModuleConfiguration;
 import com.vnco.fusiontech.product.entity.ProductVariant;
 import com.vnco.fusiontech.product.repository.ProductRepository;
 import com.vnco.fusiontech.product.repository.ProductVariantRepository;
 import com.vnco.fusiontech.user.UserModuleConfiguration;
+import com.vnco.fusiontech.user.repository.UserRepository;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -33,7 +34,7 @@ import java.util.stream.IntStream;
                 ProductModuleConfiguration.class,
                 UserModuleConfiguration.class,
                 SecurityDataConfiguration.class,
-                OrderModuleConfiguration.class
+                OrderModuleConfiguration.class,
         }
 )
 @EntityScan (basePackages = "com.vnco.fusiontech.common.entity")
@@ -48,8 +49,8 @@ public class FusionTechApplication {
     @Bean
     @Profile ("bootstrap")
     public CommandLineRunner bootstrap(ProductRepository productRepository, ProductVariantRepository variantRepository,
-                                       AppUserRepository userRepository,
-                                       ShippingAddressRepository shippingAddressRepository
+                                       ShippingAddressRepository shippingAddressRepository,
+                                       UserRepository userRepository
     ) {
         return args -> {
             var number = faker.number();
@@ -63,17 +64,28 @@ public class FusionTechApplication {
                                                                                                                     50));
                                                          return variant;
                                                      }).toList();
-            
+    
             variantRepository.saveAll(variants);
-            
-            List<AppUser> users = IntStream.rangeClosed(1, 10)
-                                           .mapToObj(i -> AppUser.builder()
-                                                             .build()).toList();
+    
+            List<User> users = IntStream.rangeClosed(1, 10)
+                                        .mapToObj(i -> User.builder()
+                                                           .build()).toList();
             userRepository.saveAll(users);
-            
-            List<ShippingAddress> addresses = IntStream.rangeClosed(1, 10)
+    
+            List<ShippingAddress> addresses = IntStream.rangeClosed(1, 3)
                                                        .mapToObj(i -> ShippingAddress.builder()
-                                                                                 .build()).toList();
+                                                                                     .address(faker.address()
+                                                                                                   .streetAddress())
+                                                                                     .ward(faker.address().city())
+                                                                                     .district(faker.address()
+                                                                                                    .countryCode())
+                                                                                     .phone(faker.phoneNumber()
+                                                                                                 .cellPhone())
+                                                                                     .name(faker.name().fullName())
+                                                                                     .province(
+                                                                                             faker.address().country())
+                                                                                     .user(users.get(0))
+                                                                                     .build()).toList();
             shippingAddressRepository.saveAll(addresses);
         };
     }

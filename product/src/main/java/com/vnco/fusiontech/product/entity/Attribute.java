@@ -7,6 +7,7 @@ import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 
+
 @SuppressWarnings("serial")
 @Accessors(chain = true)
 @Builder
@@ -21,6 +22,6 @@ public class Attribute implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
+    
     private String name;
 }

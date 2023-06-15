@@ -6,6 +6,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+
 @SuppressWarnings("serial")
 @Data
 @Entity

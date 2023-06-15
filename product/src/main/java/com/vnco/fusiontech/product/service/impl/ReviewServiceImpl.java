@@ -16,6 +16,8 @@ public class ReviewServiceImpl implements ReviewService {
     ReviewRepository reviewRepository;
 
     
+
+    
     @Override
     public Review getReviewById(int id) {
         return reviewRepository.findById(id).orElse(null);
@@ -40,7 +42,4 @@ public class ReviewServiceImpl implements ReviewService {
     public List<Review> findAllByProductId(Integer productId) {
         return reviewRepository.findReviewsByProductIdIs(productId);
     }
-
-
-
 }

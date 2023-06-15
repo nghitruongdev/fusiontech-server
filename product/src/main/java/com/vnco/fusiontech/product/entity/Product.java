@@ -2,12 +2,6 @@ package com.vnco.fusiontech.product.entity;
 
 import com.vnco.fusiontech.common.constant.DBConstant;
 import jakarta.persistence.*;
-
-import java.util.Collection;
-import java.util.Objects;
-
-
-import jakarta.persistence.*;
 import lombok.Data;
 
 import java.io.Serializable;

@@ -1,6 +1,5 @@
 package com.vnco.fusiontech.product.service;
 
-import com.vnco.fusiontech.product.entity.Product;
 import com.vnco.fusiontech.product.entity.ProductVariant;
 
 import java.util.List;

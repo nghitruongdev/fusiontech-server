@@ -1,5 +1,7 @@
 package com.vnco.fusiontech.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.vnco.fusiontech.common.constant.DBConstant;
 import jakarta.persistence.*;
 import lombok.*;
@@ -24,6 +26,8 @@ public class Authority {
     private Long id;
     @ManyToOne
     @JoinColumn(name = "user_id")
+//    @JsonIgnoreProperties({"authorities"})
+    @JsonIncludeProperties({"id","username"})
     private User user;
 
     @ManyToOne

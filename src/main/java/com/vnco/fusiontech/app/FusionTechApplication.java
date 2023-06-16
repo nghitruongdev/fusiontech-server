@@ -4,6 +4,7 @@ import com.github.javafaker.Faker;
 import com.vnco.fusiontech.cart.CartModuleConfiguration;
 import com.vnco.fusiontech.common.CommonModuleConfiguration;
 import com.vnco.fusiontech.order.OrderModuleConfiguration;
+import com.vnco.fusiontech.security.SecurityConfiguration;
 import com.vnco.fusiontech.user.entity.ShippingAddress;
 import com.vnco.fusiontech.user.entity.User;
 import com.vnco.fusiontech.user.repository.ShippingAddressRepository;
@@ -17,7 +18,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.boot.autoconfigure.security.SecurityDataConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
@@ -32,7 +32,7 @@ import java.util.stream.IntStream;
                 CartModuleConfiguration.class,
                 ProductModuleConfiguration.class,
                 UserModuleConfiguration.class,
-                SecurityDataConfiguration.class,
+                SecurityConfiguration.class,
                 OrderModuleConfiguration.class,
         }
 )

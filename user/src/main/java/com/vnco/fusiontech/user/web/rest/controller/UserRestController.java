@@ -22,8 +22,9 @@ public class UserRestController {
 
 //     get all users
     @GetMapping("/users")
-    public List<User> getUsers() {
-        return userRepository.findAll();
+    public ResponseEntity<List<User>> getUsers() {
+        List<User> list = userRepository.findAll();
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     // create user

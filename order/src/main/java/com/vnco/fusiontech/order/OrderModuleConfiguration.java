@@ -2,6 +2,7 @@ package com.vnco.fusiontech.order;
 
 import com.vnco.fusiontech.common.service.PublicProductVariantService;
 import com.vnco.fusiontech.common.service.PublicUserService;
+import com.vnco.fusiontech.common.web.request.RegisterRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -36,6 +37,11 @@ public class OrderModuleConfiguration {
             public boolean hasShippingAddress(UUID userId, Long addressId) {
                 log.warn("has shipping address is not implemented: {}", addressId);
                 return true;
+            }
+
+            @Override
+            public UUID register(RegisterRequest registerRequest) {
+                return null;
             }
         };
     }

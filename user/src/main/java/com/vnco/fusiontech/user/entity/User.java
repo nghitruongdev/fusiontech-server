@@ -1,5 +1,7 @@
 package com.vnco.fusiontech.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.vnco.fusiontech.common.constant.DBConstant;
 import jakarta.persistence.*;
 import lombok.*;
@@ -41,7 +43,9 @@ public class User {
     @ToString.Exclude
     private ShippingAddress defaultAddress;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @JsonIgnore
     private Set<Authority> authorities;
 
     @Override

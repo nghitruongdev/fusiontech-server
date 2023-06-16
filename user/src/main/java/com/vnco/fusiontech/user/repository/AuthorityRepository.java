@@ -14,7 +14,6 @@ public interface AuthorityRepository extends JpaRepository<Authority, Long> {
 
     List<Authority> findByRole(Role role);
     Authority findByUserId(Long userId);
-
     Authority findByUserAndRole(Long userid, Role role);
     Authority findByUserIdAndRoleName(UUID userId, String role);
     Authority findByUser(@NonNull User userId);

@@ -19,7 +19,7 @@ import java.time.Instant;
 public class Review implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     private int rating;
 

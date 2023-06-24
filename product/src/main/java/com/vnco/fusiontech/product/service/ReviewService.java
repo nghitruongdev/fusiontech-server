@@ -6,11 +6,11 @@ import java.util.List;
 
 public interface ReviewService {
 
-    Review getReviewById(int id);
+    Review getReviewById(Long id);
     Review createReview(Review review);
     Review updateReview(Review review);
-    void deleteReview(int id);
-    List<Review> findAllByProductId(Integer productId);
+    void deleteReview(Long id);
+    List<Review> findAllByProductId(Long productId);
 
 
 

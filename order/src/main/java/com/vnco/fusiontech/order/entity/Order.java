@@ -1,16 +1,18 @@
 package com.vnco.fusiontech.order.entity;
 
 import com.vnco.fusiontech.common.constant.DBConstant;
-import com.vnco.fusiontech.common.constant.OrderStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import static com.vnco.fusiontech.common.utils.ManyToOneUtils.*;
+
 @Accessors(chain = true)
 @Getter
 @Setter
@@ -24,8 +26,8 @@ import static com.vnco.fusiontech.common.utils.ManyToOneUtils.*;
 public class Order implements Serializable {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    private Long id;
     
     private Double total;
     
@@ -33,7 +35,11 @@ public class Order implements Serializable {
     
     private String email;
     
-    @Enumerated(EnumType.STRING)
+    private Instant purchasedAt;
+    
+    @Enumerated (EnumType.STRING)
+    //    @Column (nullable = false)
+    @NotNull
     private OrderStatus status;
     
     @JoinColumn (name = "user_id", table = DBConstant.USER_TABLE)
@@ -42,23 +48,33 @@ public class Order implements Serializable {
     @JoinColumn (name = "address_id", table = DBConstant.SHIPPING_ADDRESS_TABLE)
     private Long addressId;
     
-    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToOne (cascade = CascadeType.PERSIST, optional = false, orphanRemoval = true)
+    @JoinColumn (name = "payment_id")
+    @ToString.Exclude
+    private Payment payment;
+    
+    public void setPayment(@NonNull Payment payment) {
+        payment.setOrder(this);
+        this.payment = payment;
+    }
+    
+    @OneToMany (mappedBy = "order", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
     @ToString.Exclude
     @Builder.Default
     private Set<OrderItem> items = new HashSet<>();
     
     //TODO: add modification table mapping
-   
-    public void addOrderItem(OrderItem item){
-        addItem(this, items,item );
+    
+    public void addOrderItem(OrderItem item) {
+        addItem(this, items, item);
     }
     
-    public void removeOrderItem(OrderItem item){
+    public void removeOrderItem(OrderItem item) {
         removeItem(this, items, item);
     }
     
-    public void setOrderItems(Set<OrderItem> items){
-        replace(this, this.items, items);
+    public void setOrderItems(Set<OrderItem> items) {
+        this.items = replace(this, this.items, items);
     }
     
 }

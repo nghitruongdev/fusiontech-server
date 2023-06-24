@@ -1,6 +1,5 @@
 package com.vnco.fusiontech.order;
 
-import com.vnco.fusiontech.common.service.PublicProductVariantService;
 import com.vnco.fusiontech.common.service.PublicUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,18 +34,6 @@ public class OrderModuleConfiguration {
             @Override
             public boolean hasShippingAddress(UUID userId, Long addressId) {
                 log.warn("has shipping address is not implemented: {}", addressId);
-                return true;
-            }
-        };
-    }
-    
-    @Bean
-    @ConditionalOnMissingBean
-    public PublicProductVariantService variantService(){
-        log.warn("{} is not implemented", "Public Product Variant Service");
-        return new PublicProductVariantService() {
-            @Override
-            public boolean hasEnoughQuantity(Long variantId, int orderQuantity) {
                 return true;
             }
         };

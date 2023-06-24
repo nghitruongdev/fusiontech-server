@@ -6,6 +6,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+
 @SuppressWarnings("serial")
 @Accessors(chain = true)
 @Builder
@@ -25,5 +26,4 @@ public class Category implements Serializable {
 
     private int parent_id;
 
-    // Constructors, getters, setters, and other methods
 }

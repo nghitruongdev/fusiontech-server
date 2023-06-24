@@ -23,5 +23,4 @@ public class Brand implements Serializable {
 
     private String name;
 
-    // Constructors, getters, setters, and other methods
 }

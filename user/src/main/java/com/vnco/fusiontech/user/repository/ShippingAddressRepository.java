@@ -17,7 +17,7 @@ import java.util.UUID;
 public interface ShippingAddressRepository extends JpaRepository<ShippingAddress, Long> {
     List<ShippingAddress> findAllByUserId(@Param("uid") UUID uid);
 
-    boolean existsByIdAndUserId(Long id, UUID userId);
+    boolean existsByIdAndUserId(@Param("id") Long id, @Param ("uid") UUID userId);
 
     @Query("from ShippingAddress s WHERE s.user.id =:uid AND s.user.defaultAddress.id=s.id")
     Optional<ShippingAddress> findDefaultShippingAddressByUserId(@Param("uid") UUID uid);

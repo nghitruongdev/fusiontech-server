@@ -4,6 +4,7 @@ import com.github.javafaker.Faker;
 import com.vnco.fusiontech.cart.CartModuleConfiguration;
 import com.vnco.fusiontech.common.CommonModuleConfiguration;
 import com.vnco.fusiontech.order.OrderModuleConfiguration;
+import com.vnco.fusiontech.product.entity.Product;
 import com.vnco.fusiontech.security.SecurityModuleConfiguration;
 import com.vnco.fusiontech.user.entity.ShippingAddress;
 import com.vnco.fusiontech.user.entity.User;
@@ -59,10 +60,10 @@ public class FusionTechApplication {
                                                      .mapToObj(i -> {
                                                          ProductVariant variant = new ProductVariant();
                                                          variant.setPrice(number.numberBetween(100, 1000));
-                                                         variant.setStock_quantity(number.numberBetween(100, 500));
-                                                         variant.setAvailable_quantity(
-                                                                 variant.getStock_quantity() - number.numberBetween(10,
-                                                                                                                    50));
+                                                         //                                                         variantCo.setStock_quantity(number.numberBetween(100, 500));
+                                                         //                                                         variant.setAvailable_quantity(
+                                                         //                                                                 variant.getStock_quantity() - number.numberBetween(10,
+                                                         //                                                                                                                    50));
                                                          return variant;
                                                      }).toList();
     
@@ -72,6 +73,24 @@ public class FusionTechApplication {
                                         .mapToObj(i -> User.builder()
                                                            .build()).toList();
             userRepository.saveAll(users);
+    
+            var products = IntStream.rangeClosed(1, 10)
+                                    .mapToObj(i -> {
+                                                  var product = Product.builder()
+                                                                       .name(faker.commerce().productName())
+                                                                       .image("")
+                                                                       .description(faker.lorem().characters())
+                                                                       //                                  .brand()
+                                                                       //                                   .category()
+                                                                       //                                   .id()
+                                                                       .build();
+                                                  product.addFavoriteUser((new com.vnco.fusiontech.product.entity.proxy.User(
+                                                          users.get(faker.random().nextInt(1, 9)).getId()))
+                                                  );
+                                                  return product;
+                                              }
+                                    ).toList();
+            productRepository.saveAll(products);
     
             List<ShippingAddress> addresses = IntStream.rangeClosed(1, 3)
                                                        .mapToObj(i -> ShippingAddress.builder()

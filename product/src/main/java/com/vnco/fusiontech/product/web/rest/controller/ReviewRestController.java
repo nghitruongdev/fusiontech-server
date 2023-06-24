@@ -25,7 +25,7 @@ public class ReviewRestController {
 
     // lay review theo id
     @GetMapping("/{id}")
-    public Review getReviewById(@PathVariable int id) {
+    public Review getReviewById(@PathVariable Long id) {
         return reviewService.getReviewById(id);
     }
 
@@ -35,12 +35,12 @@ public class ReviewRestController {
     }
     // xoa review
     @DeleteMapping("/{id}")
-    public void deleteReview(@PathVariable int id) {
+    public void deleteReview(@PathVariable Long id) {
         reviewService.deleteReview(id);
     }
 
     @GetMapping("/search/findAllByProductId")
-    public List<Review> findAllByProductId(@RequestParam("pid") Integer productId){
+    public List<Review> findAllByProductId(@RequestParam("pid") Long productId){
         List<Review> reviews = reviewService.findAllByProductId(productId);
         return reviews;
     }

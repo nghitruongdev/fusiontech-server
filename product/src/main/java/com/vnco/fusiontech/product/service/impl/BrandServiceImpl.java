@@ -1,4 +1,4 @@
-package com.vnco.fusiontech.product.impl;
+package com.vnco.fusiontech.product.service.impl;
 
 import com.vnco.fusiontech.common.exception.RecordNotFoundException;
 import com.vnco.fusiontech.product.entity.Brand;

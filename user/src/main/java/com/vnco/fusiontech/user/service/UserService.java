@@ -16,4 +16,6 @@ public interface UserService extends PublicUserService {
     ResponseEntity<User> findUserById(@PathVariable UUID id);
 
     void updateDefaultShippingAddress(UUID userId, Long addressId);
+    
+    //todo: remove favorite product when deleting user
 }

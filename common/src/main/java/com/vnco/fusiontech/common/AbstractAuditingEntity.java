@@ -1,6 +1,5 @@
 package com.vnco.fusiontech.common;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
@@ -28,7 +27,7 @@ import java.time.Instant;
 @NoArgsConstructor@AllArgsConstructor
 @MappedSuperclass
 @EntityListeners (AuditingEntityListener.class)
-@JsonIgnoreProperties (value = {"createdBy", "createdDate", "lastModifiedBy", "lastModifiedDate" }, allowGetters = true)
+//@JsonIgnoreProperties (value = {"createdBy", "createdDate", "lastModifiedBy", "lastModifiedDate" }, allowGetters = true)
 public abstract class AbstractAuditingEntity<T> implements Serializable {
     
     @Serial

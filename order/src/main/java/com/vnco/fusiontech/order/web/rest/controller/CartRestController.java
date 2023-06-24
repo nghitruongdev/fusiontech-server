@@ -2,6 +2,7 @@ package com.vnco.fusiontech.order.web.rest.controller;
 
 import com.vnco.fusiontech.order.service.OrderService;
 import com.vnco.fusiontech.order.web.rest.request.CreateOrderRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ public class CartRestController {
     
     @PostMapping("/checkout")
     @ResponseStatus (HttpStatus.CREATED)
-    public ResponseEntity<?> checkout(@RequestBody CreateOrderRequest request) {
+    public ResponseEntity<?> checkout(@Valid  @RequestBody CreateOrderRequest request) {
         var id = service.createOrder(request);
         return ResponseEntity.ok(id);
     }

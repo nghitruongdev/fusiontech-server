@@ -20,18 +20,16 @@ import java.io.Serializable;
 @Table(name = DBConstant.PRODUCT_ATTRIBUTE_TABLE)
 public class ProductAttribute implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    private String name;
+    
+    @Column (name = "attribute_value")
+    private String value;
+    
     @ManyToOne (fetch = FetchType.LAZY)
     @ToString.Exclude
     private ProductVariant variant;
 
-
-    @ManyToOne (fetch = FetchType.LAZY)
-    @ToString.Exclude
-    private Attribute attribute;
-    
-    @Column(name = "attribute_value")
-    private String value;
 }

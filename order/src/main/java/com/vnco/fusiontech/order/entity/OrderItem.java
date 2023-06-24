@@ -28,7 +28,7 @@ public class OrderItem implements Serializable, ManyToOneRelation<Order> {
     private double price;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn (name = "order_id")
+    @JoinColumn (name = "order_id", nullable = false)
     @ToString.Exclude
     private Order order;
     

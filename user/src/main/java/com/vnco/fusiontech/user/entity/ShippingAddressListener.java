@@ -42,8 +42,13 @@ public class ShippingAddressListener {
 
     void updateDefault(ShippingAddress address) {
         var userService = BeanUtils.getBean(UserService.class);
-        if (address.isDefault() || address.getUser().getDefaultAddress() == null) {
-            userService.updateDefaultShippingAddress(address.getUser().getId(), address.getId());
-        }
+        new Thread(()->{
+            if (address.isDefault() || address.getUser().getDefaultAddress() == null) {
+                userService.updateDefaultShippingAddress(address.getUser().getId(), address.getId());
+            }
+        }).start();
+//        if (address.isDefault() || address.getUser().getDefaultAddress() == null) {
+//            userService.updateDefaultShippingAddress(address.getUser().getId(), address.getId());
+//        }
     }
 }

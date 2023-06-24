@@ -1,39 +1,57 @@
 package com.vnco.fusiontech.order.web.rest.controller;
 
-import com.vnco.fusiontech.common.constant.OrderStatus;
+import com.vnco.fusiontech.order.entity.OrderStatus;
+import com.vnco.fusiontech.order.entity.OrderStatusGroup;
 import com.vnco.fusiontech.order.service.OrderService;
 import com.vnco.fusiontech.order.web.rest.request.CreateOrderRequest;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @RepositoryRestController
 public class OrderRestController {
-
+    
     private final OrderService service;
-
-//    @PostMapping("/cart/checkout")
-//    @ResponseStatus(HttpStatus.CREATED)
-//    public ResponseEntity<?> checkout(@RequestBody CreateOrderRequest request) {
-//        var id = service.createOrder(request);
-//        return ResponseEntity.ok(id);
-//    }
-
-    @PostMapping("/orders")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> createOrder(@RequestBody CreateOrderRequest request) {
+    
+    @PostMapping ("/orders")
+    @ResponseStatus (HttpStatus.CREATED)
+    public ResponseEntity<?> createOrder(@Valid @RequestBody CreateOrderRequest request) {
         var id = service.createOrder(request);
         return ResponseEntity.ok(id);
     }
-
-    @GetMapping("/orders/status")
-    public ResponseEntity<OrderStatus[]> status() {
-        return ResponseEntity.ok(OrderStatus.values());
+    
+    @PatchMapping ("/orders/{id}")
+    @ResponseStatus (HttpStatus.NO_CONTENT)
+    public ResponseEntity<?> updateStatus(@PathVariable ("id") Long id, @Valid @NotNull @RequestBody OrderStatus status) {
+        service.updateOrderStatus(id, status);
+        return ResponseEntity.ok().build();
+        
     }
+    
+    @GetMapping ("/orders/statuses")
+    public ResponseEntity<?> status(@RequestParam (value = "group", required = false) Optional<OrderStatusGroup> group
+    ) {
+        if (group.isPresent()) {
+            var statuses =
+                    OrderStatus.getStatusesByGroup(group.get()).stream().map(OrderStatus::getFullStatus).toList();
+            return ResponseEntity.ok(statuses);
+        }
+        var list = Arrays.stream(OrderStatus.values()).map(OrderStatus::getFullStatus).toList();
+        return ResponseEntity.ok(list);
+    }
+    
+    @GetMapping ("/orders/statuses/groups")
+    public ResponseEntity<?> statusGroups() {
+        var list = Arrays.stream(OrderStatusGroup.values()).map(OrderStatusGroup::getFullDetail).toList();
+        return ResponseEntity.ok(list);
+    }
+    
 }

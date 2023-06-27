@@ -4,16 +4,16 @@ import com.github.javafaker.Faker;
 import com.vnco.fusiontech.cart.CartModuleConfiguration;
 import com.vnco.fusiontech.common.CommonModuleConfiguration;
 import com.vnco.fusiontech.order.OrderModuleConfiguration;
-import com.vnco.fusiontech.product.entity.Product;
-import com.vnco.fusiontech.security.SecurityModuleConfiguration;
-import com.vnco.fusiontech.user.entity.ShippingAddress;
-import com.vnco.fusiontech.user.entity.User;
-import com.vnco.fusiontech.user.repository.ShippingAddressRepository;
 import com.vnco.fusiontech.product.ProductModuleConfiguration;
+import com.vnco.fusiontech.product.entity.Product;
 import com.vnco.fusiontech.product.entity.ProductVariant;
 import com.vnco.fusiontech.product.repository.ProductRepository;
 import com.vnco.fusiontech.product.repository.ProductVariantRepository;
+import com.vnco.fusiontech.security.SecurityModuleConfiguration;
 import com.vnco.fusiontech.user.UserModuleConfiguration;
+import com.vnco.fusiontech.user.entity.ShippingAddress;
+import com.vnco.fusiontech.user.entity.User;
+import com.vnco.fusiontech.user.repository.ShippingAddressRepository;
 import com.vnco.fusiontech.user.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -56,30 +56,18 @@ public class FusionTechApplication {
     ) {
         return args -> {
             var number = faker.number();
-            List<ProductVariant> variants = IntStream.rangeClosed(1, 10)
-                                                     .mapToObj(i -> {
-                                                         ProductVariant variant = new ProductVariant();
-                                                         variant.setPrice(number.numberBetween(100, 1000));
-                                                         //                                                         variantCo.setStock_quantity(number.numberBetween(100, 500));
-                                                         //                                                         variant.setAvailable_quantity(
-                                                         //                                                                 variant.getStock_quantity() - number.numberBetween(10,
-                                                         //                                                                                                                    50));
-                                                         return variant;
-                                                     }).toList();
-    
-            variantRepository.saveAll(variants);
     
             List<User> users = IntStream.rangeClosed(1, 10)
                                         .mapToObj(i -> User.builder()
                                                            .build()).toList();
             userRepository.saveAll(users);
     
-            var products = IntStream.rangeClosed(1, 10)
+            var products = IntStream.rangeClosed(1, 100)
                                     .mapToObj(i -> {
                                                   var product = Product.builder()
                                                                        .name(faker.commerce().productName())
                                                                        .image("")
-                                                                       .description(faker.lorem().characters())
+                                                                       .description(faker.commerce().productName())
                                                                        //                                  .brand()
                                                                        //                                   .category()
                                                                        //                                   .id()
@@ -91,6 +79,17 @@ public class FusionTechApplication {
                                               }
                                     ).toList();
             productRepository.saveAll(products);
+    
+            List<ProductVariant> variants = IntStream.rangeClosed(1, 10)
+                                                     .mapToObj(i -> {
+                                                         ProductVariant variant = new ProductVariant();
+                                                         variant.setPrice(number.numberBetween(100, 1000));
+                                                         variant.setProduct(products.get(number.numberBetween(0,
+                                                                                                              products.size() -1)));
+                                                         return variant;
+                                                     }).toList();
+    
+            variantRepository.saveAll(variants);
     
             List<ShippingAddress> addresses = IntStream.rangeClosed(1, 3)
                                                        .mapToObj(i -> ShippingAddress.builder()

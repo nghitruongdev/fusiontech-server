@@ -10,6 +10,7 @@ import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @SuppressWarnings("serial")
@@ -31,15 +32,32 @@ public class ProductVariant implements Serializable {
     
     private double price;
     
-    //    @Transient
-    //    private long availableQuantity;
-    //
-    //    @Transient
-    //    private long stockQuantity;
+    private Boolean active;
     
-    @ManyToOne (fetch = FetchType.LAZY)
+    @ManyToOne (fetch = FetchType.LAZY, optional = false)
     @ToString.Exclude
     private Product product;
+    
+    @OneToMany (mappedBy = "variant", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    @ToString.Exclude
+    private List<ProductAttribute> attributes = new ArrayList<>();
+    
+    public void addAttribute(ProductAttribute attribute) {
+        attribute.setVariant(this);
+        attributes.add(attribute);
+    }
+    
+    public void removeAttribute(ProductAttribute attribute) {
+        attribute.setVariant(null);
+        attributes.removeIf(attribute1 -> attribute1.getId().equals(attribute.getId()));
+    }
+    
+    public void setAttributes(Collection<ProductAttribute> attributes) {
+        this.attributes.forEach(attribute -> attribute.setVariant(null));
+        this.attributes.clear();
+        attributes.forEach(this::addAttribute);
+    }
     
     @OneToMany (mappedBy = "variant", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default

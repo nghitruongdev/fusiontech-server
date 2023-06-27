@@ -9,9 +9,7 @@ import lombok.experimental.Accessors;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @SuppressWarnings("serial")
 @Accessors(chain = true)
@@ -32,6 +30,7 @@ public class Product extends RepresentationModel<Product> implements Serializabl
 
     private String description;
     
+    //todo: do we really need to have an image in product or just using variants images?
     private String image;
     
     @ManyToOne (fetch = FetchType.LAZY)
@@ -41,6 +40,30 @@ public class Product extends RepresentationModel<Product> implements Serializabl
     @ManyToOne (fetch = FetchType.LAZY)
     @ToString.Exclude
     private Brand brand;
+    
+    @OneToMany (mappedBy = "product", orphanRemoval = true, cascade = CascadeType.ALL)
+    @Builder.Default
+    @ToString.Exclude
+    private List<ProductVariant> variants = new ArrayList<>();
+    
+    public void addVariant(ProductVariant variant) {
+        variant.setProduct(this);
+        variants.add(variant);
+    }
+    
+    public void removeVariant(ProductVariant variant) {
+        variant.setProduct(null);
+        variants.removeIf(v -> v.getId().equals(variant.getId()));
+    }
+    
+    public void setVariants(Collection<ProductVariant> variants) {
+        this.variants.forEach(variant -> variant.setProduct(null));
+        this.variants.clear();
+        variants.forEach(variant -> {
+            variant.setProduct(this);
+            this.variants.add(variant);
+        });
+    }
     
     @ManyToMany
     @JoinTable (

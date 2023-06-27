@@ -1,8 +1,9 @@
 package com.vnco.fusiontech.product.web.rest.controller;
 
 import com.vnco.fusiontech.product.entity.Product;
-import com.vnco.fusiontech.product.repository.ProductRepository;
 import com.vnco.fusiontech.product.service.ProductService;
+import com.vnco.fusiontech.product.web.rest.request.CreateProductRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.http.HttpStatus;
@@ -17,7 +18,6 @@ import java.util.UUID;
 public class ProductRestController {
     
     private final ProductService    productService;
-    private final ProductRepository productRepository;
     // lay tat ca san pham
 
     // lay san pham theo id
@@ -27,9 +27,10 @@ public class ProductRestController {
 //    }
 
     // them moi san pham
-    @PostMapping
-    public Product createProduct(@RequestBody Product product) {
-        return productService.createProduct(product);
+    @PostMapping("/products")
+    public ResponseEntity<?> createProduct(@Valid @RequestBody CreateProductRequest request){
+        var id = productService.createProduct(request);
+        return ResponseEntity.ok(id);
     }
     
     // cap nhat san pham theo id
@@ -42,11 +43,6 @@ public class ProductRestController {
     @DeleteMapping ("/{id}")
     public void deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
-    }
-    
-    @GetMapping ("/products/favoritesByUser")
-    public ResponseEntity<?> getFavorites(@RequestParam ("uid") UUID uid) {
-        return ResponseEntity.ok(productRepository.findAllByFavorites_Id(uid));
     }
     
     @PostMapping ("/products/{id}/favorites")

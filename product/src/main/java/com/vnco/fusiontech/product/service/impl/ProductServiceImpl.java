@@ -4,17 +4,26 @@ import com.vnco.fusiontech.common.exception.InvalidRequestException;
 import com.vnco.fusiontech.common.exception.RecordNotFoundException;
 import com.vnco.fusiontech.common.service.PublicUserService;
 import com.vnco.fusiontech.product.entity.Product;
+import com.vnco.fusiontech.product.entity.ProductAttribute;
+import com.vnco.fusiontech.product.entity.ProductVariant;
 import com.vnco.fusiontech.product.entity.proxy.User;
+import com.vnco.fusiontech.product.mapper.ProductMapper;
 import com.vnco.fusiontech.product.repository.ProductRepository;
 import com.vnco.fusiontech.product.service.ProductService;
+import com.vnco.fusiontech.product.web.rest.request.CreateProductRequest;
+import com.vnco.fusiontech.product.web.rest.request.ProductAttributeRequest;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.BiFunction;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -23,6 +32,7 @@ import java.util.UUID;
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final PublicUserService userService;
+    private final ProductMapper     mapper;
     
     @Override
     public List<Product> getAllProducts() {
@@ -35,9 +45,19 @@ public class ProductServiceImpl implements ProductService {
     }
     
     @Override
-    public Product createProduct(Product product) {
-        return productRepository.save(product);
+    public Long createProduct(CreateProductRequest request) {
+        var product  = mapper.toProduct(request);
+        var variants = createProductVariants(request.attributes());
+        product.setVariants(variants);
+        
+        variants.forEach(variant -> {
+            variant.setActive(true);
+        });
+        //todo: should we validate with publish Date?
+        
+        return productRepository.save(product).getId();
     }
+    
     
     @Override
     public Product updateProduct(Product product) {
@@ -91,4 +111,32 @@ public class ProductServiceImpl implements ProductService {
         return product;
     }
     
+    private List<ProductVariant> createProductVariants(@NotEmpty List<ProductAttributeRequest> attributes) {
+        var firstGroup = attributes.remove(0);
+        BiFunction<String, String, ProductAttribute> toProductAttribute = (name, value) -> ProductAttribute.builder()
+                                                                                                           .name(name)
+                                                                                                           .value(value)
+                                                                                                           .build();
+        
+        var baseList = new ArrayList<>(
+                firstGroup.values().stream().map(value -> toProductAttribute.apply(firstGroup.name(), value))
+                          .map(attribute -> new LinkedList<>(List.of(attribute))).toList());
+        attributes.forEach((group) -> {
+            var result = baseList.stream().flatMap(
+                    base -> group.values().stream().map(value -> {
+                        var list = new LinkedList<>(base);
+                        list.add(toProductAttribute.apply(group.name(), value));
+                        return list;
+                    })
+            ).toList();
+            baseList.clear();
+            baseList.addAll(result);
+        });
+        
+        return baseList.stream().map((list) -> {
+            var variant = new ProductVariant();
+            variant.setAttributes(list);
+            return variant;
+        }).toList();
+    }
 }

@@ -1,8 +1,6 @@
 package com.vnco.fusiontech.security;
 
-import java.util.Arrays;
-import java.util.List;
-
+import lombok.SneakyThrows;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -13,13 +11,11 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
-import lombok.SneakyThrows;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -33,7 +29,7 @@ public class SecurityModuleConfiguration {
   @Bean
   SecurityFilterChain filterChain(HttpSecurity http) {
     http.csrf().disable();
-//    http.cors(Customizer.withDefaults());
+    http.cors(Customizer.withDefaults());
     http.headers().frameOptions().sameOrigin()
         .and()
         .csrf()
@@ -50,17 +46,18 @@ public class SecurityModuleConfiguration {
   }
   
   @Bean
-  public CorsConfigurationSource corsConfigurationSource(){
-    var source = new UrlBasedCorsConfigurationSource();
+  public CorsConfigurationSource corsConfigurationSource() {
     var config = new CorsConfiguration();
     config.addAllowedOrigin("http://localhost:3000");
     config.setAllowedHeaders(List.of("*"));
-//    config.addAllowedOriginPattern("*");
+    //    config.addAllowedOriginPattern("*");
     config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
     config.setAllowedHeaders(List.of("Access-Control-Allow-Origin"));
     config.setExposedHeaders(List.of("Content-Type", "Origin"));
     config.setAllowCredentials(false);
     config.setMaxAge(3600L);
+  
+    var source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", config);
     return source;
   }

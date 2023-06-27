@@ -33,6 +33,12 @@ spring:
     user:
       name: user
       password: user
+#    oauth2:
+#      client:
+#        registration:
+#          google:
+#            client-id: 1065318331110-9mhvf5n62litd37ndvnb6e1r262p1kel.apps.googleusercontent.com
+#            client-secret: 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
   servlet:
     multipart:
       max-file-size: '10MB'

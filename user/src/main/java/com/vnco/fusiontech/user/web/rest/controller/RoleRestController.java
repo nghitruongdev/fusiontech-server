@@ -12,7 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class RoleRestController {
-
+    //TODO: validate role when user add more role like for example: user -> must be ROLE_USER,
     final
     RoleService roleService;
 

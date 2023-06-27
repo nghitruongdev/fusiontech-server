@@ -54,6 +54,7 @@ allprojects {
         implementation "org.springframework.boot:spring-boot-starter-hateoas"
         implementation "org.springframework.boot:spring-boot-starter-validation"
 //        implementation 'org.springframework.boot:spring-boot-starter-security'
+//        implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
         implementation('com.github.javafaker:javafaker:1.0.2') {
             exclude group: 'org.yaml', module: 'snakeyaml'

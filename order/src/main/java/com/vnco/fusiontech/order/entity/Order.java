@@ -1,5 +1,6 @@
 package com.vnco.fusiontech.order.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.vnco.fusiontech.common.constant.DBConstant;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -11,9 +12,10 @@ import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+
 import static com.vnco.fusiontech.common.utils.ManyToOneUtils.*;
 
-@Accessors(chain = true)
+@Accessors (chain = true)
 @Getter
 @Setter
 @Builder
@@ -21,8 +23,9 @@ import static com.vnco.fusiontech.common.utils.ManyToOneUtils.*;
 @AllArgsConstructor
 @ToString
 @Entity
-@Table(name = DBConstant.ORDER_TABLE)
-@EntityListeners(OrderListener.class)
+@Table (name = DBConstant.ORDER_TABLE)
+@EntityListeners (OrderListener.class)
+@JsonIgnoreProperties (allowGetters = true, value = {"paymentId"})
 public class Order implements Serializable {
     
     @Id
@@ -47,6 +50,9 @@ public class Order implements Serializable {
     
     @JoinColumn (name = "address_id", table = DBConstant.SHIPPING_ADDRESS_TABLE)
     private Long addressId;
+    
+    @Column (name = "payment_id", insertable = false, updatable = false)
+    private Long paymentId;
     
     @OneToOne (cascade = CascadeType.PERSIST, optional = false, orphanRemoval = true)
     @JoinColumn (name = "payment_id")

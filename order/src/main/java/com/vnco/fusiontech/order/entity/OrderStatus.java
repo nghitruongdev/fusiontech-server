@@ -9,9 +9,9 @@ public enum OrderStatus {
     PLACED(OrderStatusGroup.VERIFY, "Chờ xác nhận"),
     VERIFIED(OrderStatusGroup.PROCESSING, "Đã xác nhận"),
     PREPARED(OrderStatusGroup.PROCESSING, "Đang chuẩn bị"),
-    ON_DELIVERY(OrderStatusGroup.OUT_FOR_DELIVERY, "Đang giao"),
+    ON_DELIVERY(OrderStatusGroup.ON_DELIVERY, "Đang giao"),
     DELIVERED_SUCCESS(OrderStatusGroup.COMPLETED, "Giao thành công"),
-    DELIVERED_FAILED(OrderStatusGroup.COMPLETED, "Trả hàng"),
+    DELIVERED_FAILED(OrderStatusGroup.FAILED, "Trả hàng"),
     CANCELLED(OrderStatusGroup.CANCELLED, "Đã huỷ"),
     DENIED(OrderStatusGroup.CANCELLED, "Đã bị từ chối");
     
@@ -40,7 +40,11 @@ public enum OrderStatus {
     }
     
     public Map<String, Object> getFullStatus() {
-        return Map.of("id", ordinal(), "name", name(), "detailName", detailName, "group", group.name()
+        return Map.of("id", ordinal(),
+                      "name", name(),
+                      "detailName", detailName,
+                      "group", group.name(),
+                      "isChangeable", !isUnchangeable()
         );
     }
     

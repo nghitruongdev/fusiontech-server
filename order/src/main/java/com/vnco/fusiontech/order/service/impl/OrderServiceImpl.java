@@ -68,10 +68,10 @@ public class OrderServiceImpl implements OrderService {
             return;
         }
         
-        if (order.getStatus().isUnchangeable()) {
-            throw new NotAcceptedRequestException("Không thể thay đổi trạng thái đơn hàng. Trạng thái " +
-                                                  "đơn hàng mới không hợp lệ.");
+        if (order.getStatus().isUnchangeable() || order.getStatus().compareTo(newStatus) >= 0) {
+            throw new NotAcceptedRequestException("Trạng thái đơn hàng mới không hợp lệ.");
         }
+        
         order.setStatus(newStatus);
     }
     

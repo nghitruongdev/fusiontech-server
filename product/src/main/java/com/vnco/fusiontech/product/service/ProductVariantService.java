@@ -1,19 +1,19 @@
 package com.vnco.fusiontech.product.service;
 
 import com.vnco.fusiontech.common.service.PublicProductVariantService;
-import com.vnco.fusiontech.product.entity.ProductVariant;
+import com.vnco.fusiontech.product.entity.Variant;
 import com.vnco.fusiontech.product.entity.VariantInventory;
 
 import java.util.List;
 
 public interface ProductVariantService extends PublicProductVariantService {
-    List<ProductVariant> getAllProductVariants();
+    List<Variant> getAllProductVariants();
     
-    ProductVariant getProductVariantById(Long id);
+    Variant getProductVariantById(Long id);
     
-    ProductVariant createProductVariant(ProductVariant productVariant);
+    Variant createProductVariant(Variant productVariant);
     
-    ProductVariant updateProductVariant(ProductVariant productVariant);
+    Variant updateProductVariant(Variant productVariant);
     
     void deleteProductVariant(Long id);
     

@@ -10,11 +10,12 @@ public interface DBConstant {
     String ATTRIBUTE_TABLE = "attribute";
     String REVIEW_TABLE    = "review";
     
-    String PRODUCT_TABLE           = "product";
-    String PRODUCT_ATTRIBUTE_TABLE = "product_attribute";
-    String PRODUCT_VARIANT_TABLE   = "product_variant";
-    String PRODUCT_INVENTORY_TABLE = "product_variant_inventory";
-    String FAVORITE_TABLE          = "favorite";
+    String PRODUCT_TABLE                  = "product";
+    String VARIANT_ATTRIBUTE_TABLE        = "product_attribute";
+    String PRODUCT_VARIANT_TABLE          = "product_variant";
+    String VARIANT_INVENTORY_TABLE        = "product_variant_inventory";
+    String VARIANT_INVENTORY_DETAIL_TABLE = "variant_inventory_detail";
+    String FAVORITE_TABLE                 = "favorite";
     
     String ORDER_TABLE            = "app_order";
     String ORDER_ITEM_TABLE       = "order_item";

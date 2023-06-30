@@ -1,6 +1,6 @@
 package com.vnco.fusiontech.product.service.impl;
 
-import com.vnco.fusiontech.product.entity.ProductAttribute;
+import com.vnco.fusiontech.product.entity.VariantAttribute;
 import com.vnco.fusiontech.product.repository.ProductAttributeRepository;
 import com.vnco.fusiontech.product.service.ProductAttributeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,22 +14,22 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
     private ProductAttributeRepository productAttributeRepository;
 
     @Override
-    public List<ProductAttribute> getAllProductAttributes() {
+    public List<VariantAttribute> getAllProductAttributes() {
         return productAttributeRepository.findAll();
     }
 
     @Override
-    public ProductAttribute getProductAttributeById(int id) {
+    public VariantAttribute getProductAttributeById(int id) {
         return productAttributeRepository.findById(id).orElse(null);
     }
 
     @Override
-    public ProductAttribute createProductAttribute(ProductAttribute productAttribute) {
+    public VariantAttribute createProductAttribute(VariantAttribute productAttribute) {
         return productAttributeRepository.save(productAttribute);
     }
 
     @Override
-    public ProductAttribute updateProductAttribute(ProductAttribute productAttribute) {
+    public VariantAttribute updateProductAttribute(VariantAttribute productAttribute) {
         return productAttributeRepository.save(productAttribute);
     }
 

@@ -23,7 +23,7 @@ import java.util.List;
 @ToString
 @Entity
 @Table (name = DBConstant.PRODUCT_VARIANT_TABLE)
-public class ProductVariant implements Serializable {
+public class Variant implements Serializable {
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
@@ -41,31 +41,31 @@ public class ProductVariant implements Serializable {
     @OneToMany (mappedBy = "variant", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     @ToString.Exclude
-    private List<ProductAttribute> attributes = new ArrayList<>();
-    
-    public void addAttribute(ProductAttribute attribute) {
-        attribute.setVariant(this);
-        attributes.add(attribute);
-    }
-    
-    public void removeAttribute(ProductAttribute attribute) {
-        attribute.setVariant(null);
-        attributes.removeIf(attribute1 -> attribute1.getId().equals(attribute.getId()));
-    }
-    
-    public void setAttributes(Collection<ProductAttribute> attributes) {
-        this.attributes.forEach(attribute -> attribute.setVariant(null));
-        this.attributes.clear();
-        attributes.forEach(this::addAttribute);
-    }
+    private List<VariantAttribute> attributes = new ArrayList<>();
     
     @OneToMany (mappedBy = "variant", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     @ToString.Exclude
     @JsonIgnore
-    private List<VariantInventory> inventories = new ArrayList<>();
+    private List<VariantInventoryDetail> inventories = new ArrayList<>();
     
-    public void addInventory(VariantInventory inventory) {
+    public void addAttribute(VariantAttribute attribute) {
+        attribute.setVariant(this);
+        attributes.add(attribute);
+    }
+    
+    public void removeAttribute(VariantAttribute attribute) {
+        attribute.setVariant(null);
+        attributes.removeIf(attribute1 -> attribute1.getId().equals(attribute.getId()));
+    }
+    
+    public void setAttributes(Collection<VariantAttribute> attributes) {
+        this.attributes.forEach(attribute -> attribute.setVariant(null));
+        this.attributes.clear();
+        attributes.forEach(this::addAttribute);
+    }
+    
+    public void addInventory(VariantInventoryDetail inventory) {
         inventory.setVariant(this);
         inventories.add(inventory);
     }

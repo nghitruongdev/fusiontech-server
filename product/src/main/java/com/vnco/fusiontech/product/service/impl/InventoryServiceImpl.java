@@ -3,6 +3,7 @@ package com.vnco.fusiontech.product.service.impl;
 
 import com.vnco.fusiontech.common.exception.RecordNotFoundException;
 import com.vnco.fusiontech.product.entity.VariantInventory;
+import com.vnco.fusiontech.product.repository.VariantInventoryDetailRepository;
 import com.vnco.fusiontech.product.repository.VariantInventoryRepository;
 import com.vnco.fusiontech.product.service.InventoryService;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class InventoryServiceImpl implements InventoryService {
-    private final VariantInventoryRepository repository;
-    
+    private final VariantInventoryRepository       repository;
+    private final VariantInventoryDetailRepository detailRepository;
+  
     @Override
     public Long createInventory(VariantInventory inventory) {
         inventory.setCreatedBy("SYSTEM");
@@ -28,9 +30,6 @@ public class InventoryServiceImpl implements InventoryService {
         var updateInventory = repository.findById(inventoryId)
                                         .orElseThrow(RecordNotFoundException::new);
         updateInventory.setLastModifiedBy("SYSTEM");
-        updateInventory.setPrice(inventory.getPrice());
-        updateInventory.setQuantity(inventory.getQuantity());
-        //        updateInventory.setVariant(inventory.getVariant());
-        inventory.getVariant().addInventory(updateInventory);
+        throw new UnsupportedOperationException();
     }
 }

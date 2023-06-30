@@ -32,7 +32,7 @@ public class OrderItem implements Serializable, ManyToOneRelation<Order> {
     @ToString.Exclude
     private Order order;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn (name = "variant_id")
     @ToString.Exclude
     private ProductVariant variant;

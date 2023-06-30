@@ -5,8 +5,10 @@ import com.vnco.fusiontech.cart.CartModuleConfiguration;
 import com.vnco.fusiontech.common.CommonModuleConfiguration;
 import com.vnco.fusiontech.order.OrderModuleConfiguration;
 import com.vnco.fusiontech.product.ProductModuleConfiguration;
+import com.vnco.fusiontech.product.entity.Category;
 import com.vnco.fusiontech.product.entity.Product;
-import com.vnco.fusiontech.product.entity.ProductVariant;
+import com.vnco.fusiontech.product.entity.Variant;
+import com.vnco.fusiontech.product.repository.CategoryRepository;
 import com.vnco.fusiontech.product.repository.ProductRepository;
 import com.vnco.fusiontech.product.repository.ProductVariantRepository;
 import com.vnco.fusiontech.security.SecurityModuleConfiguration;
@@ -52,10 +54,21 @@ public class FusionTechApplication {
     @Profile ("bootstrap")
     public CommandLineRunner bootstrap(ProductRepository productRepository, ProductVariantRepository variantRepository,
                                        ShippingAddressRepository shippingAddressRepository,
-                                       UserRepository userRepository
+                                       UserRepository userRepository,
+                                       CategoryRepository categoryRepository
     ) {
         return args -> {
             var number = faker.number();
+    
+            List<Category> categories = IntStream.rangeClosed(1, 20)
+                                                 .mapToObj(i -> Category.builder()
+                                                                        .name(faker.commerce().department())
+                                                                        .slug(Math.random() + faker.code().asin())
+                                                                        .description(faker.educator().campus())
+                                                                        .image("")
+                                                                        .build())
+                                                 .toList();
+            categoryRepository.saveAll(categories);
     
             List<User> users = IntStream.rangeClosed(1, 10)
                                         .mapToObj(i -> User.builder()
@@ -68,6 +81,8 @@ public class FusionTechApplication {
                                                                        .name(faker.commerce().productName())
                                                                        .image("")
                                                                        .description(faker.commerce().productName())
+                                                                       .category(categories.get(number.numberBetween(0,
+                                                                                                                     categories.size() - 1)))
                                                                        //                                  .brand()
                                                                        //                                   .category()
                                                                        //                                   .id()
@@ -80,9 +95,9 @@ public class FusionTechApplication {
                                     ).toList();
             productRepository.saveAll(products);
     
-            List<ProductVariant> variants = IntStream.rangeClosed(1, 10)
-                                                     .mapToObj(i -> {
-                                                         ProductVariant variant = new ProductVariant();
+            List<Variant> variants = IntStream.rangeClosed(1, 10)
+                                              .mapToObj(i -> {
+                                                         Variant variant = new Variant();
                                                          variant.setPrice(number.numberBetween(100, 1000));
                                                          variant.setProduct(products.get(number.numberBetween(0,
                                                                                                               products.size() -1)));

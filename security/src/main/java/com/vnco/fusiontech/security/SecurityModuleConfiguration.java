@@ -11,11 +11,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -28,60 +23,63 @@ public class SecurityModuleConfiguration {
   @SneakyThrows
   @Bean
   SecurityFilterChain filterChain(HttpSecurity http) {
-    http.csrf().disable();
     http.cors(Customizer.withDefaults());
     http.headers().frameOptions().sameOrigin()
         .and()
         .csrf()
-        .ignoringRequestMatchers("/h2-console/**")
-        .disable();
+        .ignoringRequestMatchers("/h2-console/**");
+    http.csrf().disable();
+    http.httpBasic().disable();
+    http.authorizeHttpRequests().requestMatchers("/**")
+        .permitAll();
+    return http.build();
+    //    addFilters(http);
+    // todo: add http.anonymous()
+    //    http.csrf().disable();
     // http.authorizeHttpRequests().requestMatchers("/h2-console",
     // "/h2-console/**").permitAll();
     // authorizeRequest(http);
     // http.httpBasic();
-    addFilters(http);
-    http.httpBasic().disable();
-    return http.build();
-    // todo: add http.anonymous()
+  
   }
   
-  @Bean
-  public CorsConfigurationSource corsConfigurationSource() {
-    var config = new CorsConfiguration();
-    config.addAllowedOrigin("http://localhost:3000");
-    config.setAllowedHeaders(List.of("*"));
-    //    config.addAllowedOriginPattern("*");
-    config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-    config.setAllowedHeaders(List.of("Access-Control-Allow-Origin"));
-    config.setExposedHeaders(List.of("Content-Type", "Origin"));
-    config.setAllowCredentials(false);
-    config.setMaxAge(3600L);
-  
-    var source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", config);
-    return source;
-  }
+  //  @Bean
+  //  public CorsConfigurationSource corsConfigurationSource() {
+  //    var config = new CorsConfiguration();
+  //    config.addAllowedOrigin("http://localhost:3000");
+  //    config.setAllowedHeaders(List.of("*"));
+  //    //    config.addAllowedOriginPattern("*");
+  //    config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+  //    config.setAllowedHeaders(List.of("Access-Control-Allow-Origin"));
+  //    config.setExposedHeaders(List.of("Content-Type", "Origin"));
+  //    config.setAllowCredentials(false);
+  //    config.setMaxAge(3600L);
+  //
+  //    var source = new UrlBasedCorsConfigurationSource();
+  //    source.registerCorsConfiguration("/**", config);
+  //    return source;
+  //  }
   
   @SneakyThrows
   private void addFilters(HttpSecurity http) {
-//    http
-//            .addFilterBefore(corsFilter(), UsernamePasswordAuthenticationFilter.class)
+    //    http
+    //            .addFilterBefore(corsFilter(), UsernamePasswordAuthenticationFilter.class)
     // .apply(jwtConfigurerAdapter())
     ;
   }
   
-//  private CorsFilter corsFilter() {
-//    var source = new UrlBasedCorsConfigurationSource();
-//    var config = new CorsConfiguration();
-//    config.addAllowedOrigin("http://localhost:3000");
-//    config.addAllowedOrigin("*");
-//    config.addAllowedHeader("*");
-//    config.addAllowedMethod("*");
-//    config.setExposedHeaders(Arrays.asList("Content-Type"));
-//    // var config = appProperties.corsConfig();
-//    // if(!CollectionUtils.isEmpty(config.getAllowedOrigins()) ||
-//    // !CollectionUtils.isEmpty(config
-//    // .getAllowedOriginPatterns())){
+  //  private CorsFilter corsFilter() {
+  //    var source = new UrlBasedCorsConfigurationSource();
+  //    var config = new CorsConfiguration();
+  //    config.addAllowedOrigin("http://localhost:3000");
+  //    config.addAllowedOrigin("*");
+  //    config.addAllowedHeader("*");
+  //    config.addAllowedMethod("*");
+  //    config.setExposedHeaders(Arrays.asList("Content-Type"));
+  //    // var config = appProperties.corsConfig();
+  //    // if(!CollectionUtils.isEmpty(config.getAllowedOrigins()) ||
+  //    // !CollectionUtils.isEmpty(config
+  //    // .getAllowedOriginPatterns())){
 //    // log.debug("Registering CORS filter");
 //    // source.registerCorsConfiguration("/api/**", config);
 //    // source.registerCorsConfiguration("/management/**", config);

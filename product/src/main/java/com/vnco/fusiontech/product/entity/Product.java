@@ -34,6 +34,12 @@ public class Product extends RepresentationModel<Product> implements Serializabl
     private String image;
     
     @ManyToOne (fetch = FetchType.LAZY)
+    @JoinColumn (
+            foreignKey = @ForeignKey (
+                    foreignKeyDefinition = "FOREIGN KEY (category_id) REFERENCES Category(id) ON DELETE SET NULL ON " +
+                                           "UPDATE CASCADE"
+            )
+    )
     @ToString.Exclude
     private Category category;
     
@@ -44,19 +50,19 @@ public class Product extends RepresentationModel<Product> implements Serializabl
     @OneToMany (mappedBy = "product", orphanRemoval = true, cascade = CascadeType.ALL)
     @Builder.Default
     @ToString.Exclude
-    private List<ProductVariant> variants = new ArrayList<>();
+    private List<Variant> variants = new ArrayList<>();
     
-    public void addVariant(ProductVariant variant) {
+    public void addVariant(Variant variant) {
         variant.setProduct(this);
         variants.add(variant);
     }
     
-    public void removeVariant(ProductVariant variant) {
+    public void removeVariant(Variant variant) {
         variant.setProduct(null);
         variants.removeIf(v -> v.getId().equals(variant.getId()));
     }
     
-    public void setVariants(Collection<ProductVariant> variants) {
+    public void setVariants(Collection<Variant> variants) {
         this.variants.forEach(variant -> variant.setProduct(null));
         this.variants.clear();
         variants.forEach(variant -> {

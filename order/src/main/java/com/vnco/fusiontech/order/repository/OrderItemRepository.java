@@ -27,7 +27,7 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
     @Query (
             """
             SELECT COALESCE(SUM(vi.quantity), 0)
-            FROM VariantInventory vi
+            FROM VariantInventoryDetail vi
             WHERE vi.variant.id=:variantId
             """
     )

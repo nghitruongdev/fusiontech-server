@@ -6,8 +6,9 @@ import java.util.Map;
 public enum OrderStatusGroup {
     VERIFY("Chờ xác nhận"),
     PROCESSING("Đang xử lý"),
-    OUT_FOR_DELIVERY("Đang giao"),
+    ON_DELIVERY("Đang giao"),
     COMPLETED("Hoàn thành"),
+    FAILED("Không thành công"),
     CANCELLED("Đã huỷ");
     
     private final String detailName;

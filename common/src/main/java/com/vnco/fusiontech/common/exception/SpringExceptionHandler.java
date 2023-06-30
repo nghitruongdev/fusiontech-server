@@ -4,12 +4,14 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
-import org.springframework.stereotype.Component;
+import org.springframework.transaction.TransactionSystemException;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,8 +22,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.util.Arrays;
 import java.util.Optional;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.*;
 
 @Slf4j
 @RestControllerAdvice
@@ -83,10 +84,51 @@ public class SpringExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, problem, headers, BAD_REQUEST, request);
     }
     
-    // @ExceptionHandler (RuntimeException.class)
-    // ProblemDetail handleRuntimeException(RuntimeException ex) {
-    // return ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR,
-    // ex.getMessage());
-    // }
+    @ExceptionHandler (RuntimeException.class)
+    ProblemDetail handleRuntimeException(RuntimeException ex) {
+        return ProblemDetail.forStatusAndDetail(I_AM_A_TEAPOT, ex.getMessage());
+    }
     
+    @ExceptionHandler (DataIntegrityViolationException.class)
+    ProblemDetail handleDataIntegration(DataIntegrityViolationException ex) {
+        var cause    = ex.getCause();
+        var root     = ex.getRootCause();
+        var specific = ex.getMostSpecificCause();
+        if (cause instanceof org.hibernate.exception.ConstraintViolationException constraintEx) {
+            var    sqlCode      = constraintEx.getSQLState();
+            String errorMessage = "";
+            switch (sqlCode) {
+                case "23502": {
+                    var exMessage = constraintEx.getSQLException().getMessage();
+                    errorMessage = String.format("%s - [%s]", exMessage.substring(0, exMessage.indexOf(";")).replace("\"", "'"),
+                                                 sqlCode);
+                    break;
+                }
+                case "23506":
+                    errorMessage = String.format("""
+                                                 Lỗi tính toàn vẹn dữ liệu (liên kết khoá ngoại [%s]): %s.
+                                                 """,
+                                                 sqlCode,
+                                                 constraintEx.getConstraintName());
+                    break;
+                
+            }
+            return ProblemDetail.forStatusAndDetail(CONFLICT, errorMessage);
+        }
+        return ProblemDetail.forStatusAndDetail(CONFLICT, ex.getMessage());
+    }
+    @ExceptionHandler (TransactionSystemException.class)
+    ProblemDetail handleTransaction(TransactionSystemException ex) {
+        
+        return ProblemDetail.forStatusAndDetail(CONFLICT, ex.getMessage());
+    }
+    @ExceptionHandler (ResourceNotFoundException.class)
+    ProblemDetail handleResourceNotFound(ResourceNotFoundException ex) {
+        return ProblemDetail.forStatusAndDetail(NOT_FOUND, ex.getMessage());
+    }
+    
+    @ExceptionHandler (DuplicateKeyException.class)
+    ProblemDetail handleDuplicateKey(DuplicateKeyException ex) {
+        return ProblemDetail.forStatusAndDetail(CONFLICT, ex.getMessage());
+    }
 }

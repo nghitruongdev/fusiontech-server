@@ -1,5 +1,6 @@
 package com.vnco.fusiontech.order.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.vnco.fusiontech.common.constant.DBConstant;
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,8 +15,9 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Entity(name = "Variant")
+@Entity(name = "productVariant")
 @Table(name = DBConstant.PRODUCT_VARIANT_TABLE)
+@JsonIgnoreProperties (value = {"hibernateLazyInitializer"})
 public class ProductVariant implements Serializable {
     
     @Id

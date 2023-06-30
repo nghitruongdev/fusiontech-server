@@ -12,9 +12,7 @@ spring:
   #        use_sql_comments: true
   datasource:
   #    url: jdbc:h2:file:tcp://localhost/./fusiontech;mode=mysql;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-
     url: jdbc:h2:file:./fusiontech;mode=mysql;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    #    url: jdbc:h2:mem:fusiontech;mode=mysql;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     username: root
     password:
   h2:
@@ -32,6 +30,10 @@ logging:
     org:
       springframework:
         web: debug
+      hibernate:
+        type:
+          descriptor:
+            sql: trace
   logback:
     rollingpolicy:
       clean-history-on-start: true

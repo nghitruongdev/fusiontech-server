@@ -1,7 +1,7 @@
 package com.vnco.fusiontech.product.service.impl;
 
 import com.vnco.fusiontech.common.service.PublicOrderService;
-import com.vnco.fusiontech.product.entity.ProductVariant;
+import com.vnco.fusiontech.product.entity.Variant;
 import com.vnco.fusiontech.product.entity.VariantInventory;
 import com.vnco.fusiontech.product.repository.ProductVariantRepository;
 import com.vnco.fusiontech.product.service.ProductVariantService;
@@ -31,22 +31,22 @@ public class ProductVariantServiceImpl implements ProductVariantService {
     }
     
     @Override
-    public List<ProductVariant> getAllProductVariants() {
+    public List<Variant> getAllProductVariants() {
         return repository.findAll();
     }
     
     @Override
-    public ProductVariant getProductVariantById(Long id) {
+    public Variant getProductVariantById(Long id) {
         return repository.findById(id).orElse(null);
     }
 
     @Override
-    public ProductVariant createProductVariant(ProductVariant productVariant) {
+    public Variant createProductVariant(Variant productVariant) {
         return repository.save(productVariant);
     }
 
     @Override
-    public ProductVariant updateProductVariant(ProductVariant productVariant) {
+    public Variant updateProductVariant(Variant productVariant) {
         return repository.save(productVariant);
     }
 

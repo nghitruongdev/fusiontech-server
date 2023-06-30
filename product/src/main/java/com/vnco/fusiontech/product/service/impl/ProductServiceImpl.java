@@ -4,8 +4,8 @@ import com.vnco.fusiontech.common.exception.InvalidRequestException;
 import com.vnco.fusiontech.common.exception.RecordNotFoundException;
 import com.vnco.fusiontech.common.service.PublicUserService;
 import com.vnco.fusiontech.product.entity.Product;
-import com.vnco.fusiontech.product.entity.ProductAttribute;
-import com.vnco.fusiontech.product.entity.ProductVariant;
+import com.vnco.fusiontech.product.entity.VariantAttribute;
+import com.vnco.fusiontech.product.entity.Variant;
 import com.vnco.fusiontech.product.entity.proxy.User;
 import com.vnco.fusiontech.product.mapper.ProductMapper;
 import com.vnco.fusiontech.product.repository.ProductRepository;
@@ -111,9 +111,9 @@ public class ProductServiceImpl implements ProductService {
         return product;
     }
     
-    private List<ProductVariant> createProductVariants(@NotEmpty List<ProductAttributeRequest> attributes) {
+    private List<Variant> createProductVariants(@NotEmpty List<ProductAttributeRequest> attributes) {
         var firstGroup = attributes.remove(0);
-        BiFunction<String, String, ProductAttribute> toProductAttribute = (name, value) -> ProductAttribute.builder()
+        BiFunction<String, String, VariantAttribute> toProductAttribute = (name, value) -> VariantAttribute.builder()
                                                                                                            .name(name)
                                                                                                            .value(value)
                                                                                                            .build();
@@ -134,7 +134,7 @@ public class ProductServiceImpl implements ProductService {
         });
         
         return baseList.stream().map((list) -> {
-            var variant = new ProductVariant();
+            var variant = new Variant();
             variant.setAttributes(list);
             return variant;
         }).toList();

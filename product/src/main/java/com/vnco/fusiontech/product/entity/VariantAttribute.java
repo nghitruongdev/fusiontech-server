@@ -17,8 +17,8 @@ import java.io.Serializable;
 @AllArgsConstructor
 @ToString
 @Entity
-@Table(name = DBConstant.PRODUCT_ATTRIBUTE_TABLE)
-public class ProductAttribute implements Serializable {
+@Table(name = DBConstant.VARIANT_ATTRIBUTE_TABLE)
+public class VariantAttribute implements Serializable {
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,6 +30,6 @@ public class ProductAttribute implements Serializable {
     
     @ManyToOne (fetch = FetchType.LAZY)
     @ToString.Exclude
-    private ProductVariant variant;
+    private Variant variant;
 
 }

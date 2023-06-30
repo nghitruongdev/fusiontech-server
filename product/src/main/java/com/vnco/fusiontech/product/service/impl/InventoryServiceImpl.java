@@ -1,7 +1,6 @@
 package com.vnco.fusiontech.product.service.impl;
 
 
-import com.vnco.fusiontech.common.exception.RecordNotFoundException;
 import com.vnco.fusiontech.product.entity.VariantInventory;
 import com.vnco.fusiontech.product.repository.VariantInventoryDetailRepository;
 import com.vnco.fusiontech.product.repository.VariantInventoryRepository;
@@ -25,11 +24,11 @@ public class InventoryServiceImpl implements InventoryService {
         return repository.save(inventory).getId();
     }
     
-    @Override
-    public void updateInventory(Long inventoryId, VariantInventory inventory) {
-        var updateInventory = repository.findById(inventoryId)
-                                        .orElseThrow(RecordNotFoundException::new);
-        updateInventory.setLastModifiedBy("SYSTEM");
-        throw new UnsupportedOperationException();
-    }
+//    @Override
+//    public void updateInventory(Long inventoryId, VariantInventory inventory) {
+//        var updateInventory = repository.findById(inventoryId)
+//                                        .orElseThrow(RecordNotFoundException::new);
+//        updateInventory.setLastModifiedBy("SYSTEM");
+//        throw new UnsupportedOperationException();
+//    }
 }

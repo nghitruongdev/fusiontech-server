@@ -10,5 +10,4 @@ import org.springframework.validation.annotation.Validated;
 public interface InventoryService {
     Long createInventory(@Valid VariantInventory inventory);
     
-    void updateInventory(Long inventoryId,@Valid VariantInventory inventory);
 }

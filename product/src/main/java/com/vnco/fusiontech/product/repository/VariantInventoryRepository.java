@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
-import org.springframework.data.rest.core.annotation.RestResource;
 
 import java.util.List;
 
@@ -33,12 +32,4 @@ public interface VariantInventoryRepository extends JpaRepository<VariantInvento
     Integer getTotalQuantity(Long inventoryId);
     
     //todo: add admin can update and delete inventory record
-    @Override
-    @RestResource (exported = false)
-    void deleteById(Long inventoryId);
-    
-    @Override
-    @RestResource (exported = false)
-    void delete(VariantInventory entity);
-    
 }

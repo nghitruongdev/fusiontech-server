@@ -23,15 +23,13 @@ public class VariantInventoryDetail {
     
     @NotNull
     @Positive
-    private Double price;
-    
-    @NotNull
-    @Positive
     private Integer quantity;
     
-    @NotNull
+    @Column(name = "variant_id",nullable = false)
+    private Long variantId;
+    
     @ManyToOne (fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_inventory_variant"))
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_inventory_variant"), insertable = false, updatable = false)
     @ToString.Exclude
     private Variant variant;
     
@@ -40,9 +38,6 @@ public class VariantInventoryDetail {
     @ToString.Exclude
     private VariantInventory inventory;
     
-    public Long getVariantId(){
-      return variant.getId();
-    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -32,13 +32,6 @@ public class VariantInventory extends AbstractAuditingEntity<Long> {
     )
     private Integer totalQuantity;
 
-    @Formula (
-            "(SELECT COALESCE(SUM(s.quantity * s.price), 0) FROM " +
-            DBConstant.VARIANT_INVENTORY_DETAIL_TABLE +
-            " s WHERE s.inventory_id=id)"
-    )
-    private Double totalAmount;
-    
     @NotEmpty
     @OneToMany (mappedBy = "inventory", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default

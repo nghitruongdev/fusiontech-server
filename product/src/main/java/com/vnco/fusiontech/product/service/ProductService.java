@@ -18,6 +18,6 @@ public interface ProductService {
     void deleteProduct(Long id);
     List<Product> searchProduct(String keyword);
     
-    void addUserFavoriteProduct(Long productId, UUID uid);
-    void removeUserFavoriteProduct(Long productId, UUID uid);
+    void addUserFavoriteProduct(Long productId, Long uid);
+    void removeUserFavoriteProduct(Long productId, Long uid);
 }

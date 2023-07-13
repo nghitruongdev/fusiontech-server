@@ -85,11 +85,11 @@ public class Product extends RepresentationModel<Product> implements Serializabl
         favorites.add(user);
     }
     
-    public void removeFavoriteUser(UUID uid) {
+    public void removeFavoriteUser(Long uid) {
         favorites.removeIf(user -> user.getId().equals(uid));
     }
     
-    public boolean favoritesContains(UUID uid) {
+    public boolean favoritesContains(Long uid) {
         return favorites.contains(new User(uid));
     }
 }

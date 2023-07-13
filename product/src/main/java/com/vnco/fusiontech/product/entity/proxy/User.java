@@ -16,12 +16,12 @@ import java.util.UUID;
 @Table(name = DBConstant.USER_TABLE)
 public class User implements Serializable {
     
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
-    private UUID   id;
+    private Long   id;
     
-    public User(UUID id) {
+    public User(Long id) {
         this.id = id;
     }
     

@@ -1,5 +1,6 @@
 package com.vnco.fusiontech.user.service;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.vnco.fusiontech.common.service.PublicUserService;
 import com.vnco.fusiontech.user.entity.ShippingAddress;
 import com.vnco.fusiontech.user.entity.User;
@@ -11,11 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.UUID;
 
 public interface UserService extends PublicUserService {
-    ResponseEntity<User> createUser(@RequestBody User user);
+    void updateDefaultShippingAddress(Long userId, Long addressId);
 
-    ResponseEntity<User> findUserById(@PathVariable UUID id);
-
-    void updateDefaultShippingAddress(UUID userId, Long addressId);
-    
     //todo: remove favorite product when deleting user
 }

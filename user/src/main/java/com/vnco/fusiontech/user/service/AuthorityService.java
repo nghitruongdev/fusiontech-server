@@ -14,7 +14,7 @@ public interface AuthorityService {
 
     Optional<Authority> getAuthorityById(Long id);
 
-    Authority createAuthority(UUID user, String role);
+    Authority createAuthority(Long user, String role);
 
     void deleteAuthority(Long authId);
 

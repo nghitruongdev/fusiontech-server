@@ -10,8 +10,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RepositoryRestResource
-public interface UserRepository extends JpaRepository<User, UUID> {
+public interface UserRepository extends JpaRepository<User, Long> {
     
     @RestResource (path = "many", rel = "many")
-    List<User> findAllByIdIn(List<UUID> ids);
+    List<User> findAllByIdIn(List<Long> ids);
+
+//    Optional<User> findByEmail(String email);
+    User findByFirebaseUid(String firebaseUid);
+    boolean existsByEmail(String email);
 }

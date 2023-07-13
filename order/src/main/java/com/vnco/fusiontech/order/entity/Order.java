@@ -46,7 +46,7 @@ public class Order implements Serializable {
     private OrderStatus status;
     
     @JoinColumn (name = "user_id", table = DBConstant.USER_TABLE)
-    private UUID userId;
+    private Long userId;
     
     @JoinColumn (name = "address_id", table = DBConstant.SHIPPING_ADDRESS_TABLE)
     private Long addressId;

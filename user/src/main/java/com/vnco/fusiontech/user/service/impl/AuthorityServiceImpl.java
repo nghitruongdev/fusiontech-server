@@ -56,7 +56,7 @@ public class AuthorityServiceImpl implements AuthorityService {
     }
 
     @Override
-    public Authority createAuthority(UUID userId, String roleName) {
+    public Authority createAuthority(Long userId, String roleName) {
         // check authority is null or empty
         if (userId == null || roleName == null)
             throw new InvalidRoleException("Can not create authority with null user or role");

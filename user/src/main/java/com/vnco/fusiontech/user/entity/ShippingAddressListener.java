@@ -4,6 +4,8 @@ import com.vnco.fusiontech.common.utils.BeanUtils;
 import com.vnco.fusiontech.user.service.UserService;
 import jakarta.persistence.*;
 
+import java.util.UUID;
+
 public class ShippingAddressListener {
 
     @PrePersist

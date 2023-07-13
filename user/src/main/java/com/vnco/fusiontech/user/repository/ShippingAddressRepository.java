@@ -15,12 +15,12 @@ import java.util.UUID;
 
 @RepositoryRestResource
 public interface ShippingAddressRepository extends JpaRepository<ShippingAddress, Long> {
-    List<ShippingAddress> findAllByUserId(@Param("uid") UUID uid);
+    List<ShippingAddress> findAllByUserId(@Param("uid") Long uid);
 
-    boolean existsByIdAndUserId(@Param("id") Long id, @Param ("uid") UUID userId);
+    boolean existsByIdAndUserId(@Param("id") Long id, @Param ("uid") Long userId);
 
     @Query("from ShippingAddress s WHERE s.user.id =:uid AND s.user.defaultAddress.id=s.id")
-    Optional<ShippingAddress> findDefaultShippingAddressByUserId(@Param("uid") UUID uid);
+    Optional<ShippingAddress> findDefaultShippingAddressByUserId(@Param("uid") Long uid);
     
     @RestResource(path = "/many")
     List<ShippingAddress> findAllByIdIn(@RequestParam("ids") List<Long> ids);

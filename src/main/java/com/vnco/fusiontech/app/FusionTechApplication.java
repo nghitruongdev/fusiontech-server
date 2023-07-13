@@ -50,7 +50,7 @@ public class FusionTechApplication {
     
     private final Faker faker = new Faker();
     
-    @Bean
+//    @Bean
     @Profile ("bootstrap")
     public CommandLineRunner bootstrap(ProductRepository productRepository, ProductVariantRepository variantRepository,
                                        ShippingAddressRepository shippingAddressRepository,
@@ -60,20 +60,20 @@ public class FusionTechApplication {
         return args -> {
             var number = faker.number();
     
-            List<Category> categories = IntStream.rangeClosed(1, 20)
-                                                 .mapToObj(i -> Category.builder()
-                                                                        .name(faker.commerce().department())
-                                                                        .slug(Math.random() + faker.code().asin())
-                                                                        .description(faker.educator().campus())
-                                                                        .image("")
-                                                                        .build())
-                                                 .toList();
-            categoryRepository.saveAll(categories);
+//            List<Category> categories = IntStream.rangeClosed(1, 20)
+//                                                 .mapToObj(i -> Category.builder()
+//                                                                        .name(faker.commerce().department())
+//                                                                        .slug(Math.random() + faker.code().asin())
+//                                                                        .description(faker.educator().campus())
+//                                                                        .image("")
+//                                                                        .build())
+//                                                 .toList();
+//            categoryRepository.saveAll(categories);
     
-            List<User> users = IntStream.rangeClosed(1, 10)
-                                        .mapToObj(i -> User.builder()
-                                                           .build()).toList();
-            userRepository.saveAll(users);
+//            List<User> users = IntStream.rangeClosed(1, 10)
+//                                        .mapToObj(i -> User.builder()
+//                                                           .build()).toList();
+//            userRepository.saveAll(users);
     
             var products = IntStream.rangeClosed(1, 100)
                                     .mapToObj(i -> {
@@ -81,15 +81,15 @@ public class FusionTechApplication {
                                                                        .name(faker.commerce().productName())
                                                                        .image("")
                                                                        .description(faker.commerce().productName())
-                                                                       .category(categories.get(number.numberBetween(0,
-                                                                                                                     categories.size() - 1)))
+//                                                                       .category(categories.get(number.numberBetween(0,
+//                                                                                                                     categories.size() - 1)))
                                                                        //                                  .brand()
                                                                        //                                   .category()
                                                                        //                                   .id()
                                                                        .build();
-                                                  product.addFavoriteUser((new com.vnco.fusiontech.product.entity.proxy.User(
-                                                          users.get(faker.random().nextInt(1, 9)).getId()))
-                                                  );
+//                                                  product.addFavoriteUser((new com.vnco.fusiontech.product.entity.proxy.User(
+//                                                          users.get(faker.random().nextInt(1, 9)).getId()))
+//                                                  );
                                                   return product;
                                               }
                                     ).toList();
@@ -118,7 +118,7 @@ public class FusionTechApplication {
                                                                                      .name(faker.name().fullName())
                                                                                      .province(
                                                                                              faker.address().country())
-                                                                                     .user(users.get(0))
+//                                                                                     .user(users.get(0))
                                                                                      .build()).toList();
             shippingAddressRepository.saveAll(addresses);
         };

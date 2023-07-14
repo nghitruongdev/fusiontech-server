@@ -1,6 +1,8 @@
 package com.vnco.fusiontech.product.repository;
 
 import com.vnco.fusiontech.product.entity.Product;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,6 +18,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT p FROM Product p WHERE p.name LIKE %:keyword% OR p.description LIKE %:keyword%")
     List<Product> searchByKeyword(@Param("keyword") String keyword);
     
-    @RestResource(path = "favorites", rel = "favorites")
+    @RestResource(path = "favorites", rel = "favorites", exported = true)
     List<Product> findAllByFavorites_Id(@Param("uid") UUID userId);
+
 }

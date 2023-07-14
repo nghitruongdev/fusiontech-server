@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @CrossOrigin("*")
@@ -21,10 +22,11 @@ public class ProductRestController {
     // lay tat ca san pham
 
     // lay san pham theo id
-//    @GetMapping("/{id}")
-//    public Product getProductById(@PathVariable int id) {
-//        return productService.getProductById(id);
-//    }
+
+    @GetMapping("/{id}")
+    public Product getProductById(@PathVariable long id) {
+        return productService.getProductById(id);
+    }
 
     // them moi san pham
     @PostMapping("/products")
@@ -58,8 +60,14 @@ public class ProductRestController {
         productService.removeUserFavoriteProduct(productId, uid);
         return ResponseEntity.ok().build();
     }
-    
-    
+
+//    @GetMapping("/products/favorites")
+//    public ResponseEntity<List<Product>> getFavoriteProductsByUserId(@RequestParam ("uid") UUID uid) {
+//        List<Product> favoriteProducts = productService.getFavoriteProductsByUserId(uid);
+//        return ResponseEntity.ok(favoriteProducts);
+//    }
+
+
     // tim kiem san pham
     //    @GetMapping("/search")
     //    public List<Product> searchProduct(@RequestParam("keyword")String keyword){

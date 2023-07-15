@@ -18,4 +18,14 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     
     @RestResource(path = "favorites", rel = "favorites")
     List<Product> findAllByFavorites_Id(@Param("uid") UUID userId);
+    
+    @Query (
+            """
+            SELECT COALESCE(SUM (oi.quantity), 0) FROM OrderItem oi JOIN Order o ON oi.order = o
+            WHERE oi.variant.id IN (SELECT v.id FROM Variant v WHERE v.product.id =:productId) AND
+            o.status = 'DELIVERED_SUCCESS'
+            """
+    )
+    @RestResource (path = "countProductSold", rel = "countProductSold")
+    Long countProductNumberSold(@Param("productId") Long productId);
 }

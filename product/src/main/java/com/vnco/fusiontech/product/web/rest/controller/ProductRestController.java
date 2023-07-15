@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @CrossOrigin("*")
@@ -19,14 +18,6 @@ import java.util.UUID;
 public class ProductRestController {
     
     private final ProductService    productService;
-    // lay tat ca san pham
-
-    // lay san pham theo id
-
-    @GetMapping("/{id}")
-    public Product getProductById(@PathVariable long id) {
-        return productService.getProductById(id);
-    }
 
     // them moi san pham
     @PostMapping("/products")

@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.Accessors;
-import org.hibernate.annotations.NaturalId;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -26,7 +25,7 @@ public class Brand implements Serializable {
     private Integer id;
     
     @NotBlank
-    @NaturalId
+//    @NaturalId
     private String name;
     
     private String img;

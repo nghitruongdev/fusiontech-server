@@ -50,9 +50,9 @@ public class ProductServiceImpl implements ProductService {
         var variants = createProductVariants(request.attributes());
         product.setVariants(variants);
         
-        variants.forEach(variant -> {
-            variant.setActive(true);
-        });
+//        variants.forEach(variant -> {
+//            variant.setActive(true);
+//        });
         //todo: should we validate with publish Date?
         
         return productRepository.save(product).getId();
@@ -112,7 +112,9 @@ public class ProductServiceImpl implements ProductService {
     }
     
     private List<Variant> createProductVariants(@NotEmpty List<ProductAttributeRequest> attributes) {
-        var firstGroup = attributes.remove(0);
+        var localAttributes = new ArrayList<>(attributes);
+        var firstGroup = localAttributes.remove(0);
+
         BiFunction<String, String, VariantAttribute> toProductAttribute = (name, value) -> VariantAttribute.builder()
                                                                                                            .name(name)
                                                                                                            .value(value)
@@ -121,7 +123,7 @@ public class ProductServiceImpl implements ProductService {
         var baseList = new ArrayList<>(
                 firstGroup.values().stream().map(value -> toProductAttribute.apply(firstGroup.name(), value))
                           .map(attribute -> new LinkedList<>(List.of(attribute))).toList());
-        attributes.forEach((group) -> {
+        localAttributes.forEach((group) -> {
             var result = baseList.stream().flatMap(
                     base -> group.values().stream().map(value -> {
                         var list = new LinkedList<>(base);

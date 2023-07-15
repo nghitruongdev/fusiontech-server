@@ -17,7 +17,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @ToString
 @Entity
-@Table(name = DBConstant.VARIANT_ATTRIBUTE_TABLE)
+@Table(name = DBConstant.VARIANT_ATTRIBUTE_TABLE, uniqueConstraints = @UniqueConstraint(columnNames = {"name", "variant_id"}))
 public class VariantAttribute implements Serializable {
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)

@@ -2,18 +2,17 @@ package com.vnco.fusiontech.product.mapper;
 
 import com.vnco.fusiontech.product.entity.Product;
 import com.vnco.fusiontech.product.web.rest.request.CreateProductRequest;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-@Component
-public class ProductMapper {
+@Mapper(componentModel = "spring")
+public interface ProductMapper {
     
-    public Product toProduct(CreateProductRequest request) {
-        var product = Product.builder()
-                             .name(request.name())
-                             .description(request.description())
-                             .brand(request.brand())
-                             .category(request.category())
-                             .build();
-        return product;
-    }
+//    @Mapping (target = "slug", source = "")
+    @Mapping (target = "reviewCount", ignore = true)
+    @Mapping (target = "favorites", ignore = true)
+    @Mapping (target = "avgRating", ignore = true)
+    @Mapping (target = "id", ignore = true)
+    @Mapping (target = "variants", ignore = true)
+    Product toProduct(CreateProductRequest request);
 }

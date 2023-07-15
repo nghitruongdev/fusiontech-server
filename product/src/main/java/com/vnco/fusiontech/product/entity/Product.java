@@ -6,6 +6,7 @@ import com.vnco.fusiontech.product.entity.proxy.User;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.Formula;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serializable;
@@ -22,16 +23,22 @@ import java.util.*;
 @Entity
 @Table(name = DBConstant.PRODUCT_TABLE)
 public class Product extends RepresentationModel<Product> implements Serializable {
+    public interface   PROJECTION {
+            String FULL  = "full";
+    }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
-
+    
+    private String slug;
+    
+    private String shortDescription;
+    
     private String description;
     
-    //todo: do we really need to have an image in product or just using variants images?
-    private String image;
+    private String thumbnail;
     
     @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn (
@@ -42,6 +49,20 @@ public class Product extends RepresentationModel<Product> implements Serializabl
     )
     @ToString.Exclude
     private Category category;
+
+    @Formula (
+            "(SELECT COUNT(s.id) FROM " +
+            DBConstant.REVIEW_TABLE +
+            " s WHERE s.product_id=id)"
+    )
+    private Integer reviewCount;
+    
+    @Formula (
+            "(SELECT  COALESCE(AVG(s.rating), 0) FROM " +
+            DBConstant.REVIEW_TABLE +
+            " s WHERE s.product_id=id)"
+    )
+    private Double avgRating;
     
     @ManyToOne (fetch = FetchType.LAZY)
     @ToString.Exclude

@@ -24,6 +24,10 @@ import java.util.List;
 @Entity
 @Table (name = DBConstant.PRODUCT_VARIANT_TABLE)
 public class Variant implements Serializable {
+    public interface   PROJECTION {
+        String PRODUCT        = "product";
+        String    WITH_ATTRIBUTE = "with-attributes";
+    }
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,7 +36,7 @@ public class Variant implements Serializable {
     
     private double price;
     
-    private Boolean active;
+//    private Boolean active;
     
     @ManyToOne (fetch = FetchType.LAZY, optional = false)
     @ToString.Exclude

@@ -5,12 +5,15 @@ import com.vnco.fusiontech.cart.CartModuleConfiguration;
 import com.vnco.fusiontech.common.CommonModuleConfiguration;
 import com.vnco.fusiontech.order.OrderModuleConfiguration;
 import com.vnco.fusiontech.product.ProductModuleConfiguration;
+import com.vnco.fusiontech.product.entity.Brand;
 import com.vnco.fusiontech.product.entity.Category;
-import com.vnco.fusiontech.product.entity.Product;
-import com.vnco.fusiontech.product.entity.Variant;
+import com.vnco.fusiontech.product.repository.BrandRepository;
 import com.vnco.fusiontech.product.repository.CategoryRepository;
 import com.vnco.fusiontech.product.repository.ProductRepository;
 import com.vnco.fusiontech.product.repository.ProductVariantRepository;
+import com.vnco.fusiontech.product.service.ProductService;
+import com.vnco.fusiontech.product.web.rest.request.CreateProductRequest;
+import com.vnco.fusiontech.product.web.rest.request.ProductAttributeRequest;
 import com.vnco.fusiontech.security.SecurityModuleConfiguration;
 import com.vnco.fusiontech.user.UserModuleConfiguration;
 import com.vnco.fusiontech.user.entity.ShippingAddress;
@@ -27,6 +30,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -50,22 +54,54 @@ public class FusionTechApplication {
     
     private final Faker faker = new Faker();
     
+    private final String[] images = {
+            "https://i.ibb.co/1r28gMk/1.webp",
+            "https://i.ibb.co/qdfB3s6/2.webp",
+            "https://i.ibb.co/VL1Dnv1/4.webp",
+            "https://i.ibb.co/5F3nWv6/7.webp",
+            "https://i.ibb.co/xgZWmdq/8.jpg",
+            "https://i.ibb.co/rQKjVC2/5.webp",
+            "https://i.ibb.co/Ycz8hkV/6.webp",
+            "https://i.ibb.co/BLCDw7v/3.webp",
+            "https://i.ibb.co/qCXcPhq/8.webp",
+            "https://i.ibb.co/TTS9wY4/9.webp",
+            "https://i.ibb.co/BVzsqvz/10.webp",
+            "https://i.ibb.co/zPDcCQY/top4.webp",
+            "https://i.ibb.co/QC4L3RF/top8.jpg",
+            "https://i.ibb.co/dKmw2sC/top2.webp",
+            "https://i.ibb.co/sJwg0YF/top1.webp",
+            "https://i.ibb.co/v1sPXLq/top5.webp",
+            "https://i.ibb.co/yPJjB3r/top6.webp",
+            "https://i.ibb.co/zmw8xFY/top7.webp",
+            "https://i.ibb.co/vHJkwzt/top3.webp",
+            "https://i.ibb.co/BNXTLkq/12.webp"
+    };
+    
     @Bean
     @Profile ("bootstrap")
     public CommandLineRunner bootstrap(ProductRepository productRepository, ProductVariantRepository variantRepository,
                                        ShippingAddressRepository shippingAddressRepository,
                                        UserRepository userRepository,
-                                       CategoryRepository categoryRepository
+                                       CategoryRepository categoryRepository,
+                                       BrandRepository brandRepo,
+                                       ProductService productService
     ) {
         return args -> {
             var number = faker.number();
     
+            List<Brand> brands = IntStream.rangeClosed(1, 20)
+                                              .mapToObj(i -> Brand.builder()
+                                                                        .name(faker.leagueOfLegends().champion())
+                                                                        .build())
+                                              .toList();
+            brandRepo.saveAll(brands);
+            
             List<Category> categories = IntStream.rangeClosed(1, 20)
                                                  .mapToObj(i -> Category.builder()
                                                                         .name(faker.commerce().department())
                                                                         .slug(Math.random() + faker.code().asin())
                                                                         .description(faker.educator().campus())
-                                                                        .image("")
+                                                                      
                                                                         .build())
                                                  .toList();
             categoryRepository.saveAll(categories);
@@ -74,37 +110,48 @@ public class FusionTechApplication {
                                         .mapToObj(i -> User.builder()
                                                            .build()).toList();
             userRepository.saveAll(users);
-    
-            var products = IntStream.rangeClosed(1, 100)
+            var attributeNames = List.of("Ram", "Bộ Nhớ Trong", "Phiên bản");
+            var productRequest = IntStream.rangeClosed(1, 100)
                                     .mapToObj(i -> {
-                                                  var product = Product.builder()
-                                                                       .name(faker.commerce().productName())
-                                                                       .image("")
-                                                                       .description(faker.commerce().productName())
-                                                                       .category(categories.get(number.numberBetween(0,
-                                                                                                                     categories.size() - 1)))
-                                                                       //                                  .brand()
-                                                                       //                                   .category()
-                                                                       //                                   .id()
-                                                                       .build();
-                                                  product.addFavoriteUser((new com.vnco.fusiontech.product.entity.proxy.User(
-                                                          users.get(faker.random().nextInt(1, 9)).getId()))
-                                                  );
-                                                  return product;
+                                        var localNames = new ArrayList<>(attributeNames);
+                                       var attributes =
+                                               IntStream.rangeClosed(1, 2).mapToObj(ai ->
+                                                                                            ProductAttributeRequest.builder()
+                                                                                                                  .name(localNames.remove(number.numberBetween(0, localNames.size() - 1)))
+                                                                                                  .values(IntStream.rangeClosed(1, 3).mapToObj(vi-> faker.book().title()).toList())
+                                                                                                    .build()).toList();
+                                        var request = CreateProductRequest.builder()
+                                                                          .name(faker.commerce().productName())
+                                                                          .description(faker.commerce().material())
+                                                                          .category(categories.get(number.numberBetween(0,
+                                                                                                                        categories.size() - 1)))
+                                                                          .thumbnail(images[number.numberBetween(0,
+                                                                                                                 images.length - 1)])
+                                                                          .shortDescription(faker.commerce().department())
+                                                                          .brand(brands.get(number.numberBetween(0,
+                                                                                                                 brands.size() - 1)))
+                                                                          .attributes(attributes)
+    
+                                                                          .build();
+                                        return request;
                                               }
                                     ).toList();
-            productRepository.saveAll(products);
-    
-            List<Variant> variants = IntStream.rangeClosed(1, 10)
-                                              .mapToObj(i -> {
-                                                         Variant variant = new Variant();
-                                                         variant.setPrice(number.numberBetween(100, 1000));
-                                                         variant.setProduct(products.get(number.numberBetween(0,
-                                                                                                              products.size() -1)));
-                                                         return variant;
-                                                     }).toList();
-    
-            variantRepository.saveAll(variants);
+            productRequest.forEach(productService::createProduct);
+
+            var products = productRepository.findAll();
+//        products.forEach(product ->   product.addFavoriteUser((new com.vnco.fusiontech.product.entity.proxy.User(
+//                users.get(faker.random().nextInt(1, 9)).getId()))
+//        ));
+        
+//            List<Variant> variants = IntStream.rangeClosed(1, 10)
+//                                              .mapToObj(i -> {
+//                                                         Variant variant = new Variant();
+//                                                  variant.setPrice(number.numberBetween(100, 1000));
+//                                                  variant.setProduct(products.get(0));
+//                                                         return variant;
+//                                                     }).toList();
+//
+//            variantRepository.saveAll(variants);
     
             List<ShippingAddress> addresses = IntStream.rangeClosed(1, 3)
                                                        .mapToObj(i -> ShippingAddress.builder()

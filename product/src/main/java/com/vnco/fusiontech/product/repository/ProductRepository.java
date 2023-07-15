@@ -18,4 +18,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     
     @RestResource(path = "favorites", rel = "favorites")
     List<Product> findAllByFavorites_Id(@Param("uid") UUID userId);
+    
+    
 }

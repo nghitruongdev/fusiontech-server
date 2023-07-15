@@ -53,7 +53,7 @@ public class UserRestController {
     // update user
     // TODO: can't update user
     @PutMapping("/users/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable UUID id) {
+    public ResponseEntity<User> updateUser(@PathVariable Long id) {
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
             User userToUpdated = user.get();
@@ -66,7 +66,7 @@ public class UserRestController {
 
     // delete user
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<User> deleteUser(@PathVariable UUID id) {
+    public ResponseEntity<User> deleteUser(@PathVariable Long id) {
         if (userRepository.existsById(id)) {
             userRepository.deleteById(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -76,7 +76,7 @@ public class UserRestController {
     }
 
     @PatchMapping("/users/{id}/defaultAddress/{aid}")
-    public ResponseEntity<Void> updateDefaultAddress(@PathVariable("id") UUID userId,
+    public ResponseEntity<Void> updateDefaultAddress(@PathVariable("id") Long userId,
             @PathVariable("aid") Long addressId) {
         service.updateDefaultShippingAddress(userId, addressId);
         log.warn("Done updating shipping address");

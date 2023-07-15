@@ -13,7 +13,7 @@ import java.util.UUID;
 public record CreateOrderRequest(
         String email,
         String note,
-        @NotNull UUID userId,
+        @NotNull Long userId,
         @NotNull Long addressId,
         @NotNull @Valid PaymentRequest payment,
         OrderStatus status,

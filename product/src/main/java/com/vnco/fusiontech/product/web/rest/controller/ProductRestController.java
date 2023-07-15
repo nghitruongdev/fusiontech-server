@@ -40,14 +40,14 @@ public class ProductRestController {
     
     @PostMapping ("/products/{id}/favorites")
     @ResponseStatus (HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> addFavorite(@PathVariable ("id") Long productId, @RequestParam ("uid") UUID uid) {
+    public ResponseEntity<Void> addFavorite(@PathVariable ("id") Long productId, @RequestParam ("uid") Long uid) {
         productService.addUserFavoriteProduct(productId, uid);
         return ResponseEntity.ok().build();
     }
     
     @DeleteMapping ("/products/{id}/favorites")
     @ResponseStatus (HttpStatus.NO_CONTENT)
-    public ResponseEntity<?> removeFavorite(@PathVariable ("id") Long productId, @RequestParam ("uid") UUID uid) {
+    public ResponseEntity<?> removeFavorite(@PathVariable ("id") Long productId, @RequestParam ("uid") Long uid) {
         productService.removeUserFavoriteProduct(productId, uid);
         return ResponseEntity.ok().build();
     }

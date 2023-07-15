@@ -1,6 +1,11 @@
 package com.vnco.fusiontech.order;
 
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.FirebaseToken;
 import com.vnco.fusiontech.common.service.PublicUserService;
+import com.vnco.fusiontech.common.web.request.RegisterRequest;
+import com.vnco.fusiontech.common.web.request.UserUpdateRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -55,16 +60,27 @@ public class OrderModuleConfiguration {
         log.warn("{} is not implemented", "Public Product Variant Service");
         return new PublicUserService() {
             @Override
-            public boolean existsById(UUID id) {
+            public boolean existsById(Long id) {
                 log.warn("Exists by Id is not implemented: {}", id);
               return true;
             }
     
             @Override
-            public boolean hasShippingAddress(UUID userId, Long addressId) {
+            public boolean hasShippingAddress(Long userId, Long addressId) {
                 log.warn("has shipping address is not implemented: {}", addressId);
                 return true;
             }
+
+            @Override
+            public void register(FirebaseToken decodedToken) {
+            }
+
+            @Override
+            public void updateUser(UserUpdateRequest token, FirebaseToken decodedToken) throws FirebaseAuthException {
+
+            }
+
+
         };
 
     }

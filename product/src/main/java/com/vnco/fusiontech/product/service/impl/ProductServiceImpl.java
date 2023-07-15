@@ -79,7 +79,7 @@ public class ProductServiceImpl implements ProductService {
     }
     
     @Override
-    public void addUserFavoriteProduct(@NonNull Long productId, @NonNull UUID uid) {
+    public void addUserFavoriteProduct(@NonNull Long productId, @NonNull Long uid) {
         //completed: whatif product not exists
         //completed: whatif product has exists
         
@@ -94,7 +94,7 @@ public class ProductServiceImpl implements ProductService {
     }
     
     @Override
-    public void removeUserFavoriteProduct(@NonNull Long productId, @NonNull UUID uid) {
+    public void removeUserFavoriteProduct(@NonNull Long productId, @NonNull Long uid) {
         var product = validateFavoriteRequest(productId, uid);
         if(!product.favoritesContains(uid)){
             throw new InvalidRequestException("Product is not in user's favorites");
@@ -102,8 +102,7 @@ public class ProductServiceImpl implements ProductService {
         product.removeFavoriteUser(uid);
     }
 
-
-    private Product validateFavoriteRequest(Long productId, UUID uid) {
+    private Product validateFavoriteRequest(Long productId, Long uid) {
         //todo: find product, if not exists throw exception
         var product = productRepository.findById(productId).orElseThrow(RecordNotFoundException::new);
         
@@ -112,8 +111,6 @@ public class ProductServiceImpl implements ProductService {
         if (!isUserExists) throw new RecordNotFoundException("No user was found with the given id");
         return product;
     }
-
-
     
     private List<Variant> createProductVariants(@NotEmpty List<ProductAttributeRequest> attributes) {
         var localAttributes = new ArrayList<>(attributes);

@@ -19,41 +19,42 @@ import java.util.UUID;
 @Entity
 @Table(name = DBConstant.USER_TABLE)
 public class User {
-    @GeneratedValue(strategy = GenerationType.UUID)
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private UUID id;
+    private Long id;
+
+    @Column(name = "firebase_uid", unique = true, nullable = true)
+    private String firebaseUid;
     @Basic
-    @Column(name = "username")
-    private String username;
-    @Basic
-    @Column(name = "password_hash")
-    private String passwordHash;
+    @Column(name = "name")
+    private String name;
     @Basic
     @Column(name = "email")
     private String email;
     @Basic
-    @Column(name = "phone")
-    private String phone;
+    @Column(name = "phone_number")
+    private String phoneNumber;
+    @Basic
+    @Column(name = "photo_url")
+    private String photoUrl;
     
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn (name = "default_address_id")
     @ToString.Exclude
     private ShippingAddress defaultAddress;
 
-    @OneToMany(mappedBy = "user")
-    private Set<Authority> authorities;
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(username, user.username) && Objects.equals(passwordHash, user.passwordHash) && Objects.equals(email, user.email) && Objects.equals(phone, user.phone);
+        return Objects.equals(id, user.id) && Objects.equals(firebaseUid, user.firebaseUid) && Objects.equals(name, user.name) && Objects.equals(email, user.email) && Objects.equals(phoneNumber, user.phoneNumber) && Objects.equals(photoUrl, user.photoUrl) && Objects.equals(defaultAddress, user.defaultAddress);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, passwordHash, email, phone);
+        return Objects.hash(id, firebaseUid, name, email, phoneNumber, photoUrl, defaultAddress);
     }
 }

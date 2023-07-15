@@ -72,7 +72,6 @@ public class UserServiceImpl implements UserService {
         User user = repository.findByFirebaseUid(userRecord.getUid());
         Optional<User> userOptional = Optional.ofNullable(user);
         if (userOptional.isPresent()) {
-
             updateRequest.name().ifPresent(user::setName);
             updateRequest.email().ifPresent(user::setEmail);
             updateRequest.phoneNumber().ifPresent(user::setPhoneNumber);
@@ -81,8 +80,5 @@ public class UserServiceImpl implements UserService {
         } else {
             throw new RuntimeException("user not found!");
         }
-
-
-
     }
 }

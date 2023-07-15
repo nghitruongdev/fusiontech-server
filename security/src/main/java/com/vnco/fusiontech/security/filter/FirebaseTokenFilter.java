@@ -12,10 +12,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.*;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -45,24 +47,28 @@ public class FirebaseTokenFilter implements Filter {
             log.info("request info: {}", httpRequest.getAttribute(FirebaseConstant.ATTRIBUTE));
             String uid = decodedToken.getUid();
 
-            UserRecord user = FirebaseAuth.getInstance().getUser(uid);
-////            UserInfo[] userInfos = user.getProviderData();
+//            Map<String, Object> claims = decodedToken.getClaims();
+            Map<String, Object> claims = new HashMap<>();
+            claims.put("admin", false);
+            FirebaseAuth.getInstance().setCustomUserClaims(uid, claims);
+//            log.info("claims: {}", FirebaseAuth.getInstance().getUser(uid).getCustomClaims());
 //
-//            log.info("user data {}", (Object) userInfos);
-            Map<String, Object> claims = user.getCustomClaims();
-
             List<GrantedAuthority> authorities = new ArrayList<>();
-            String role = (String) claims.get("role");
-            if (role != null) {
-                authorities.add(new SimpleGrantedAuthority("role"));
+            if ((boolean) claims.get("admin")) {
+                authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+            } else {
+                authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
             }
-
+            log.info("user claims: {}", FirebaseAuth.getInstance().getUser(uid).getCustomClaims());
             UsernamePasswordAuthenticationToken authentication
                     = new UsernamePasswordAuthenticationToken(uid, null, authorities);
-            log.info("authentication {}", authentication);
-            log.info("user {}", user.getCustomClaims());
-            log.info("authorities {}", authorities.stream().toList());
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            log.info("user info: {}", SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+            log.info("user info: {}", SecurityContextHolder.getContext().getAuthentication().isAuthenticated());
+            log.info("user info: {}", SecurityContextHolder.getContext().getAuthentication().getAuthorities());
+            log.info("user info: {}", SecurityContextHolder.getContext().getAuthentication().getDetails());
+            log.info("user info: {}", SecurityContextHolder.getContext().getAuthentication().getCredentials());
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

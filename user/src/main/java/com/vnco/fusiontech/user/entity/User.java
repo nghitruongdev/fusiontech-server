@@ -45,19 +45,16 @@ public class User {
     @ToString.Exclude
     private ShippingAddress defaultAddress;
 
-    @OneToMany(mappedBy = "user")
-    private Set<Authority> authorities;
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(firebaseUid, user.firebaseUid) && Objects.equals(name, user.name) && Objects.equals(email, user.email) && Objects.equals(phoneNumber, user.phoneNumber) && Objects.equals(photoUrl, user.photoUrl) && Objects.equals(defaultAddress, user.defaultAddress) && Objects.equals(authorities, user.authorities);
+        return Objects.equals(id, user.id) && Objects.equals(firebaseUid, user.firebaseUid) && Objects.equals(name, user.name) && Objects.equals(email, user.email) && Objects.equals(phoneNumber, user.phoneNumber) && Objects.equals(photoUrl, user.photoUrl) && Objects.equals(defaultAddress, user.defaultAddress);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firebaseUid, name, email, phoneNumber, photoUrl, defaultAddress, authorities);
+        return Objects.hash(id, firebaseUid, name, email, phoneNumber, photoUrl, defaultAddress);
     }
 }

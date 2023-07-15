@@ -113,4 +113,6 @@ public class Product extends RepresentationModel<Product> implements Serializabl
     public boolean favoritesContains(UUID uid) {
         return favorites.contains(new User(uid));
     }
+
+//    public List<Product> getFavoriteProductByUserId(UUID uid){return favorites.;}
 }

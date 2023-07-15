@@ -20,4 +20,5 @@ public interface ProductService {
     
     void addUserFavoriteProduct(Long productId, UUID uid);
     void removeUserFavoriteProduct(Long productId, UUID uid);
+
 }

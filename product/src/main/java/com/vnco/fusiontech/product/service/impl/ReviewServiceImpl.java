@@ -16,6 +16,11 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
 
     @Override
+    public List<Review> getAllReviews() {
+        return reviewRepository.findAll();
+    }
+
+    @Override
     public Review getReviewById(Long id) {
         return reviewRepository.findById(id).orElse(null);
     }
@@ -37,6 +42,8 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public List<Review> findAllByProductId(Long productId) {
-        return reviewRepository.findReviewsByProductIdIs(productId);
+        return reviewRepository.findAllByProductId(productId);
     }
+
+
 }

@@ -12,6 +12,7 @@ import com.vnco.fusiontech.product.repository.ProductRepository;
 import com.vnco.fusiontech.product.service.ProductService;
 import com.vnco.fusiontech.product.web.rest.request.CreateProductRequest;
 import com.vnco.fusiontech.product.web.rest.request.ProductAttributeRequest;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -100,7 +101,8 @@ public class ProductServiceImpl implements ProductService {
         }
         product.removeFavoriteUser(uid);
     }
-    
+
+
     private Product validateFavoriteRequest(Long productId, UUID uid) {
         //todo: find product, if not exists throw exception
         var product = productRepository.findById(productId).orElseThrow(RecordNotFoundException::new);
@@ -110,6 +112,8 @@ public class ProductServiceImpl implements ProductService {
         if (!isUserExists) throw new RecordNotFoundException("No user was found with the given id");
         return product;
     }
+
+
     
     private List<Variant> createProductVariants(@NotEmpty List<ProductAttributeRequest> attributes) {
         var localAttributes = new ArrayList<>(attributes);

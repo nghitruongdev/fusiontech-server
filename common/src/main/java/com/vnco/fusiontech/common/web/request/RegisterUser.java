@@ -1,11 +1,10 @@
 package com.vnco.fusiontech.common.web.request;
 
-public record RegisterRequest(
-        String username,
-        String password,
-        String email,
+public record RegisterUser(
         String firstName,
         String lastName,
+        String email,
+        String password,
         String phone
 ) {
 }

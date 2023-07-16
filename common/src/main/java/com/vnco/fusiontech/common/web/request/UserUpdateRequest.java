@@ -4,9 +4,11 @@ import java.util.Optional;
 
 public record UserUpdateRequest(
 
-        Optional<String> name,
-        Optional<String> email,
-        Optional<String> phoneNumber,
-        Optional<String> photoUrl
+        String firstName,
+        String lastName,
+        String password,
+        String email,
+        String phoneNumber,
+        String photoUrl
 ) {
 }

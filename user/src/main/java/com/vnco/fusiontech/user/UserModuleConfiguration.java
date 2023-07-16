@@ -28,8 +28,8 @@ public class UserModuleConfiguration {
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
 //                .setDatabaseUrl("")
                 .build();
-
-        FirebaseApp.initializeApp(options);
+        if (FirebaseApp.getApps().isEmpty())
+            FirebaseApp.initializeApp(options);
     }
 
 }

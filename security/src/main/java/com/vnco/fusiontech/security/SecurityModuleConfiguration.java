@@ -7,12 +7,10 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -20,10 +18,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @ComponentScan
-@EntityScan("com.vnco.fusiontech.security.entity")
-@EnableJpaRepositories("com.vnco.fusiontech.security.repository")
 public class SecurityModuleConfiguration {
     FirebaseToken token;
+    final
+    FirebaseTokenFilter firebaseTokenFilter;
+
+    public SecurityModuleConfiguration(FirebaseTokenFilter firebaseTokenFilter) {
+        this.firebaseTokenFilter = firebaseTokenFilter;
+    }
 
     @SneakyThrows
     @Bean
@@ -33,6 +35,7 @@ public class SecurityModuleConfiguration {
                 .and()
                 .csrf()
                 .ignoringRequestMatchers("/h2-console/**");
+//        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.csrf().disable();
         http.httpBasic().disable();
         http.authorizeHttpRequests().requestMatchers("/**")
@@ -66,13 +69,14 @@ public class SecurityModuleConfiguration {
     //    return source;
     //  }
 
+
     @SneakyThrows
     private void addFilters(HttpSecurity http) {
 //            http
 //                    .addFilterBefore(corsFilter(), UsernamePasswordAuthenticationFilter.class)
 //         .apply(jwtConfigurerAdapter())
 //        ;
-        http.addFilterBefore(new FirebaseTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(firebaseTokenFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     //  private CorsFilter corsFilter() {

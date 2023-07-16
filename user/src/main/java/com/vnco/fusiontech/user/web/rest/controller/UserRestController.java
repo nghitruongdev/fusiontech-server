@@ -28,30 +28,12 @@ public class UserRestController {
     @Autowired
     private UserRepository userRepository;
 
-    // get all users
-    // @GetMapping("/users")
-    // public List<User> getUsers() {
-    // return userRepository.findAll();
-    // }
-
-    // create user
-    // TODO: can't add password
     @PostMapping("/users")
     public ResponseEntity<User> createUser(@RequestBody User user) {
         User savedUser = userRepository.save(user);
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
 
-    // get user by id
-    // @GetMapping("/users/{id}")
-    // public ResponseEntity<User> getUserById(@PathVariable UUID id) {
-    // Optional<User> user = userRepository.findById(id);
-    // if (user.isPresent()) return new ResponseEntity<>(user.get(), HttpStatus.OK);
-    // return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    // }
-
-    // update user
-    // TODO: can't update user
     @PutMapping("/users/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id) {
         Optional<User> user = userRepository.findById(id);

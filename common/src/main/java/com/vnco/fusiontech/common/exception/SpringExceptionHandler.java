@@ -2,10 +2,10 @@ package com.vnco.fusiontech.common.exception;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
@@ -68,7 +68,7 @@ public class SpringExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(@NotNull  MethodArgumentNotValidException ex,
             HttpHeaders headers, HttpStatusCode status,
             WebRequest request) {
         var errors = ex
@@ -109,7 +109,6 @@ public class SpringExceptionHandler extends ResponseEntityExceptionHandler {
                     errorMessage = String.format("%s - [%s]",
                                                  exMessage.substring(0, exMessage.indexOf(";")).replace("\"", "'"),
                                                  sqlCode);
-                    break;
                 }
                 case "23506" -> errorMessage = String.format("""
                                                              Lỗi tính toàn vẹn dữ liệu (liên kết khoá ngoại [%s]): %s.
@@ -128,8 +127,8 @@ public class SpringExceptionHandler extends ResponseEntityExceptionHandler {
         return ProblemDetail.forStatusAndDetail(CONFLICT, ex.getMessage());
     }
 
-    @ExceptionHandler(ResourceNotFoundException.class)
-    ProblemDetail handleResourceNotFound(ResourceNotFoundException ex) {
+    @ExceptionHandler(RecordNotFoundException.class)
+    ProblemDetail handleResourceNotFound(RecordNotFoundException ex) {
         return ProblemDetail.forStatusAndDetail(NOT_FOUND, ex.getMessage());
     }
 

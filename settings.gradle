@@ -4,3 +4,5 @@ include 'common'
 include 'user'
 include 'order'
 include 'security'
+include 'mail'
+

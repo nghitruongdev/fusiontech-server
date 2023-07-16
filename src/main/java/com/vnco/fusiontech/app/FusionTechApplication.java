@@ -2,6 +2,8 @@ package com.vnco.fusiontech.app;
 
 import com.github.javafaker.Faker;
 import com.vnco.fusiontech.common.CommonModuleConfiguration;
+import com.vnco.fusiontech.mail.MailConfiguration;
+import com.vnco.fusiontech.mail.service.MailService;
 import com.vnco.fusiontech.order.OrderModuleConfiguration;
 import com.vnco.fusiontech.product.ProductModuleConfiguration;
 import com.vnco.fusiontech.product.entity.Brand;
@@ -47,7 +49,8 @@ import java.util.stream.Stream;
                 ProductModuleConfiguration.class,
                 UserModuleConfiguration.class,
                 OrderModuleConfiguration.class,
-                SecurityModuleConfiguration.class
+                SecurityModuleConfiguration.class,
+                MailConfiguration.class
 })
 @EntityScan(basePackages = "com.vnco.fusiontech.common.entity")
 public class FusionTechApplication {
@@ -81,17 +84,19 @@ public class FusionTechApplication {
                         "https://i.ibb.co/vHJkwzt/top3.webp",
                         "https://i.ibb.co/BNXTLkq/12.webp"
         };
+        
         private final ProductVariantRepository variantRepository;
+        private final MailService mailService;
         @GetMapping("/api/test")
         @Transactional
         public void test(){
-                Variant variant = Variant.builder().sku(UUID.randomUUID().toString()).build();
-                var savedSpec = Specification.builder().id(2L).name("Display").value("6.9 inch").build();
-                var spec = Specification.builder().id(2L).name("Display").value("15 inch").build();
-                
-                variant.addSpecification(savedSpec);
-                variant.addSpecification(spec);
-                variantRepository.save(variant);
+//                Variant variant = Variant.builder().sku(UUID.randomUUID().toString()).build();
+//                var savedSpec = Specification.builder().id(2L).name("Display").value("6.9 inch").build();
+//                var spec = Specification.builder().id(2L).name("Display").value("15 inch").build();
+//
+//                variant.addSpecification(savedSpec);
+//                variant.addSpecification(spec);
+//                variantRepository.save(variant);
         }
                 @Bean
         @Profile("bootstrap")

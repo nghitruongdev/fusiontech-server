@@ -2,10 +2,8 @@ package com.vnco.fusiontech.security.service.impl;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.FirebaseToken;
 import com.google.firebase.auth.UserRecord;
 import com.vnco.fusiontech.common.constant.AuthoritiesConstant;
-import com.vnco.fusiontech.common.exception.RecordExistsException;
 import com.vnco.fusiontech.common.exception.RecordNotFoundException;
 import com.vnco.fusiontech.common.service.PublicUserService;
 import com.vnco.fusiontech.common.web.request.CreateUserRecord;
@@ -13,7 +11,6 @@ import com.vnco.fusiontech.common.web.request.RegisterUserWithEmailRequest;
 import com.vnco.fusiontech.common.web.request.UpdateUserRequest;
 import com.vnco.fusiontech.security.mapper.FirebaseUserMapper;
 import com.vnco.fusiontech.security.service.AccountService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +22,6 @@ import java.util.Map;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-@Transactional
 public class AccountServiceImpl implements AccountService {
     private final PublicUserService userService;
     private final FirebaseUserMapper firebaseMapper;

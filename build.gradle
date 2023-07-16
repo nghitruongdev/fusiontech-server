@@ -1,3 +1,5 @@
+import org.springframework.boot.gradle.plugin.SpringBootPlugin
+
 plugins {
     id 'java'
     id 'org.springframework.boot' version '3.0.6'
@@ -26,11 +28,11 @@ allprojects {
         structExtVersion = "0.1.2"
         hibernateTypesVersion = "3.0.1"
         springCloudVersion = "2022.0.0-RC2"
+        firebaseAdminVersion = "9.2.0"
     }
 
     apply plugin: 'java'
     apply plugin: 'java-library'
-    apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
 
     configurations {
@@ -39,31 +41,24 @@ allprojects {
         }
     }
 
+    dependencyManagement {
+        imports {
+            mavenBom SpringBootPlugin.BOM_COORDINATES
+        }
+    }
     dependencies {
-
-        implementation 'javax.mail:javax.mail-api:1.6.2'
-        implementation 'com.sun.mail:javax.mail:1.6.2'
-        implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-        implementation 'org.springframework.boot:spring-boot-starter-mail'
         implementation project(":common")
-        compileOnly "org.projectlombok:lombok"
-        developmentOnly "org.springframework.boot:spring-boot-devtools"
 
+        compileOnly "org.projectlombok:lombok"
         annotationProcessor "org.projectlombok:lombok"
         annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
-        implementation "org.springframework.boot:spring-boot-starter-web"
+//        implementation "org.springframework.boot:spring-boot-starter-web"
+//        implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+//        implementation "org.springframework.boot:spring-boot-starter-data-rest"
+//        implementation "org.springframework.boot:spring-boot-starter-hateoas"
+//        implementation "org.springframework.boot:spring-boot-starter-validation"
 
-        implementation "org.springframework.boot:spring-boot-starter-data-jpa"
-        implementation "org.springframework.boot:spring-boot-starter-data-rest"
-        implementation "org.springframework.boot:spring-boot-starter-hateoas"
-        implementation "org.springframework.boot:spring-boot-starter-validation"
-        implementation 'org.springframework.boot:spring-boot-starter-security'
-        implementation 'com.google.firebase:firebase-admin:9.2.0'
-
-        implementation('com.github.javafaker:javafaker:1.0.2') {
-            exclude group: 'org.yaml', module: 'snakeyaml'
-        }
         // https://mvnrepository.com/artifact/io.hypersistence/hypersistence-utils-hibernate-60
         implementation 'io.hypersistence:hypersistence-utils-hibernate-60:3.5.1'
 
@@ -73,8 +68,10 @@ allprojects {
         annotationProcessor "org.mapstruct.extensions.spring:mapstruct-spring-extensions:${structExtVersion}"
         // If you are using MapStruct Spring Extensions in test code
         testAnnotationProcessor "org.mapstruct.extensions.spring:mapstruct-spring-extensions:${structExtVersion}"
-        testImplementation 'org.springframework.security:spring-security-test'
+
         testImplementation "org.springframework.boot:spring-boot-starter-test"
+//        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+//        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
     }
 
     tasks.withType(JavaCompile) {
@@ -83,22 +80,23 @@ allprojects {
 }
 
 dependencies {
-    implementation project(":common")
     implementation project(":product")
     implementation project(":user")
     implementation project(":security")
     implementation project(":order")
-    runtimeOnly "com.h2database:h2"
+    implementation project(":mail")
+    developmentOnly "org.springframework.boot:spring-boot-devtools"
+    implementation('com.github.javafaker:javafaker:1.0.2') {
+        exclude group: 'org.yaml', module: 'snakeyaml'
+    }
+
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+    implementation "org.springframework.boot:spring-boot-starter-data-rest"
+
+    developmentOnly "com.h2database:h2"
     runtimeOnly "com.mysql:mysql-connector-j"
-
-//    implementation "io.hypersistence:hypersistence-utils-hibernate-60:${hibernateTypesVersion}"
-//    implementation 'com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations:2.14.1'
-
-//    implementation "org.springframework.boot:spring-boot-starter-security"
-//    testImplementation "org.springframework.security:spring-security-test"
-
-//    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
-
+    implementation "com.google.firebase:firebase-admin:${firebaseAdminVersion}"
 }
 
 tasks.withType(JavaCompile) {
@@ -111,4 +109,9 @@ bootRun {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+springBoot {
+    mainClass = 'com.vnco.fusiontech.app.FusionTechApplication'
+    // Replace with the fully qualified name of your main class
 }

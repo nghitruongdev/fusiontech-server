@@ -1,11 +1,9 @@
 package com.vnco.fusiontech.order;
 
-import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.FirebaseToken;
 import com.vnco.fusiontech.common.service.PublicUserService;
-import com.vnco.fusiontech.common.web.request.RegisterRequest;
+import com.vnco.fusiontech.common.web.request.CreateUserRequest;
+import com.vnco.fusiontech.common.web.request.RegisterUser;
 import com.vnco.fusiontech.common.web.request.UserUpdateRequest;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -18,7 +16,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.util.Properties;
-import java.util.UUID;
 
 @Configuration
 @ComponentScan
@@ -72,16 +69,33 @@ public class OrderModuleConfiguration {
             }
 
             @Override
-            public void register(FirebaseToken decodedToken) {
+            public boolean isUserExisted(RegisterUser registerUser) {
+                return false;
             }
 
             @Override
-            public void updateUser(UserUpdateRequest token, FirebaseToken decodedToken) throws FirebaseAuthException {
+            public String getFirebaseUid(Long userId) {
+                return null;
+            }
+
+            @Override
+            public void register(CreateUserRequest request) {
+            }
+
+            @Override
+            public void updateUser(UserUpdateRequest request, Long userId) {
 
             }
 
+            @Override
+            public String convertToE164Format(String phoneNumber) {
+                return null;
+            }
 
+            @Override
+            public String composeFullName(UserUpdateRequest request) {
+                return null;
+            }
         };
-
     }
 }

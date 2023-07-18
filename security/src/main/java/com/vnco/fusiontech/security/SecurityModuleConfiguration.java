@@ -19,6 +19,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @ComponentScan
 public class SecurityModuleConfiguration {
     FirebaseToken token;
+    final
+    FirebaseTokenFilter firebaseTokenFilter;
+
+    public SecurityModuleConfiguration(FirebaseTokenFilter firebaseTokenFilter) {
+        this.firebaseTokenFilter = firebaseTokenFilter;
+    }
 
     @SneakyThrows
     @Bean
@@ -28,6 +34,7 @@ public class SecurityModuleConfiguration {
                 .and()
                 .csrf()
                 .ignoringRequestMatchers("/h2-console/**");
+//        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.csrf().disable();
         http.httpBasic().disable();
         http.authorizeHttpRequests().requestMatchers("/**")
@@ -61,13 +68,14 @@ public class SecurityModuleConfiguration {
     //    return source;
     //  }
 
+
     @SneakyThrows
     private void addFilters(HttpSecurity http) {
 //            http
 //                    .addFilterBefore(corsFilter(), UsernamePasswordAuthenticationFilter.class)
 //         .apply(jwtConfigurerAdapter())
 //        ;
-        http.addFilterBefore(new FirebaseTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(firebaseTokenFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     //  private CorsFilter corsFilter() {

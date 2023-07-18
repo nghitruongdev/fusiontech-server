@@ -5,6 +5,9 @@ plugins {
 
 }
 
+sourceCompatibility = '17'
+targetCompatibility = '17'
+
 bootJar {
     classifier("boot")
     mainClass.set("com.vnco.fusiontech.app.FusionTechApplication")
@@ -41,8 +44,7 @@ allprojects {
         hibernateTypesVersion = "3.0.1"
         springCloudVersion = "2022.0.0-RC2"
     }
-    sourceCompatibility = '17'
-    targetCompatibility = '17'
+
     apply plugin: 'java'
     apply plugin: 'java-library'
     apply plugin: 'org.springframework.boot'

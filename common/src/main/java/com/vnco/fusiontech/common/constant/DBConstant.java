@@ -1,7 +1,7 @@
 package com.vnco.fusiontech.common.constant;
 
 public interface DBConstant {
-    String USER_TABLE      = "account";
+    String USER_TABLE      = "app_user";
     String AUTHORITY_TABLE = "authority";
     String ROLE_TABLE      = "role";
     

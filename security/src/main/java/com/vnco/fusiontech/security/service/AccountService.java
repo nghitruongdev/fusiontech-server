@@ -1,12 +1,15 @@
 package com.vnco.fusiontech.security.service;
 
-import com.google.firebase.auth.FirebaseAuthException;
-import com.vnco.fusiontech.common.web.request.RegisterUser;
-import com.vnco.fusiontech.common.web.request.UserUpdateRequest;
+import com.vnco.fusiontech.common.web.request.RegisterUserWithEmailRequest;
+import com.vnco.fusiontech.common.web.request.UpdateUserRequest;
 
 public interface AccountService {
-    void googleRegister(String token) throws FirebaseAuthException;
-    String userRegister(RegisterUser request) throws FirebaseAuthException;
-    void updateUser(UserUpdateRequest token, Long userId);
-    void deleteUser(String userId) throws FirebaseAuthException;
+
+    String registerWithGoogle(String firebaseId);
+
+    String registerUserWithEmail(RegisterUserWithEmailRequest request);
+
+    void updateUser(UpdateUserRequest token, Long userId);
+
+    void deleteUser(String userId);
 }

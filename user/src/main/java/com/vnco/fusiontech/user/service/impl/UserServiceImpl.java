@@ -1,10 +1,10 @@
 package com.vnco.fusiontech.user.service.impl;
 
 import com.vnco.fusiontech.common.exception.InvalidRequestException;
+import com.vnco.fusiontech.common.exception.RecordExistsException;
 import com.vnco.fusiontech.common.exception.RecordNotFoundException;
-import com.vnco.fusiontech.common.web.request.CreateUserRequest;
-import com.vnco.fusiontech.common.web.request.RegisterUser;
-import com.vnco.fusiontech.common.web.request.UserUpdateRequest;
+import com.vnco.fusiontech.common.web.request.CreateUserRecord;
+import com.vnco.fusiontech.common.web.request.UpdateUserRequest;
 import com.vnco.fusiontech.user.entity.ShippingAddress;
 import com.vnco.fusiontech.user.entity.User;
 import com.vnco.fusiontech.user.repository.ShippingAddressRepository;
@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-
 @Slf4j
 @Service
 @Transactional
@@ -25,7 +24,6 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private final UserRepository repository;
     private final ShippingAddressRepository addressRepository;
-
 
     @Override
     public void updateDefaultShippingAddress(Long userId, Long addressId) {
@@ -48,28 +46,35 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
+    public boolean existsByFirebaseId(String firebaseId) {
+        return repository.findByFirebaseUid(firebaseId).isPresent();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public boolean hasShippingAddress(Long userId, Long addressId) {
         return addressRepository.existsByIdAndUserId(addressId, userId);
     }
 
     @Override
-    public void register(CreateUserRequest request) {
-        if (!repository.existsByEmail(request.email())) {
-            repository.save(User.builder()
-                    .firebaseUid(request.firebaseUid())
-                    .name(request.name())
-                    .email(request.email())
-                    .phoneNumber(request.phoneNumber())
-                    .photoUrl(request.photoUrl())
-                    .build());
-            log.info("Successfully register new user: {}", request.firebaseUid());
-        } else {
-            log.error("User already exists! {}", request.email());
-        }
+    public Long register(CreateUserRecord record) {
+        if (repository.existsByEmail(record.email()))
+            throw new RecordExistsException("User already exists!");
+
+        var user = User.builder()
+                .firstName(record.firstName())
+                .lastName(record.lastName())
+                .firebaseUid(record.firebaseUid())
+                .email(record.email())
+                .phoneNumber(record.phoneNumber())
+                .photoUrl(record.photoUrl())
+                .build();
+        return repository.save(user).getId();
     }
 
+    // todo: update user with new field added
     @Override
-    public void updateUser(UserUpdateRequest request, Long userId) {
+    public void updateUser(UpdateUserRequest request, Long userId) {
         Optional<User> userOptional = repository.findById(userId);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
@@ -82,43 +87,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean isUserExisted(RegisterUser registerUser) {
-        return repository.existsByEmail(registerUser.email());
+    public boolean isUserExists(String email) {
+        return repository.existsByEmail(email);
     }
 
     @Override
-    public String getFirebaseUid(Long userId) {
-        Optional<User> userOptional = repository.findById(userId);
-        User user = null;
-        if (userOptional.isPresent())
-            user = userOptional.get();
-        return user != null ? user.getFirebaseUid() : null;
+    public Optional<String> getFirebaseUid(Long userId) {
+        return repository.findById(userId).stream().map(User::getFirebaseUid).findFirst();
     }
 
-    @Override
-    public String convertToE164Format(String phoneNumber) {
-        String cleanNumber = phoneNumber.replaceAll("[^0-9]", ""); // remove non digits
-        if (cleanNumber.startsWith("0")) {
-            cleanNumber = "84" + cleanNumber.substring(1); // replace leading 0 with 84
-        }
-        return "+" + cleanNumber; // prepend +
-    }
-
-    @Override
-    public String composeFullName(UserUpdateRequest request) {
-        String firstName = (request.firstName() != null) ? request.firstName().trim() : "";
-        String lastName = (request.lastName() != null) ? request.lastName().trim() : "";
-        return (firstName + " " + lastName).trim();
-    }
-
-    private void updateUserProperties(UserUpdateRequest request, User user) {
-        if ((request.firstName() != null && !request.firstName().isEmpty()) ||
-            (request.lastName()) != null && !request.lastName().isEmpty())
-            user.setName(composeFullName(request));
+    // todo: update user password
+    private void updateUserProperties(UpdateUserRequest request, User user) {
+        if (request.firstName() != null && !request.firstName().isEmpty())
+            user.setFirstName(request.firstName());
+        if (request.lastName() != null && !request.lastName().isEmpty())
+            user.setLastName(request.lastName());
         if (request.email() != null)
             user.setEmail(request.email());
         if (request.phoneNumber() != null && !repository.existsByPhoneNumber(request.phoneNumber()))
-            user.setPhoneNumber(convertToE164Format(request.phoneNumber()));
+            user.setPhoneNumber(request.phoneNumber());
         if (request.photoUrl() != null)
             user.setPhotoUrl(request.photoUrl());
     }

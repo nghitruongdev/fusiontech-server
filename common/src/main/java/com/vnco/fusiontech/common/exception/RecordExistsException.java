@@ -4,4 +4,8 @@ public class RecordExistsException extends jakarta.persistence.EntityExistsExcep
     public RecordExistsException() {
         super("Record already exists with the given id.");
     }
+    
+    public RecordExistsException(String message) {
+        super(message);
+    }
 }

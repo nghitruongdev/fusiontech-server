@@ -7,5 +7,4 @@ import java.util.Map;
 
 public interface FirebaseService {
     List<GrantedAuthority> getAuthorities(Map<String, Object> claims);
-
 }

@@ -1,19 +1,24 @@
 package com.vnco.fusiontech.common.service;
 
+import java.util.Optional;
 
-import com.vnco.fusiontech.common.web.request.CreateUserRequest;
-import com.vnco.fusiontech.common.web.request.RegisterUser;
-import com.vnco.fusiontech.common.web.request.UserUpdateRequest;
+import com.vnco.fusiontech.common.web.request.CreateUserRecord;
+import com.vnco.fusiontech.common.web.request.UpdateUserRequest;
 
 public interface PublicUserService {
-    boolean existsById(Long id);
-    boolean hasShippingAddress(Long userId, Long addressId);
-    boolean isUserExisted(RegisterUser registerUser);
-    String getFirebaseUid(Long userId);
-    void register(CreateUserRequest request);
-    void updateUser(UserUpdateRequest request, Long userId);
 
-    String convertToE164Format(String phoneNumber);
-    String composeFullName(UserUpdateRequest request);
+    boolean existsById(Long id);
+
+    boolean hasShippingAddress(Long userId, Long addressId);
+
+    boolean isUserExists(String email);
+
+    Optional<String> getFirebaseUid(Long userId);
+
+    Long register(CreateUserRecord record);
+
+    void updateUser(UpdateUserRequest request, Long userId);
+
+    boolean existsByFirebaseId(String firebaseId);
 
 }

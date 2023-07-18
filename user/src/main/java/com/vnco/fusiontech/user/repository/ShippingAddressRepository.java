@@ -6,12 +6,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @RepositoryRestResource
 public interface ShippingAddressRepository extends JpaRepository<ShippingAddress, Long> {
@@ -23,5 +20,5 @@ public interface ShippingAddressRepository extends JpaRepository<ShippingAddress
     Optional<ShippingAddress> findDefaultShippingAddressByUserId(@Param("uid") Long uid);
     
     @RestResource(path = "/many")
-    List<ShippingAddress> findAllByIdIn(@RequestParam("ids") List<Long> ids);
+    List<ShippingAddress> findAllByIdIn(@Param ("ids") List<Long> ids);
 }

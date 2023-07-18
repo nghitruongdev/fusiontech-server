@@ -4,8 +4,6 @@ import com.vnco.fusiontech.common.utils.BeanUtils;
 import com.vnco.fusiontech.user.service.UserService;
 import jakarta.persistence.*;
 
-import java.util.UUID;
-
 public class ShippingAddressListener {
 
     @PrePersist
@@ -49,8 +47,5 @@ public class ShippingAddressListener {
                 userService.updateDefaultShippingAddress(address.getUser().getId(), address.getId());
             }
         }).start();
-//        if (address.isDefault() || address.getUser().getDefaultAddress() == null) {
-//            userService.updateDefaultShippingAddress(address.getUser().getId(), address.getId());
-//        }
     }
 }

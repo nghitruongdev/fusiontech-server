@@ -25,7 +25,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @Component
 @Slf4j
 //@Order(1)
-public class FirebaseTokenFilter extends OncePerRequestFilter {
+public class  FirebaseTokenFilter extends OncePerRequestFilter {
 
     final
     FirebaseService firebaseService;

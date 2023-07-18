@@ -1,12 +1,21 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.0.6'
+    id 'org.springframework.boot' version '3.1.1'
     id 'io.spring.dependency-management' version '1.1.0'
+
+}
+
+bootJar {
+    classifier("boot")
+    mainClass.set("com.vnco.fusiontech.app.FusionTechApplication")
+}
+
+jar {
+    classifier("")
 }
 
 group = 'com.vnco.fusiontech'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '17'
 
 configurations {
     compileOnly {
@@ -14,11 +23,16 @@ configurations {
     }
 }
 
-repositories {
-    mavenCentral()
-}
 
 allprojects {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        maven { url = uri("https://repo.spring.io/milestone") }
+        maven { url = uri("https://repo.spring.io/release") }
+        maven { url = uri("https://repo.spring.io/libs-release") }
+        maven { url = uri("https://repo.spring.io/plugins-release/")}
+    }
 
     ext {
         jjwtVersion = '0.11.5'
@@ -27,7 +41,8 @@ allprojects {
         hibernateTypesVersion = "3.0.1"
         springCloudVersion = "2022.0.0-RC2"
     }
-
+    sourceCompatibility = '17'
+    targetCompatibility = '17'
     apply plugin: 'java'
     apply plugin: 'java-library'
     apply plugin: 'org.springframework.boot'
@@ -47,8 +62,8 @@ allprojects {
         annotationProcessor "org.projectlombok:lombok"
         annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
-        implementation "org.springframework.boot:spring-boot-starter-web"
-
+        implementation "org.springframework.boot:spring-boot-starter-web:3.1.1"
+        compileOnly "org.springframework.boot:spring-boot-starter-tomcat"
         implementation "org.springframework.boot:spring-boot-starter-data-jpa"
         implementation "org.springframework.boot:spring-boot-starter-data-rest"
         implementation "org.springframework.boot:spring-boot-starter-hateoas"
@@ -75,8 +90,9 @@ allprojects {
 }
 
 dependencies {
+
+
     implementation project(":common")
-    implementation project(":cart")
     implementation project(":product")
     implementation project(":user")
     implementation project(":security")
@@ -86,10 +102,6 @@ dependencies {
 
 //    implementation "io.hypersistence:hypersistence-utils-hibernate-60:${hibernateTypesVersion}"
 //    implementation 'com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations:2.14.1'
-
-//    implementation "org.springframework.boot:spring-boot-starter-security"
-//    testImplementation "org.springframework.security:spring-security-test"
-
 //    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 
 }

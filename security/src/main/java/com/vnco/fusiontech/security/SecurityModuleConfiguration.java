@@ -31,12 +31,14 @@ public class SecurityModuleConfiguration {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) {
         http.cors(Customizer.withDefaults());
-        http.headers().frameOptions().sameOrigin()
+        http.headers().frameOptions()
+                .sameOrigin()
                 .and()
                 .csrf()
                 .ignoringRequestMatchers("/h2-console/**");
 //        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.csrf().disable();
+        http.csrf(Customizer.withDefaults());
         http.httpBasic().disable();
         http.authorizeHttpRequests().requestMatchers("/**")
                 .permitAll();

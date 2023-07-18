@@ -17,5 +17,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> searchByKeyword(@Param("keyword") String keyword);
     
     @RestResource(path = "favorites", rel = "favorites")
-    List<Product> findAllByFavorites_Id(@Param("uid") UUID userId);
+    List<Product> findAllByFavorites_Id(@Param("uid") Long userId);
 }

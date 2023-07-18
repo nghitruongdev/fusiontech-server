@@ -13,5 +13,5 @@ import java.util.UUID;
 @RepositoryRestResource
 public interface OrderRepository extends JpaRepository<Order, Long> {
     @RestResource (path = "byUserIdAndStatusIn")
-    List<Order> findAllByUserIdAndStatusIn(@Param ("uid") UUID userId, @Param ("st") List<OrderStatus> statusList);
+    List<Order> findAllByUserIdAndStatusIn(@Param ("uid") Long userId, @Param ("st") List<OrderStatus> statusList);
 }

@@ -5,7 +5,17 @@ plugins {
 group 'com.vnco.fusiontech'
 version '0.0.1-SNAPSHOT'
 
-repositories {
+configure(subprojects.findAll()) {
+    bootJar {
+        mainClass.set('com.vnco.fusiontech.app.FusionTechApplication')
+    }
+}
+
+bootJar {
+    mainClass.set('com.vnco.fusiontech.app.FusionTechApplication')
+}
+
+    repositories {
     mavenCentral()
 }
 

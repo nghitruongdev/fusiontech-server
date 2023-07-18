@@ -5,6 +5,12 @@ plugins {
 group 'com.vnco.fusiontech.user'
 version '0.0.1-SNAPSHOT'
 
+bootJar{
+    classifier("boot")
+    mainClass.set("com.vnco.fusiontech.app.FusionTechApplication")
+}
+
+
 repositories {
     mavenCentral()
 }

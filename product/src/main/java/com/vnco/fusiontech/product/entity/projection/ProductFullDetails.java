@@ -9,21 +9,35 @@ import org.springframework.data.rest.core.config.Projection;
 
 import java.util.List;
 
-@Projection(name = Product.PROJECTION.FULL, types = {Product.class})
+@Projection(name = Product.PROJECTION.FULL, types = { Product.class })
 public interface ProductFullDetails {
-    
+
     Long getId();
+
     String getName();
+
     String getSlug();
-    String getShortDescription();
+
+    String getSummary();
+
     String getDescription();
+
     String getThumbnail();
+
     Integer getReviewCount();
+
     Integer getAvgRating();
+
+    Object getFeatures();
+
+    Object getSpecifications();
+
     @JsonIncludeProperties("id")
     Brand getBrand();
+
     @JsonIncludeProperties("id")
     Category getCategory();
-    @JsonIncludeProperties({"id", "price"})
+
+    @JsonIncludeProperties({ "id", "price" })
     List<Variant> getVariants();
 }

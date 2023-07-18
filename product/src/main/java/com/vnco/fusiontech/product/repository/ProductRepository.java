@@ -1,6 +1,8 @@
 package com.vnco.fusiontech.product.repository;
 
 import com.vnco.fusiontech.product.entity.Product;
+import com.vnco.fusiontech.product.entity.projection.ProductAttributeDTO;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,17 +17,23 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @RestResource(path = "byKeyWord", rel = "keyword")
     @Query("SELECT p FROM Product p WHERE p.name LIKE %:keyword% OR p.description LIKE %:keyword%")
     List<Product> searchByKeyword(@Param("keyword") String keyword);
-    
+
     @RestResource(path = "favorites", rel = "favorites")
     List<Product> findAllByFavorites_Id(@Param("uid") UUID userId);
-    
-    @Query (
-            """
+
+    @Query("""
             SELECT COALESCE(SUM (oi.quantity), 0) FROM OrderItem oi JOIN Order o ON oi.order = o
             WHERE oi.variant.id IN (SELECT v.id FROM Variant v WHERE v.product.id =:productId) AND
             o.status = 'DELIVERED_SUCCESS'
-            """
-    )
-    @RestResource (path = "countProductSold", rel = "countProductSold")
+            """)
+    @RestResource(path = "countProductSold", rel = "countProductSold")
     Long countProductNumberSold(@Param("productId") Long productId);
+
+    @Query("""
+             SELECT DISTINCT new com.vnco.fusiontech.product.entity.projection.ProductAttributeDTO(va.name, va.value)
+             FROM VariantAttribute va JOIN Variant v ON va.variant.id = v.id
+            WHERE v.product.id =:productId
+             """)
+    @RestResource(path = "attributes")
+    List<ProductAttributeDTO> findDistinctNameAndAttributes(@Param("productId") Long productId);
 }

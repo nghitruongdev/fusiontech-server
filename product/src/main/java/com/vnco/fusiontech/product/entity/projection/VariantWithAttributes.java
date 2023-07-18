@@ -6,10 +6,10 @@ import org.springframework.data.rest.core.config.Projection;
 
 import java.util.List;
 
-@Projection (name = Variant.PROJECTION.WITH_ATTRIBUTE, types = Variant.class)
-public interface VariantWithAttribute {
-        Long getId();
-        String getImage();
-        double getPrice();
+@Projection(name = Variant.PROJECTION.WITH_ATTRIBUTE, types = Variant.class)
+public interface VariantWithAttributes extends VariantBasic {
+
+        int getAvailableQuantity();
+
         List<VariantAttribute> getAttributes();
 }

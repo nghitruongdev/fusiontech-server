@@ -64,6 +64,9 @@ allprojects {
         implementation('com.github.javafaker:javafaker:1.0.2') {
             exclude group: 'org.yaml', module: 'snakeyaml'
         }
+        // https://mvnrepository.com/artifact/io.hypersistence/hypersistence-utils-hibernate-60
+        implementation 'io.hypersistence:hypersistence-utils-hibernate-60:3.5.1'
+
         implementation "org.mapstruct:mapstruct:${structVersion}"
         annotationProcessor "org.mapstruct:mapstruct-processor:${structVersion}"
         implementation "org.mapstruct.extensions.spring:mapstruct-spring-annotations:${structExtVersion}"
@@ -97,6 +100,14 @@ dependencies {
 
 //    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs += ['-parameters']
+}
+
+bootRun {
+    dependsOn 'classes'
 }
 
 tasks.named('test') {

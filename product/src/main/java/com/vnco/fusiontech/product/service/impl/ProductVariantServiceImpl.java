@@ -19,22 +19,22 @@ import java.util.List;
 @Transactional
 @RequiredArgsConstructor
 public class ProductVariantServiceImpl implements ProductVariantService {
-    
-    private final ProductVariantRepository   repository;
-    
+
+    private final ProductVariantRepository repository;
+
     private PublicOrderService orderService;
-    
+
     @Autowired
     @Lazy
     public void setOrderService(PublicOrderService orderService) {
         this.orderService = orderService;
     }
-    
+
     @Override
     public List<Variant> getAllProductVariants() {
         return repository.findAll();
     }
-    
+
     @Override
     public Variant getProductVariantById(Long id) {
         return repository.findById(id).orElse(null);
@@ -54,21 +54,21 @@ public class ProductVariantServiceImpl implements ProductVariantService {
     public void deleteProductVariant(Long id) {
         repository.deleteById(id);
     }
-    
+
     @Override
-    @Transactional (readOnly = true)
+    @Transactional(readOnly = true)
     public long getTotalQuantity(Long variantId) {
         throw new UnsupportedOperationException();
     }
-    
+
     @Override
-    @Transactional (readOnly = true)
+    @Transactional(readOnly = true)
     public long getAvailableQuantity(Long variantId) {
         return orderService.getAvailableQuantity(variantId);
     }
-    
+
     @Override
     public void addInventory(Long variantId, VariantInventory inventory) {
-       throw new  UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 }

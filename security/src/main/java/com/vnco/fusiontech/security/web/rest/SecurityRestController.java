@@ -1,8 +1,6 @@
 package com.vnco.fusiontech.security.web.rest;
 
-import com.google.api.Http;
 import com.google.firebase.auth.FirebaseAuthException;
-import com.vnco.fusiontech.common.web.request.CreateUserRequest;
 import com.vnco.fusiontech.common.web.request.RegisterUser;
 import com.vnco.fusiontech.common.web.request.UserUpdateRequest;
 import com.vnco.fusiontech.security.service.AccountService;
@@ -14,7 +12,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.awt.event.WindowFocusListener;
 import java.util.HashMap;
 import java.util.Map;
 

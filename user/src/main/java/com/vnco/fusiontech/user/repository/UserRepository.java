@@ -14,9 +14,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     
     @RestResource (path = "many", rel = "many")
     List<User> findAllByIdIn(List<Long> ids);
-
-//    Optional<User> findByEmail(String email);
-    User findByFirebaseUid(String firebaseUid);
     boolean existsByEmail(String email);
     boolean existsByPhoneNumber(String phoneNumber);
 }

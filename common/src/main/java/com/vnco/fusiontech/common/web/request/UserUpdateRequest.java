@@ -1,6 +1,5 @@
 package com.vnco.fusiontech.common.web.request;
 
-import java.util.Optional;
 
 public record UserUpdateRequest(
 

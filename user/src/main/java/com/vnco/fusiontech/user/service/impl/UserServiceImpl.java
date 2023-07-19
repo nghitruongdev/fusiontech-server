@@ -1,5 +1,6 @@
 package com.vnco.fusiontech.user.service.impl;
 
+import com.google.api.Http;
 import com.vnco.fusiontech.common.exception.InvalidRequestException;
 import com.vnco.fusiontech.common.exception.RecordExistsException;
 import com.vnco.fusiontech.common.exception.RecordNotFoundException;
@@ -59,7 +60,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Long register(CreateUserRecord record) {
         if (repository.existsByEmail(record.email()))
-            throw new RecordExistsException("User already exists!");
+            throw new RecordExistsException("User already exists!" + record.email());
 
         var user = User.builder()
                 .firstName(record.firstName())

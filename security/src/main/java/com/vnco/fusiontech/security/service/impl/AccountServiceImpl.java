@@ -1,9 +1,8 @@
 package com.vnco.fusiontech.security.service.impl;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.FirebaseToken;
-import com.google.firebase.auth.UserRecord;
+import com.google.firebase.FirebaseException;
+import com.google.firebase.auth.*;
+import com.google.firebase.messaging.FirebaseMessagingException;
 import com.vnco.fusiontech.common.constant.AuthoritiesConstant;
 import com.vnco.fusiontech.common.exception.RecordExistsException;
 import com.vnco.fusiontech.common.exception.RecordNotFoundException;
@@ -33,43 +32,30 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public String registerWithGoogle(String firebaseId) {
         try {
-            // FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(token);
-            // String uid = decodedToken.getUid();
-            // // todo: remove this method as not necessary to check duplicate email, handle
-            // // firebase error instead if duplicate
-            // if (userService.existsByFirebaseId(uid)) {
-            // throw new RecordExistsException();
-            // }
-
+            userService.existsByFirebaseId(firebaseId);
             UserRecord userRecord = FirebaseAuth.getInstance().getUser(firebaseId);
             CreateUserRecord createUserRequest = firebaseMapper.toCreateUserDatabaseRecord(userRecord);
             var id = userService.register(createUserRequest);
-
+            FirebaseAuth.getInstance().setCustomUserClaims(userRecord.getUid(), getInitialClaims(id));
             return FirebaseAuth.getInstance().createCustomToken(userRecord.getUid(), getInitialClaims(id));
         } catch (FirebaseAuthException e) {
             throw new RuntimeException(e);
         }
     }
 
+
     @Override
     public String registerUserWithEmail(RegisterUserWithEmailRequest request) {
-        // todo: remove this method as not necessary to check duplicate email, handle
-        // firebase error instead if duplicate
-        // if (userService.isUserExists(request.email())) {
-        // log.error("User already exists ! : {}", request.email());
-        // throw new RecordExistsException();
-        // }
         try {
             var user = firebaseMapper.toFirebaseCreateRequest(request);
             UserRecord userRecord = FirebaseAuth.getInstance().createUser(user);
             CreateUserRecord createUserRecord = firebaseMapper.toCreateUserDatabaseRecord(userRecord, request);
 
             var id = userService.register(createUserRecord);
+            FirebaseAuth.getInstance().setCustomUserClaims(userRecord.getUid(), getInitialClaims(id));
             return FirebaseAuth.getInstance().createCustomToken(userRecord.getUid(), getInitialClaims(id));
-        } catch (FirebaseAuthException e) {
-            // todo: handle invalid email, invalid password, invalid phone number,
-            // todo: handle email exists, phone number exists
-            throw new RuntimeException(e);
+        } catch (FirebaseAuthException | IllegalArgumentException e) {
+            throw new RuntimeException(e.getCause());
         }
     }
 
@@ -77,11 +63,13 @@ public class AccountServiceImpl implements AccountService {
     public void updateUser(UpdateUserRequest request, Long userId) {
         // todo: if user not exists, what would happen
         String firebaseUid = userService.getFirebaseUid(userId).orElseThrow(RecordNotFoundException::new);
-        UserRecord.UpdateRequest user = buildUpdateRequest(request, firebaseUid);
         try {
+            UserRecord.UpdateRequest user = buildUpdateRequest(request, firebaseUid);
             FirebaseAuth.getInstance().updateUser(user);
         } catch (FirebaseAuthException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e + "invalid information");
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException(e.getMessage() + "Invalid information");
         }
         userService.updateUser(request, userId);
     }
@@ -92,6 +80,17 @@ public class AccountServiceImpl implements AccountService {
         log.warn("About to delete user {}", firebaseId);
         FirebaseAuth.getInstance().deleteUser(firebaseId);
         log.info("Successfully delete user {}", firebaseId);
+    }
+
+    @Override
+    public void updatePassword(Long userId, String password) {
+        String firebaseUid = userService.getFirebaseUid(userId).orElseThrow(RecordNotFoundException::new);
+        UserRecord.UpdateRequest user = new UserRecord.UpdateRequest(firebaseUid);
+        try {
+            FirebaseAuth.getInstance().updateUser(user);
+        } catch (FirebaseAuthException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     // todo: check lại user password

@@ -1,7 +1,6 @@
 package com.vnco.fusiontech.app;
 
 import com.github.javafaker.Faker;
-import com.vnco.fusiontech.cart.CartModuleConfiguration;
 import com.vnco.fusiontech.common.CommonModuleConfiguration;
 import com.vnco.fusiontech.order.OrderModuleConfiguration;
 import com.vnco.fusiontech.product.ProductModuleConfiguration;
@@ -45,7 +44,6 @@ import java.util.stream.IntStream;
 @SpringBootApplication(exclude = { SecurityAutoConfiguration.class, ErrorMvcAutoConfiguration.class })
 @Import({
                 CommonModuleConfiguration.class,
-                CartModuleConfiguration.class,
                 ProductModuleConfiguration.class,
                 UserModuleConfiguration.class,
                 OrderModuleConfiguration.class,

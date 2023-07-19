@@ -6,10 +6,12 @@ import lombok.SneakyThrows;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -26,29 +28,25 @@ public class SecurityModuleConfiguration {
         this.firebaseTokenFilter = firebaseTokenFilter;
     }
 
+
     @SneakyThrows
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) {
-        http.cors(Customizer.withDefaults());
+        http.cors();
         http.headers().frameOptions().sameOrigin()
                 .and()
                 .csrf()
                 .ignoringRequestMatchers("/h2-console/**");
-//        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.csrf().disable();
         http.httpBasic().disable();
-        http.authorizeHttpRequests().requestMatchers("/**")
-                .permitAll();
+        http.authorizeHttpRequests()
+                .requestMatchers( HttpMethod.GET,
+                        "/api/brands", "/api/products", "/api/categories").permitAll()
+                .requestMatchers("/api/auth/register").permitAll()
+                .requestMatchers("/api/**").hasRole("ADMIN")
+                .anyRequest().authenticated();
         addFilters(http);
         return http.build();
-        //    addFilters(http);
-        // todo: add http.anonymous()
-        //    http.csrf().disable();
-        // http.authorizeHttpRequests().requestMatchers("/h2-console",
-        // "/h2-console/**").permitAll();
-        // authorizeRequest(http);
-        // http.httpBasic();
-
     }
 
     //  @Bean
@@ -71,10 +69,6 @@ public class SecurityModuleConfiguration {
 
     @SneakyThrows
     private void addFilters(HttpSecurity http) {
-//            http
-//                    .addFilterBefore(corsFilter(), UsernamePasswordAuthenticationFilter.class)
-//         .apply(jwtConfigurerAdapter())
-//        ;
         http.addFilterBefore(firebaseTokenFilter, UsernamePasswordAuthenticationFilter.class);
     }
 

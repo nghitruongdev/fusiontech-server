@@ -28,8 +28,12 @@ public class AuthRestController {
     // TODO: test register user custom token = null, cần fix bug
     @PostMapping("/register")
     public ResponseEntity<?> userRegister(@RequestBody RegisterUserWithEmailRequest request) {
-        String returnToken = accountService.registerUserWithEmail(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("token", returnToken));
+        try {
+            String returnToken = accountService.registerUserWithEmail(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("token", returnToken));
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @PostMapping("/register/google")

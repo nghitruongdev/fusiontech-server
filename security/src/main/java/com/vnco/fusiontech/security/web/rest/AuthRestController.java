@@ -46,8 +46,22 @@ public class AuthRestController {
 
     @PatchMapping("/update-profile")
     public ResponseEntity<?> updateUser(@RequestBody UpdateUserRequest request,
-            @RequestParam(name = "userId", required = true) Long userId) {
+                                        @RequestParam(name = "userId", required = true) Long userId) {
         accountService.updateUser(request, userId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/roles/{firebaseId}")
+    public ResponseEntity<?> setRole(@PathVariable("firebaseId") String firebaseId,
+                                     @RequestBody String roleName) {
+        accountService.updateUserRole(roleName, firebaseId);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/roles/{firebaseId}")
+    public ResponseEntity<?> removeRole(@PathVariable("firebaseId") String firebaseId,
+                                     @RequestBody String roleName) {
+        accountService.removeUserRole(roleName, firebaseId);
         return ResponseEntity.ok().build();
     }
 

@@ -1,10 +1,7 @@
 package com.vnco.fusiontech.security.service.impl;
 
-import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.*;
-import com.google.firebase.messaging.FirebaseMessagingException;
 import com.vnco.fusiontech.common.constant.AuthoritiesConstant;
-import com.vnco.fusiontech.common.exception.RecordExistsException;
 import com.vnco.fusiontech.common.exception.RecordNotFoundException;
 import com.vnco.fusiontech.common.service.PublicUserService;
 import com.vnco.fusiontech.common.web.request.CreateUserRecord;
@@ -18,8 +15,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -67,12 +63,64 @@ public class AccountServiceImpl implements AccountService {
             UserRecord.UpdateRequest user = buildUpdateRequest(request, firebaseUid);
             FirebaseAuth.getInstance().updateUser(user);
         } catch (FirebaseAuthException e) {
+//            AuthErrorCode.
             throw new RuntimeException(e + "invalid information");
         } catch (IllegalArgumentException e) {
+
             throw new RuntimeException(e.getMessage() + "Invalid information");
         }
         userService.updateUser(request, userId);
     }
+
+    @Override
+    public void updateUserRole(String roleName, String firebaseId) {
+        try {
+            UserRecord userRecord = FirebaseAuth.getInstance().getUser(firebaseId);
+            var claims = userRecord.getCustomClaims().get(AuthoritiesConstant.ROLE_NAME);
+
+            List<String> list = new ArrayList<>();
+
+            if (claims instanceof String)
+                list.add((String) claims);
+            if (claims instanceof List<?>)
+                list = (List<String>) claims;
+            else {
+                log.info("Invalid role data type");
+                return;
+            }
+
+            if (list.contains(roleName))
+                log.error("Role exists {}", userRecord.getCustomClaims());
+            else {
+                list.add(roleName);
+                log.info("user claims: {}", claims);
+                FirebaseAuth.getInstance().setCustomUserClaims(userRecord.getUid(), Map.of(AuthoritiesConstant.ROLE_NAME, list));
+            }
+        } catch (FirebaseAuthException e) {
+            log.error("FirebaseAuthException: {}", e.getAuthErrorCode());
+        }
+    }
+
+    @Override
+    public void removeUserRole(String roleName, String firebaseId) {
+        try {
+            UserRecord userRecord = FirebaseAuth.getInstance().getUser(firebaseId);
+            var claims = userRecord.getCustomClaims().get(AuthoritiesConstant.ROLE_NAME);
+            List<String> list = new ArrayList<>();
+
+            if (claims instanceof String)
+                list.add((String) claims);
+            if (claims instanceof List<?>)
+                list = (List<String>) claims;
+
+            list.remove(roleName);
+            log.info("User roles: {}", claims);
+            FirebaseAuth.getInstance().setCustomUserClaims(userRecord.getUid(), Map.of(AuthoritiesConstant.ROLE_NAME, list));
+        } catch (FirebaseAuthException e) {
+            log.error("Exception: {}", e.getAuthErrorCode());
+        }
+    }
+
 
     @Override
     @SneakyThrows

@@ -12,6 +12,10 @@ public interface AccountService {
 
     void updateUser(UpdateUserRequest token, Long userId);
 
+    void updateUserRole(String roleName, String firebaseId);
+
+    void removeUserRole(String roleName, String firebaseId);
+
     void deleteUser(String userId);
 
     void updatePassword(Long userId, String password);

@@ -40,11 +40,12 @@ public class SecurityModuleConfiguration {
         http.csrf().disable();
         http.httpBasic().disable();
         http.authorizeHttpRequests()
-                .requestMatchers( HttpMethod.GET,
-                        "/api/brands", "/api/products", "/api/categories").permitAll()
-                .requestMatchers("/api/auth/register").permitAll()
-                .requestMatchers("/api/**").hasRole("ADMIN")
-                .anyRequest().authenticated();
+//                .requestMatchers( HttpMethod.GET,
+//                        "/api/brands", "/api/products", "/api/categories").permitAll()
+//                .requestMatchers("/api/auth/register").permitAll()
+//                .requestMatchers("/api/**").hasRole("ADMIN")
+//                .anyRequest().authenticated();
+                .anyRequest().permitAll();
         addFilters(http);
         return http.build();
     }

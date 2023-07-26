@@ -11,6 +11,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+@Deprecated
 public class OptionalWrapper<T> {
     
     private Optional<T> optional;

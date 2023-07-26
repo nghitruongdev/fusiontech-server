@@ -6,7 +6,7 @@ import com.vnco.fusiontech.product.entity.VariantInventory;
 import com.vnco.fusiontech.product.repository.ProductVariantRepository;
 import com.vnco.fusiontech.product.service.ProductVariantService;
 import com.vnco.fusiontech.product.web.rest.request.VariantRequest;
-import com.vnco.fusiontech.product.web.rest.request.VariantMapper;
+import com.vnco.fusiontech.product.web.rest.request.mapper.VariantMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

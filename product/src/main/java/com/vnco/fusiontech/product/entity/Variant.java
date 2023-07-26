@@ -6,6 +6,7 @@ import com.vnco.fusiontech.common.utils.BeanUtils;
 import com.vnco.fusiontech.product.service.ProductVariantService;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.NaturalId;
@@ -49,16 +50,9 @@ public class Variant implements Serializable {
     // private Boolean active;
 
     // todo: remember to add optional
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @ToString.Exclude
-    // @NotNull
     private Product product;
-    //
-    // @OneToMany(mappedBy = "variant", cascade = CascadeType.ALL, orphanRemoval =
-    // true)
-    // @Builder.Default
-    // @ToString.Exclude
-    // private List<VariantAttribute> attributes = new ArrayList<>();
 
     @OneToMany(mappedBy = "variant", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
@@ -67,7 +61,11 @@ public class Variant implements Serializable {
     private List<VariantInventoryDetail> inventories = new ArrayList<>();
 
     @ManyToMany(cascade = { CascadeType.MERGE, CascadeType.REFRESH }, fetch = FetchType.LAZY)
-    @JoinTable(name = "variant_specification", joinColumns = @JoinColumn(name = "variant_id"), inverseJoinColumns = @JoinColumn(name = "specification_id"))
+    @JoinTable(name = DBConstant.VARIANT_SPEC_TABLE
+            , joinColumns = @JoinColumn(name = "variant_id"),
+               inverseJoinColumns =
+    @JoinColumn(name =
+                                                                                                                  "specification_id"))
     @Builder.Default
     @ToString.Exclude
     @JsonIgnore

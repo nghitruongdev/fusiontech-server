@@ -1,6 +1,7 @@
-package com.vnco.fusiontech.product.web.rest.request;
+package com.vnco.fusiontech.product.web.rest.request.mapper;
 
 import com.vnco.fusiontech.product.entity.Variant;
+import com.vnco.fusiontech.product.web.rest.request.VariantRequest;
 import org.mapstruct.*;
 
 @Mapper(componentModel = "spring",collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED,
@@ -13,14 +14,6 @@ public interface VariantMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "inventories", ignore = true)
-//    @Mapping(target = "attributes", ignore = true)
     void partialUpdateVariant(VariantRequest req, @MappingTarget Variant entity);
     
-//    List<VariantAttribute> toAttributes(List<VariantAttributeRequest> requests);
-    
-//   default void updateListAttributes(VariantRequest req, @MappingTarget Variant entity){
-//       if(req.attributes()==null || req.attributes().isEmpty() ) return;
-//       var list = toAttributes(req.attributes());
-//        entity.
-//    }
 }

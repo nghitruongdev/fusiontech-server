@@ -1,7 +1,6 @@
 package com.vnco.fusiontech.product.service;
 
 import com.vnco.fusiontech.product.entity.Product;
-import com.vnco.fusiontech.product.entity.projection.SpecificationNameWithValues;
 import com.vnco.fusiontech.product.entity.projection.ProductSpecificationDTO;
 import com.vnco.fusiontech.product.web.rest.request.CreateProductRequest;
 import com.vnco.fusiontech.product.web.rest.request.UpdateProductRequest;
@@ -27,8 +26,6 @@ public interface ProductService {
     void addUserFavoriteProduct(Long productId, Long uid);
 
     void removeUserFavoriteProduct(Long productId, Long uid);
-
-    List<SpecificationNameWithValues> findDistinctNameWithAllAttributes(Long productId);
 
     List<ProductSpecificationDTO> getProductSpecifications(Long productId);
 }

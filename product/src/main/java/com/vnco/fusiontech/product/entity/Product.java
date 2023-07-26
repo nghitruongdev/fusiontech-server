@@ -117,5 +117,4 @@ public class Product extends RepresentationModel<Product> implements Serializabl
         return favorites.contains(new User(uid));
     }
 
-    // public List<Product> getFavoriteProductByUserId(UUID uid){return favorites.;}
 }

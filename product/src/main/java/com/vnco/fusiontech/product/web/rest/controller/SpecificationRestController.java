@@ -20,9 +20,4 @@ public class SpecificationRestController
         return ResponseEntity.ok(repository.findAllDistinctName());
     }
     
-    @GetMapping("/specifications/search/distinct-names-with-all-values")
-    public ResponseEntity<?> getAllDistinctNamesWithValues(){
-        log.warn("Using repository directly inside controller");
-        return ResponseEntity.ok(repository.findAllDistinctName());
-    }
 }

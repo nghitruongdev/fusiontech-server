@@ -1,4 +1,4 @@
-package com.vnco.fusiontech.product.mapper;
+package com.vnco.fusiontech.product.web.rest.request.mapper;
 
 import com.vnco.fusiontech.product.entity.Product;
 import com.vnco.fusiontech.product.web.rest.request.CreateProductRequest;

@@ -17,6 +17,6 @@ public record CreateProductRequest(
         String summary,
         String description,
         List<String> features,
-        List<SpecificationRequest> specifications
+        List<ListSpecificationRequest> specifications
 ) {
 }

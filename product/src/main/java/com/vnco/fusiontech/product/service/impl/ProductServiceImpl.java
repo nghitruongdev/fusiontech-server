@@ -6,18 +6,15 @@ import com.vnco.fusiontech.common.service.PublicUserService;
 import com.vnco.fusiontech.product.entity.Product;
 import com.vnco.fusiontech.product.entity.Specification;
 import com.vnco.fusiontech.product.entity.Variant;
-import com.vnco.fusiontech.product.entity.projection.SpecificationNameWithValues;
 import com.vnco.fusiontech.product.entity.projection.ProductSpecificationDTO;
 import com.vnco.fusiontech.product.entity.proxy.User;
-import com.vnco.fusiontech.product.mapper.ProductMapper;
+import com.vnco.fusiontech.product.web.rest.request.mapper.ProductMapper;
 import com.vnco.fusiontech.product.repository.ProductRepository;
-import com.vnco.fusiontech.product.repository.ProductVariantRepository;
 import com.vnco.fusiontech.product.repository.SpecificationRepository;
 import com.vnco.fusiontech.product.service.ProductService;
 import com.vnco.fusiontech.product.web.rest.request.CreateProductRequest;
-import com.vnco.fusiontech.product.web.rest.request.SpecificationRequest;
+import com.vnco.fusiontech.product.web.rest.request.ListSpecificationRequest;
 import com.vnco.fusiontech.product.web.rest.request.UpdateProductRequest;
-import jakarta.persistence.EntityManager;
 import jakarta.validation.Valid;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -35,8 +32,6 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final PublicUserService userService;
     private final ProductMapper mapper;
-    private final EntityManager entityManager;
-    private final ProductVariantRepository variantRepository;
     private final SpecificationRepository specificationRepository;
     @Override
     public List<Product> getAllProducts() {
@@ -114,12 +109,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<SpecificationNameWithValues> findDistinctNameWithAllAttributes(@NonNull Long productId) {
-        throw new UnsupportedOperationException("Deprecated");
-    }
-    
-    @Override
-    @Transactional(readOnly = true)
     public List<ProductSpecificationDTO> getProductSpecifications(Long productId) {
         var product = productRepository.findById(productId).orElseThrow();
              var specs =   product.getVariants().stream()
@@ -133,12 +122,12 @@ public class ProductServiceImpl implements ProductService {
               }).toList();
     }
     
-    public List<Variant> createProductVariant(List<SpecificationRequest> specs){
+    public List<Variant> createProductVariant(List<ListSpecificationRequest> specs){
         if(specs == null || specs.isEmpty()){
             return List.of();
         }
-        List<SpecificationRequest> multipleValueSpecs = new ArrayList<>();
-       List<SpecificationRequest> singleValueSpecs = new ArrayList<>();
+        List<ListSpecificationRequest> multipleValueSpecs = new ArrayList<>();
+       List<ListSpecificationRequest>  singleValueSpecs   = new ArrayList<>();
        specs.forEach(spec ->{
            var list = spec.values();
            if(list == null || list.isEmpty()){
@@ -157,7 +146,7 @@ public class ProductServiceImpl implements ProductService {
         return variants;
     }
     
-    private List<Variant> create(@NonNull List<SpecificationRequest> multiValueSpecs
+    private List<Variant> create(@NonNull List<ListSpecificationRequest> multiValueSpecs
                                  ) {
         if(multiValueSpecs.isEmpty()) return List.of(Variant.builder().build());
         var localList = new ArrayList<>(multiValueSpecs);

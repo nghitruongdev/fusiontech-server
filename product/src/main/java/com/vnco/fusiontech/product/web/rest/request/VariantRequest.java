@@ -34,6 +34,7 @@ public record VariantRequest(
     }
 }
 
+@Deprecated
 record VariantAttributeRequest(
         @NotBlank String name,
         @NotBlank String value) {

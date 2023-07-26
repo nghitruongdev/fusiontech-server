@@ -61,14 +61,6 @@ public interface SpecificationRepository extends JpaRepository<Specification, Lo
     // List<ProductAttributeDTO> findDistinctNameAndAttributes(@Param ("productId")
     // Long productId);
     
-    //        @Query("SELECT DISTINCT va.name FROM VariantAttribute va WHERE va.variant.product.id=:productId")
-    //        @RestResource(exported = false)
-    //        List<String> findDistinctAttributeNames(@Param("productId") Long productId);
-    
-    //        @Query("SELECT DISTINCT va.value FROM VariantAttribute va WHERE va.name in :names")
-    //        @RestResource(exported = false)
-    //        List<String> findAttributesByName(@Param("names") List<String> names);
-    
     // @Query (
     // """
     // SELECT DISTINCT va.name, GROUP_CONCAT(DISTINCT va.value) FROM

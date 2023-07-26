@@ -87,8 +87,8 @@ public class OrderServiceImpl implements OrderService {
     
     private void denyOrder(Order order) {
         if (order.getStatus() != OrderStatus.PLACED) {
-            throw new NotAcceptedRequestException(String.format("Không thể thay đổi trạng thái đơn hàng. Trạng thái " +
-                                                                "đơn hàng mới không hợp lệ."));
+            throw new NotAcceptedRequestException("Không thể thay đổi trạng thái đơn hàng. Trạng thái " +
+                                                  "đơn hàng mới không hợp lệ.");
         }
         
         order.setStatus(OrderStatus.DENIED);

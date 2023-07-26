@@ -1,4 +1,4 @@
-package com.vnco.fusiontech.product.entity;
+package com.vnco.fusiontech.product.entity.projection;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.vnco.fusiontech.product.entity.proxy.User;

@@ -18,27 +18,30 @@ import java.util.Objects;
 @AllArgsConstructor
 @ToString
 @Entity
-@Table (name = DBConstant.BRAND_TABLE)
+@Table(name = DBConstant.BRAND_TABLE)
 public class Brand implements Serializable {
     @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    
+
     @NotBlank
-//    @NaturalId
+    // @NaturalId
     private String name;
-    
+
     private String img;
-    
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Brand brand)) return false;
-    
-        if (!Objects.equals(id, brand.id)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof Brand brand))
+            return false;
+
+        if (!Objects.equals(id, brand.id))
+            return false;
         return Objects.equals(name, brand.name);
     }
-    
+
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;

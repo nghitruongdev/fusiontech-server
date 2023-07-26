@@ -6,9 +6,9 @@ public interface AuthoritiesConstant {
     String ADMIN = "admin";
     String USER = "user";
     String ANONYMOUS = "anonymous";
-    
+
     String SYSTEM = "SYSTEM";
-    String ROLE_NAME = "role";
+    String ROLE_NAME = "roles";
     String ROLE_PREFIX = "ROLE_";
 
     static List<String> defaults() {

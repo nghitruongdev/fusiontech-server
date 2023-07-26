@@ -4,29 +4,28 @@ import com.vnco.fusiontech.common.exception.InvalidRequestException;
 import com.vnco.fusiontech.common.exception.RecordNotFoundException;
 import com.vnco.fusiontech.common.service.PublicUserService;
 import com.vnco.fusiontech.product.entity.Product;
-import com.vnco.fusiontech.product.entity.VariantAttribute;
+import com.vnco.fusiontech.product.entity.Specification;
 import com.vnco.fusiontech.product.entity.Variant;
+import com.vnco.fusiontech.product.entity.projection.SpecificationNameWithValues;
+import com.vnco.fusiontech.product.entity.projection.ProductSpecificationDTO;
 import com.vnco.fusiontech.product.entity.proxy.User;
 import com.vnco.fusiontech.product.mapper.ProductMapper;
 import com.vnco.fusiontech.product.repository.ProductRepository;
+import com.vnco.fusiontech.product.repository.ProductVariantRepository;
+import com.vnco.fusiontech.product.repository.SpecificationRepository;
 import com.vnco.fusiontech.product.service.ProductService;
 import com.vnco.fusiontech.product.web.rest.request.CreateProductRequest;
-import com.vnco.fusiontech.product.web.rest.request.ProductAttributeRequest;
+import com.vnco.fusiontech.product.web.rest.request.SpecificationRequest;
 import com.vnco.fusiontech.product.web.rest.request.UpdateProductRequest;
-
+import jakarta.persistence.EntityManager;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
-import java.util.function.BiFunction;
+import java.util.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -36,7 +35,9 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final PublicUserService userService;
     private final ProductMapper mapper;
-
+    private final EntityManager entityManager;
+    private final ProductVariantRepository variantRepository;
+    private final SpecificationRepository specificationRepository;
     @Override
     public List<Product> getAllProducts() {
         return productRepository.findAll();
@@ -48,16 +49,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional()
     public Long createProduct(CreateProductRequest request) {
         var product = mapper.toProduct(request);
-        var variants = createProductVariants(request.attributes());
+        var variants = createProductVariant(request.specifications());
+        variants.stream().flatMap(variant -> variant.getSpecifications().stream()).forEach(specificationRepository::save);
         product.setVariants(variants);
-
-        // variants.forEach(variant -> {
-        // variant.setActive(true);
-        // });
-        // todo: should we validate with publish Date?
-
         return productRepository.save(product).getId();
     }
 
@@ -76,8 +73,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void addUserFavoriteProduct(@NonNull Long productId, @NonNull Long uid) {
-        //completed: whatif product not exists
-        //completed: whatif product has exists
+        // completed: whatif product not exists
+        // completed: whatif product has exists
 
         // todo: whatif user has not liked this product before
         // todo: whatif user already liked this product before
@@ -99,7 +96,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private Product validateFavoriteRequest(Long productId, Long uid) {
-        //todo: find product, if not exists throw exception
+        // todo: find product, if not exists throw exception
         var product = productRepository.findById(productId).orElseThrow(RecordNotFoundException::new);
 
         // todo: findUser, if not found throw exception
@@ -109,39 +106,85 @@ public class ProductServiceImpl implements ProductService {
         return product;
     }
 
-    private List<Variant> createProductVariants(@NotEmpty List<ProductAttributeRequest> attributes) {
-        var localAttributes = new ArrayList<>(attributes);
-        var firstGroup = localAttributes.remove(0);
+    @Override
+    public void updateProduct(Long id, @Valid UpdateProductRequest req) {
+        var product = productRepository.findById(id).orElseThrow(RecordNotFoundException::new);
+        mapper.partialUpdateProduct(req, product);
+    }
 
-        BiFunction<String, String, VariantAttribute> toProductAttribute = (name, value) -> VariantAttribute.builder()
-                .name(name)
-                .value(value)
-                .build();
+    @Override
+    @Transactional(readOnly = true)
+    public List<SpecificationNameWithValues> findDistinctNameWithAllAttributes(@NonNull Long productId) {
+        throw new UnsupportedOperationException("Deprecated");
+    }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public List<ProductSpecificationDTO> getProductSpecifications(Long productId) {
+        var product = productRepository.findById(productId).orElseThrow();
+             var specs =   product.getVariants().stream()
+                       .flatMap(variant -> variant.getSpecifications().stream()).toList();
+             var distinctNames = specs.stream().map(Specification::getName).distinct().toList();
+
+             return  distinctNames.stream().map(name -> {
+                 var values =
+                         specs.stream().filter(specification -> specification.getName().equals(name)).distinct().toList();
+                    return new ProductSpecificationDTO(name, values);
+              }).toList();
+    }
+    
+    public List<Variant> createProductVariant(List<SpecificationRequest> specs){
+        if(specs == null || specs.isEmpty()){
+            return List.of();
+        }
+        List<SpecificationRequest> multipleValueSpecs = new ArrayList<>();
+       List<SpecificationRequest> singleValueSpecs = new ArrayList<>();
+       specs.forEach(spec ->{
+           var list = spec.values();
+           if(list == null || list.isEmpty()){
+               throw new RuntimeException("Spec value is not valid");
+           }
+           if(list.size() == 1){
+               singleValueSpecs.add(spec);
+           }else{
+               multipleValueSpecs.add(spec);
+           }
+       });
+        var singleValueList =
+                singleValueSpecs.stream().flatMap(spec -> spec.values().stream()).toList();
+        var variants =  create(multipleValueSpecs);
+        variants.forEach(variant -> singleValueList.forEach(variant::addSpecification));
+        return variants;
+    }
+    
+    private List<Variant> create(@NonNull List<SpecificationRequest> multiValueSpecs
+                                 ) {
+        if(multiValueSpecs.isEmpty()) return List.of(Variant.builder().build());
+        var localList = new ArrayList<>(multiValueSpecs);
+        
+        var firstGroup = localList.remove(0);
 
         var baseList = new ArrayList<>(
-                firstGroup.values().stream().map(value -> toProductAttribute.apply(firstGroup.name(), value))
-                        .map(attribute -> new LinkedList<>(List.of(attribute))).toList());
-        localAttributes.forEach((group) -> {
+                firstGroup.values().stream()
+                          .map(spec -> new LinkedList<>(List.of(spec))).toList());
+        
+        localList.forEach((group) -> {
             var result = baseList.stream().flatMap(
                     base -> group.values().stream().map(value -> {
                         var list = new LinkedList<>(base);
-                        list.add(toProductAttribute.apply(group.name(), value));
+                        list.add(value);
                         return list;
                     })).toList();
             baseList.clear();
             baseList.addAll(result);
         });
 
+ 
         return baseList.stream().map((list) -> {
             var variant = new Variant();
-            variant.setAttributes(list);
+            list.forEach(variant::addSpecification);
             return variant;
         }).toList();
     }
-
-    @Override
-    public void updateProduct(Long id, @Valid UpdateProductRequest req) {
-        var product = productRepository.findById(id).orElseThrow(RecordNotFoundException::new);
-        mapper.partialUpdateProduct(req, product);
-    }
+    
 }

@@ -3,6 +3,7 @@ package com.vnco.fusiontech.product.entity.projection;
 import org.springframework.data.rest.core.config.Projection;
 
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import com.vnco.fusiontech.common.entity.FirebaseImage;
 import com.vnco.fusiontech.product.entity.Brand;
 import com.vnco.fusiontech.product.entity.Category;
 import com.vnco.fusiontech.product.entity.Product;
@@ -20,15 +21,13 @@ public interface ProductBasic {
 
   String getDescription();
 
-  String getThumbnail();
+  FirebaseImage getThumbnail();
 
   Integer getReviewCount();
 
   Integer getAvgRating();
 
   Object getFeatures();
-
-  Object getSpecifications();
 
   @JsonIncludeProperties("id")
   Brand getBrand();

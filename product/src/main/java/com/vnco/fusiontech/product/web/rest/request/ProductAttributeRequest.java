@@ -7,6 +7,7 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
+@Deprecated
 public record ProductAttributeRequest(
         @NotBlank String name,
         @NotEmpty List<String> values

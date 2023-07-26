@@ -1,14 +1,16 @@
 package com.vnco.fusiontech.product.service;
 
 import com.vnco.fusiontech.product.entity.Product;
+import com.vnco.fusiontech.product.entity.projection.SpecificationNameWithValues;
+import com.vnco.fusiontech.product.entity.projection.ProductSpecificationDTO;
 import com.vnco.fusiontech.product.web.rest.request.CreateProductRequest;
 import com.vnco.fusiontech.product.web.rest.request.UpdateProductRequest;
-
 import jakarta.validation.Valid;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.UUID;
 
+@Component
 public interface ProductService {
     List<Product> getAllProducts();
 
@@ -23,5 +25,10 @@ public interface ProductService {
     List<Product> searchProduct(String keyword);
 
     void addUserFavoriteProduct(Long productId, Long uid);
+
     void removeUserFavoriteProduct(Long productId, Long uid);
+
+    List<SpecificationNameWithValues> findDistinctNameWithAllAttributes(Long productId);
+
+    List<ProductSpecificationDTO> getProductSpecifications(Long productId);
 }

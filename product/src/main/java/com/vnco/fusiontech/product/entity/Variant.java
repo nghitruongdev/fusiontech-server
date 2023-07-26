@@ -12,9 +12,7 @@ import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Accessors(chain = true)
 @Builder
@@ -27,8 +25,8 @@ import java.util.List;
 @Table(name = DBConstant.PRODUCT_VARIANT_TABLE)
 public class Variant implements Serializable {
     public interface PROJECTION {
-        String PRODUCT = "product";
-        String WITH_ATTRIBUTE = "attributes";
+        String PRODUCT      = "product";
+        String WITH_SPECS   = "specifications";
         String PRODUCT_NAME = "product-name";
         String BASIC = "basic";
     }
@@ -50,14 +48,17 @@ public class Variant implements Serializable {
 
     // private Boolean active;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    // todo: remember to add optional
+    @ManyToOne(fetch = FetchType.LAZY)
     @ToString.Exclude
+    // @NotNull
     private Product product;
-
-    @OneToMany(mappedBy = "variant", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    @ToString.Exclude
-    private List<VariantAttribute> attributes = new ArrayList<>();
+    //
+    // @OneToMany(mappedBy = "variant", cascade = CascadeType.ALL, orphanRemoval =
+    // true)
+    // @Builder.Default
+    // @ToString.Exclude
+    // private List<VariantAttribute> attributes = new ArrayList<>();
 
     @OneToMany(mappedBy = "variant", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
@@ -65,20 +66,21 @@ public class Variant implements Serializable {
     @JsonIgnore
     private List<VariantInventoryDetail> inventories = new ArrayList<>();
 
-    public void addAttribute(VariantAttribute attribute) {
-        attribute.setVariant(this);
-        attributes.add(attribute);
+    @ManyToMany(cascade = { CascadeType.MERGE, CascadeType.REFRESH }, fetch = FetchType.LAZY)
+    @JoinTable(name = "variant_specification", joinColumns = @JoinColumn(name = "variant_id"), inverseJoinColumns = @JoinColumn(name = "specification_id"))
+    @Builder.Default
+    @ToString.Exclude
+    @JsonIgnore
+    private Set<Specification> specifications = new HashSet<>();
+    
+    public void addSpecification(Specification spec) {
+        specifications.add(spec);
+        spec.getVariants().add(this);
     }
 
-    public void removeAttribute(VariantAttribute attribute) {
-        attribute.setVariant(null);
-        attributes.removeIf(attribute1 -> attribute1.getId().equals(attribute.getId()));
-    }
-
-    public void setAttributes(Collection<VariantAttribute> attributes) {
-        this.attributes.forEach(attribute -> attribute.setVariant(null));
-        this.attributes.clear();
-        attributes.forEach(this::addAttribute);
+    public void removeSpecification(Specification spec) {
+        specifications.remove(spec);
+        spec.getVariants().remove(this);
     }
 
     public void addInventory(VariantInventoryDetail inventory) {
@@ -89,5 +91,22 @@ public class Variant implements Serializable {
     public long getAvailableQuantity() {
         var service = BeanUtils.getBean(ProductVariantService.class);
         return service.getAvailableQuantity(this.id);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        Variant variant = (Variant) o;
+
+        return Objects.equals(id, variant.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
     }
 }

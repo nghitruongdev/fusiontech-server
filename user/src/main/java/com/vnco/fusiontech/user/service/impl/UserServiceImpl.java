@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Long register(CreateUserRecord record) {
         if (repository.existsByEmail(record.email()))
-            throw new RecordExistsException("User already exists!");
+            throw new RecordExistsException("User already exists!" + record.email());
 
         var user = User.builder()
                 .firstName(record.firstName())

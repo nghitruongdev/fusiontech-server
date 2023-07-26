@@ -2,6 +2,7 @@ package com.vnco.fusiontech.product.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vnco.fusiontech.common.constant.DBConstant;
+import com.vnco.fusiontech.common.entity.FirebaseImage;
 import com.vnco.fusiontech.product.entity.proxy.User;
 
 import io.hypersistence.utils.hibernate.type.json.JsonType;
@@ -42,7 +43,9 @@ public class Product extends RepresentationModel<Product> implements Serializabl
 
     private String description;
 
-    private String thumbnail;
+    @Type(JsonType.class)
+    @Column(columnDefinition = "json")
+    private FirebaseImage thumbnail;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(foreignKey = @ForeignKey(foreignKeyDefinition = "FOREIGN KEY (category_id) REFERENCES Category(id) ON DELETE SET NULL ON "
@@ -65,11 +68,6 @@ public class Product extends RepresentationModel<Product> implements Serializabl
     @Column(columnDefinition = "json")
     @Builder.Default
     private List<String> features = new ArrayList<>();
-
-    @Type(JsonType.class)
-    @Column(columnDefinition = "json")
-    @Builder.Default
-    private Map<String, String> specifications = new HashMap<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @ToString.Exclude

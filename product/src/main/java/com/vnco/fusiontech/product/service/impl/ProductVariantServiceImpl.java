@@ -5,6 +5,8 @@ import com.vnco.fusiontech.product.entity.Variant;
 import com.vnco.fusiontech.product.entity.VariantInventory;
 import com.vnco.fusiontech.product.repository.ProductVariantRepository;
 import com.vnco.fusiontech.product.service.ProductVariantService;
+import com.vnco.fusiontech.product.web.rest.request.VariantRequest;
+import com.vnco.fusiontech.product.web.rest.request.VariantMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,8 @@ public class ProductVariantServiceImpl implements ProductVariantService {
 
     private PublicOrderService orderService;
 
+    private final VariantMapper mapper;
+
     @Autowired
     @Lazy
     public void setOrderService(PublicOrderService orderService) {
@@ -41,8 +45,9 @@ public class ProductVariantServiceImpl implements ProductVariantService {
     }
 
     @Override
-    public Variant createProductVariant(Variant productVariant) {
-        return repository.save(productVariant);
+    public Variant createVariant(VariantRequest request) {
+        var variant = mapper.toVariant(request);
+        return repository.save(variant);
     }
 
     @Override
@@ -66,7 +71,13 @@ public class ProductVariantServiceImpl implements ProductVariantService {
     public long getAvailableQuantity(Long variantId) {
         return orderService.getAvailableQuantity(variantId);
     }
-
+    
+    @Override
+    public void updateVariant(Long id, VariantRequest request) {
+        var variant = repository.findById(id).orElseThrow();
+        mapper.partialUpdateVariant(request, variant);
+    }
+    
     @Override
     public void addInventory(Long variantId, VariantInventory inventory) {
         throw new UnsupportedOperationException();

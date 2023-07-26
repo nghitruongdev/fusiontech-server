@@ -11,8 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
-
 @CrossOrigin("*")
 @RepositoryRestController
 @RequiredArgsConstructor
@@ -61,76 +59,86 @@ public class ProductRestController {
         return ResponseEntity.ok().build();
     }
 
-//    @GetMapping("/products/favorites")
-//    public ResponseEntity<List<Product>> getFavoriteProductsByUserId(@RequestParam ("uid") UUID uid) {
-//        List<Product> favoriteProducts = productService.getFavoriteProductsByUserId(uid);
-//        return ResponseEntity.ok(favoriteProducts);
+//    @GetMapping("/products/search/distinct-attributes-name-with-all-values")
+//    @ResponseStatus(HttpStatus.NO_CONTENT)
+//    public ResponseEntity<?> getAttributeByProduct(@RequestParam("pid") Long pid) {
+//        // var result = productRepository.findDistinctNameAndAttributes(pid);
+//        var result = productService.findDistinctNameWithAllAttributes(pid);
+//        return ResponseEntity.ok(result);
 //    }
 
+    // @GetMapping("/products/favorites")
+    // public ResponseEntity<List<Product>>
+    // getFavoriteProductsByUserId(@RequestParam ("uid") UUID uid) {
+    // List<Product> favoriteProducts =
+    // productService.getFavoriteProductsByUserId(uid);
+    // return ResponseEntity.ok(favoriteProducts);
+    // }
 
     // tim kiem san pham
-    //    @GetMapping("/search")
-    //    public List<Product> searchProduct(@RequestParam("keyword")String keyword){
-    //        List<Product> products = productService.searchProduct(keyword);
-    //        return products;
-    //    }
-    
-    
-    //    @PostMapping("/products/{productId}/images")
-    //    public ResponseEntity<String> uploadProductImages(@PathVariable Long productId,
-    //                                                      @RequestParam("images") List<MultipartFile> images) {
-    //        // Xử lý lưu trữ các hình ảnh lên Firebase Storage
-    //        for (MultipartFile image : images) {
-    //            // Upload image lên Firebase Storage và nhận URL của nó
-    //            String imageUrl = uploadImageToFirebase(image);
+    // @GetMapping("/search")
+    // public List<Product> searchProduct(@RequestParam("keyword")String keyword){
+    // List<Product> products = productService.searchProduct(keyword);
+    // return products;
+    // }
+
+    // @PostMapping("/products/{productId}/images")
+    // public ResponseEntity<String> uploadProductImages(@PathVariable Long
+    // productId,
+    // @RequestParam("images") List<MultipartFile> images) {
+    // // Xử lý lưu trữ các hình ảnh lên Firebase Storage
+    // for (MultipartFile image : images) {
+    // // Upload image lên Firebase Storage và nhận URL của nó
+    // String imageUrl = uploadImageToFirebase(image);
     //
-    //            // Lưu URL của hình ảnh vào cơ sở dữ liệu hoặc xử lý khác theo nhu cầu của bạn
-    //            // Ví dụ:
-    //            ProductImage productImage = new ProductImage();
-    //            productImage.setProductId(productId);
-    //            productImage.setImageUrl(imageUrl);
-    //            productImageRepository.save(productImage);
-    //        }
+    // // Lưu URL của hình ảnh vào cơ sở dữ liệu hoặc xử lý khác theo nhu cầu của
+    // bạn
+    // // Ví dụ:
+    // ProductImage productImage = new ProductImage();
+    // productImage.setProductId(productId);
+    // productImage.setImageUrl(imageUrl);
+    // productImageRepository.save(productImage);
+    // }
     //
-    //        // Trả về thông báo thành công
-    //        return ResponseEntity.ok("Images uploaded successfully.");
-//    }
-//
-//    private String uploadImageToFirebase(MultipartFile image) {
-//        try {
-//            // Tạo tên ngẫu nhiên cho hình ảnh để tránh xung đột tên file
-//            String fileName = UUID.randomUUID().toString();
-//
-//            // Lấy đường dẫn của hình ảnh trong Firebase Storage
-//            String firebasePath = "products/" + fileName;
-//
-//            // Tạo tệp tin tạm trong hệ thống tệp tin
-//            File tempFile = File.createTempFile(fileName, ".tmp");
-//
-//            // Ghi dữ liệu hình ảnh từ MultipartFile vào tệp tin tạm
-//            image.transferTo(tempFile);
-//
-//            // Tạo đối tượng StorageReference để tham chiếu đến Firebase Storage
-//            StorageReference storageRef = storage.getReference(firebasePath);
-//
-//            // Upload hình ảnh lên Firebase Storage
-//            UploadTask uploadTask = storageRef.putFile(Uri.fromFile(tempFile));
-//
-//            // Chờ cho đến khi quá trình upload hoàn thành
-//            Tasks.await(uploadTask);
-//
-//            // Lấy URL của hình ảnh sau khi upload thành công
-//            String imageUrl = storageRef.getDownloadUrl().getResult().toString();
-//
-//            // Xóa tệp tin tạm
-//            tempFile.delete();
-//
-//            return imageUrl;
-//        } catch (Exception e) {
-//            // Xử lý lỗi nếu có
-//            e.printStackTrace();
-//            return null;
-//        }
-//    }
+    // // Trả về thông báo thành công
+    // return ResponseEntity.ok("Images uploaded successfully.");
+    // }
+    //
+    // private String uploadImageToFirebase(MultipartFile image) {
+    // try {
+    // // Tạo tên ngẫu nhiên cho hình ảnh để tránh xung đột tên file
+    // String fileName = UUID.randomUUID().toString();
+    //
+    // // Lấy đường dẫn của hình ảnh trong Firebase Storage
+    // String firebasePath = "products/" + fileName;
+    //
+    // // Tạo tệp tin tạm trong hệ thống tệp tin
+    // File tempFile = File.createTempFile(fileName, ".tmp");
+    //
+    // // Ghi dữ liệu hình ảnh từ MultipartFile vào tệp tin tạm
+    // image.transferTo(tempFile);
+    //
+    // // Tạo đối tượng StorageReference để tham chiếu đến Firebase Storage
+    // StorageReference storageRef = storage.getReference(firebasePath);
+    //
+    // // Upload hình ảnh lên Firebase Storage
+    // UploadTask uploadTask = storageRef.putFile(Uri.fromFile(tempFile));
+    //
+    // // Chờ cho đến khi quá trình upload hoàn thành
+    // Tasks.await(uploadTask);
+    //
+    // // Lấy URL của hình ảnh sau khi upload thành công
+    // String imageUrl = storageRef.getDownloadUrl().getResult().toString();
+    //
+    // // Xóa tệp tin tạm
+    // tempFile.delete();
+    //
+    // return imageUrl;
+    // } catch (Exception e) {
+    // // Xử lý lỗi nếu có
+    // e.printStackTrace();
+    // return null;
+    // }
+    // }
 
 }

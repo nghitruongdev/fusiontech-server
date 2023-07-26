@@ -44,6 +44,7 @@ public class AccountServiceImpl implements AccountService {
             UserRecord userRecord = FirebaseAuth.getInstance().getUser(firebaseId);
             CreateUserRecord createUserRequest = firebaseMapper.toCreateUserDatabaseRecord(userRecord);
             var id = userService.register(createUserRequest);
+            FirebaseAuth.getInstance().setCustomUserClaims(userRecord.getUid(), getInitialClaims(id));
 
             return FirebaseAuth.getInstance().createCustomToken(userRecord.getUid(), getInitialClaims(id));
         } catch (FirebaseAuthException e) {
@@ -65,11 +66,14 @@ public class AccountServiceImpl implements AccountService {
             CreateUserRecord createUserRecord = firebaseMapper.toCreateUserDatabaseRecord(userRecord, request);
 
             var id = userService.register(createUserRecord);
+            FirebaseAuth.getInstance().setCustomUserClaims(userRecord.getUid(), getInitialClaims(id));
             return FirebaseAuth.getInstance().createCustomToken(userRecord.getUid(), getInitialClaims(id));
         } catch (FirebaseAuthException e) {
             // todo: handle invalid email, invalid password, invalid phone number,
             // todo: handle email exists, phone number exists
             throw new RuntimeException(e);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException(e + ": " + e.getMessage());
         }
     }
 
@@ -94,6 +98,20 @@ public class AccountServiceImpl implements AccountService {
         log.info("Successfully delete user {}", firebaseId);
     }
 
+    @Override
+    public void updatePassword(Long userId, String password) {
+        String firebaseId = userService.getFirebaseUid(userId).orElseThrow(RecordNotFoundException::new);
+        UserRecord.UpdateRequest user = new UserRecord.UpdateRequest(firebaseId);
+        if (password != null)
+            throw new IllegalArgumentException("Invalid password: " + password);
+        user.setPassword(password);
+        try {
+            FirebaseAuth.getInstance().updateUser(user);
+        } catch (FirebaseAuthException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     // todo: check lại user password
     private UserRecord.UpdateRequest buildUpdateRequest(UpdateUserRequest request, String uid) {
         UserRecord.UpdateRequest updateUser = new UserRecord.UpdateRequest(uid);
@@ -109,13 +127,12 @@ public class AccountServiceImpl implements AccountService {
             updateUser.setPhoneNumber(request.phoneNumber());
         if (request.photoUrl() != null)
             updateUser.setPhotoUrl(request.photoUrl());
-
         return updateUser;
     }
 
     private Map<String, Object> getInitialClaims(Long id) {
         return Map.of(AuthoritiesConstant.ROLE_NAME, List.of(AuthoritiesConstant.USER),
-                "userId", id);
+                "appUserId", id);
     }
 
 }

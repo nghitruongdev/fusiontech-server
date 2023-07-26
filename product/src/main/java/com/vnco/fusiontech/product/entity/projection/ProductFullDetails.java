@@ -1,6 +1,7 @@
 package com.vnco.fusiontech.product.entity.projection;
 
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import com.vnco.fusiontech.common.entity.FirebaseImage;
 import com.vnco.fusiontech.product.entity.Brand;
 import com.vnco.fusiontech.product.entity.Category;
 import com.vnco.fusiontech.product.entity.Product;
@@ -22,15 +23,13 @@ public interface ProductFullDetails {
 
     String getDescription();
 
-    String getThumbnail();
+    FirebaseImage getThumbnail();
 
     Integer getReviewCount();
 
     Integer getAvgRating();
 
     Object getFeatures();
-
-    Object getSpecifications();
 
     @JsonIncludeProperties("id")
     Brand getBrand();

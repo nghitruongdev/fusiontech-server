@@ -11,17 +11,17 @@ import java.util.Optional;
 
 @RepositoryRestResource
 public interface UserRepository extends JpaRepository<User, Long> {
-    
-    @RestResource (path = "many", rel = "many")
+
+    @RestResource(path = "many", rel = "many")
     List<User> findAllByIdIn(@Param("ids") List<Long> ids);
-    
+
     @RestResource
     boolean existsByEmail(@Param("email") String email);
-    
+
     @RestResource
     boolean existsByPhoneNumber(@Param("phone") String phoneNumber);
-    
+
     @RestResource(path = "findByFirebaseId")
-    Optional<User> findByFirebaseUid(@Param ("firebaseId")String firebaseUid);
-    
+    Optional<User> findByFirebaseUid(@Param("firebaseId") String firebaseUid);
+
 }

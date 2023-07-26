@@ -1,11 +1,9 @@
 package com.vnco.fusiontech.product.web.rest.controller;
 
-import com.vnco.fusiontech.product.entity.Brand;
 import com.vnco.fusiontech.product.entity.Review;
-import com.vnco.fusiontech.product.entity.ReviewDTO;
+import com.vnco.fusiontech.product.entity.projection.ReviewDTO;
 import com.vnco.fusiontech.product.service.ReviewService;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

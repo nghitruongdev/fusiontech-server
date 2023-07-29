@@ -2,11 +2,11 @@ package com.vnco.fusiontech.product.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vnco.fusiontech.common.constant.DBConstant;
+import com.vnco.fusiontech.common.entity.FirebaseImage;
 import com.vnco.fusiontech.common.utils.BeanUtils;
 import com.vnco.fusiontech.product.service.ProductVariantService;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.NaturalId;
@@ -43,7 +43,7 @@ public class Variant implements Serializable {
     @Column(columnDefinition = "json")
     @Builder.Default
     @ToString.Exclude
-    private List<String> images = new ArrayList<>();
+    private List<FirebaseImage> images = new ArrayList<>();
 
     private double price;
 

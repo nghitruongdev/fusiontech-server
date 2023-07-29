@@ -14,7 +14,7 @@ public record UpdateProductRequest(
                 String slug,
                 Category category,
                 Brand brand,
-                FirebaseImage thumbnail,
+                List<FirebaseImage> images,
                 String summary,
                 String description,
                 List<String> features,

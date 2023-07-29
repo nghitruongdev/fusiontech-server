@@ -45,7 +45,8 @@ public class Product extends RepresentationModel<Product> implements Serializabl
 
     @Type(JsonType.class)
     @Column(columnDefinition = "json")
-    private FirebaseImage thumbnail;
+    @Builder.Default
+    private List<FirebaseImage> images = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(foreignKey = @ForeignKey(foreignKeyDefinition = "FOREIGN KEY (category_id) REFERENCES Category(id) ON DELETE SET NULL ON "

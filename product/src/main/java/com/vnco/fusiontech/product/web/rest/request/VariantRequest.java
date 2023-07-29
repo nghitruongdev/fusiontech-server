@@ -3,6 +3,7 @@ package com.vnco.fusiontech.product.web.rest.request;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.vnco.fusiontech.common.constraint.NullOrNotBlank;
 import com.vnco.fusiontech.common.constraint.NullOrNotEmpty;
+import com.vnco.fusiontech.common.entity.FirebaseImage;
 import com.vnco.fusiontech.product.entity.Product;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -16,7 +17,7 @@ public record VariantRequest(
         @NotBlank(groups = OnCreate.class)
         @NullOrNotBlank (groups = OnUpdate.class) String sku,
        @NotNull(groups = OnCreate.class) @Positive Double price,
-        List<String> images,
+        List<FirebaseImage> images,
         @NotEmpty(groups = OnCreate.class)
         @NullOrNotEmpty(groups = OnUpdate.class)
         List<@Valid  VariantAttributeRequest> attributes,

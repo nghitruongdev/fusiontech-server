@@ -1,12 +1,10 @@
 package com.vnco.fusiontech.product.entity.projection;
 
-import org.springframework.data.rest.core.config.Projection;
-
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
-import com.vnco.fusiontech.common.entity.FirebaseImage;
 import com.vnco.fusiontech.product.entity.Brand;
 import com.vnco.fusiontech.product.entity.Category;
 import com.vnco.fusiontech.product.entity.Product;
+import org.springframework.data.rest.core.config.Projection;
 
 @Projection(name = Product.PROJECTION.BASIC, types = { Product.class })
 public interface ProductBasic {
@@ -21,7 +19,7 @@ public interface ProductBasic {
 
   String getDescription();
 
-  FirebaseImage getThumbnail();
+  Object getImages();
 
   Integer getReviewCount();
 

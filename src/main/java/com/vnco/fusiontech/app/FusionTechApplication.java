@@ -9,7 +9,6 @@ import com.vnco.fusiontech.product.ProductModuleConfiguration;
 import com.vnco.fusiontech.product.entity.Brand;
 import com.vnco.fusiontech.product.entity.Category;
 import com.vnco.fusiontech.product.entity.Specification;
-import com.vnco.fusiontech.product.entity.Variant;
 import com.vnco.fusiontech.product.repository.BrandRepository;
 import com.vnco.fusiontech.product.repository.CategoryRepository;
 import com.vnco.fusiontech.product.repository.ProductRepository;
@@ -35,7 +34,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.IntStream;
@@ -143,19 +141,19 @@ public class FusionTechApplication {
                                             "Bộ nhớ trong").value(item).build())
                                       .toList();
                         var displaySpecs = Specification.builder().name("Display").value("6.9 inch").build();
-                        var imageList = Arrays.stream(images).filter(image -> Math.random() > 0.5)
-                                              .limit(number.numberBetween(2, 5)).toList();
-                        var variant = Variant.builder().images(imageList)
-                                             .sku(UUID.randomUUID().toString())
-                                             .price(number.numberBetween(10_000_000, 30_000_000)).build();
-                        var variant2 = Variant.builder().images(imageList)
-                                             .sku(UUID.randomUUID().toString())
-                                             .price(number.numberBetween(10_000_000, 30_000_000)).build();
-                        ramSpecs.forEach(variant::addSpecification);
-                        variant.addSpecification(displaySpecs);
-
-                        ramSpecs.forEach(variant2::addSpecification);
-                        variant2.addSpecification(displaySpecs);
+//                        var imageList = Arrays.stream(images).filter(image -> Math.random() > 0.5)
+//                                              .limit(number.numberBetween(2, 5)).toList();
+//                        var variant = Variant.builder().images(imageList)
+//                                             .sku(UUID.randomUUID().toString())
+//                                             .price(number.numberBetween(10_000_000, 30_000_000)).build();
+//                        var variant2 = Variant.builder().images(imageList)
+//                                             .sku(UUID.randomUUID().toString())
+//                                             .price(number.numberBetween(10_000_000, 30_000_000)).build();
+//                        ramSpecs.forEach(variant::addSpecification);
+//                        variant.addSpecification(displaySpecs);
+//
+//                        ramSpecs.forEach(variant2::addSpecification);
+//                        variant2.addSpecification(displaySpecs);
                         
 //                        variantRepository.saveAll(List.of(variant, variant2));
                         //                        var attributeNames = List.of("Ram", "Bộ Nhớ Trong", "Phiên bản");

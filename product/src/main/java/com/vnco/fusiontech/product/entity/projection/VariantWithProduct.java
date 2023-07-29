@@ -4,8 +4,6 @@ import com.vnco.fusiontech.product.entity.Product;
 import com.vnco.fusiontech.product.entity.Variant;
 import org.springframework.data.rest.core.config.Projection;
 
-import java.util.List;
-
 @Projection(name = Variant.PROJECTION.PRODUCT, types = Variant.class)
 public interface VariantWithProduct {
 
@@ -17,7 +15,7 @@ public interface VariantWithProduct {
 
         String getSku();
 
-        List<String> getImages();
+        Object getImages();
 
         double getPrice();
 }

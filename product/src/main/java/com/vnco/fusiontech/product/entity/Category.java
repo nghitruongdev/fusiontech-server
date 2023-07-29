@@ -2,6 +2,7 @@ package com.vnco.fusiontech.product.entity;
 
 import com.vnco.fusiontech.common.constant.DBConstant;
 
+import com.vnco.fusiontech.common.entity.FirebaseImage;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -38,17 +39,19 @@ public class Category implements Serializable {
     private String slug;
 
     private String description;
+    
+    @Type(JsonType.class)
+    @Column(columnDefinition = "json")
+    private FirebaseImage image;
 
-    private String image;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id")
-    @ToString.Exclude
-    private Category parent;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "parent_id")
+//    @ToString.Exclude
+//    private Category parent;
 
     @Type(JsonType.class)
     @Column(columnDefinition = "json")
-    private List<String> categorySpecs;
+    private List<String> specifications;
 
     @OneToMany(mappedBy = "category")
     @Builder.Default

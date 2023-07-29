@@ -120,7 +120,7 @@ public class FusionTechApplication {
                                                                .name(faker.commerce().department())
                                                                .slug(Math.random() + faker.code().asin())
                                                                .description(faker.educator().campus())
-                                                               .categorySpecs(
+                                                               .specifications(
                                                                        List.of("Ram", "Bộ nhớ trong", "Cấu hình máy"))
                                                                .build())
                                                              .toList();

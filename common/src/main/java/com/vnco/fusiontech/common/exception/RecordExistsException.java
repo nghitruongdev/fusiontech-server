@@ -1,6 +1,6 @@
 package com.vnco.fusiontech.common.exception;
 
-public class RecordExistsException extends jakarta.persistence.EntityExistsException {
+public class RecordExistsException extends RuntimeException {
     public RecordExistsException() {
         super("Record already exists with the given id.");
     }

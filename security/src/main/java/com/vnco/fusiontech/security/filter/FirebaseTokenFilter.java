@@ -4,11 +4,12 @@ package com.vnco.fusiontech.security.filter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
-import com.vnco.fusiontech.security.service.FirebaseService;
+import com.vnco.fusiontech.security.service.SecurityService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,14 +26,10 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @Component
 @Slf4j
 //@Order(1)
+@RequiredArgsConstructor
 public class  FirebaseTokenFilter extends OncePerRequestFilter {
 
-    final
-    FirebaseService firebaseService;
-
-    public FirebaseTokenFilter(FirebaseService firebaseService) {
-        this.firebaseService = firebaseService;
-    }
+   private final SecurityService authService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -48,7 +45,7 @@ public class  FirebaseTokenFilter extends OncePerRequestFilter {
             String token = authHeader.substring(7);
             FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(token);
             String uid = decodedToken.getUid();
-            List<GrantedAuthority> authorities = firebaseService.getAuthorities(
+            List<GrantedAuthority> authorities = authService.getAuthorities(
                     FirebaseAuth.getInstance().getUser(uid).getCustomClaims()
             );
             Authentication authentication = new UsernamePasswordAuthenticationToken(uid, null, authorities);

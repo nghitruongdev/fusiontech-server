@@ -77,6 +77,7 @@ public class SpringExceptionHandler extends ResponseEntityExceptionHandler {
                 .stream()
                 .map(err -> String.format("Field: %s -> %s, received: '%s'",
                         err.getField(),
+                        err.getDefaultMessage(),
                         convertString(err.getRejectedValue())))
                 .toList();
         var problem = ProblemDetail.forStatusAndDetail(BAD_REQUEST, "Invalid request content.");
@@ -100,27 +101,34 @@ public class SpringExceptionHandler extends ResponseEntityExceptionHandler {
         var cause = ex.getCause();
         var root = ex.getRootCause();
         var specific = ex.getMostSpecificCause();
-        if (cause instanceof org.hibernate.exception.ConstraintViolationException constraintEx) {
-            var sqlCode = constraintEx.getSQLState();
-            String errorMessage = "";
-            switch (sqlCode) {
-                case "23502" -> {
-                    var exMessage = constraintEx.getSQLException().getMessage();
-                    errorMessage = String.format("%s - [%s]",
-                                                 exMessage.substring(0, exMessage.indexOf(";")).replace("\"", "'"),
-                                                 sqlCode);
-                }
-                case "23506" -> errorMessage = String.format("""
-                                                             Lỗi tính toàn vẹn dữ liệu (liên kết khoá ngoại [%s]): %s.
-                                                             """,
-                                                             sqlCode,
-                                                             constraintEx.getConstraintName());
-            }
-            return ProblemDetail.forStatusAndDetail(CONFLICT, errorMessage);
+                if (cause instanceof org.hibernate.exception.ConstraintViolationException constraintEx) {
+            return ProblemDetail.forStatusAndDetail(CONFLICT, getMessage(constraintEx));
         }
-        return ProblemDetail.forStatusAndDetail(CONFLICT, ex.getMessage());
+        return ProblemDetail.forStatusAndDetail(CONFLICT,ex.getMessage());
     }
-
+    private String getMessage(org.hibernate.exception.ConstraintViolationException ex){
+        var sqlCode = ex.getSQLState();
+        var constraint = ex.getSQLException().getMessage();
+        var error = constraint.substring(0, constraint.indexOf(";"))
+                                 .replace("\"", "");
+        
+//        switch (sqlCode) {
+//            case "23502" -> {
+//                var exMessage = constraintEx.getConstraintName();
+//                errorMessage = String.format("%s - [%s]",
+//                                             exMessage.substring(0, exMessage.indexOf(";")).replace("\"", "'"),
+//                                             sqlCode);
+//            }
+//            case "23506" -> errorMessage = String.format("""
+//                                                             Lỗi tính toàn vẹn dữ liệu (liên kết khoá ngoại [%s]): %s.
+//                                                             """,
+//                                                         sqlCode,
+//                                                         constraintEx.getConstraintName());
+//            default -> errorMessage = constraintEx.getSQLException().getMessage();
+//        }
+        return String.format("%s - [%s]",error,  sqlCode);
+    
+    }
     @ExceptionHandler(TransactionSystemException.class)
     ProblemDetail handleTransaction(TransactionSystemException ex) {
 
@@ -137,4 +145,5 @@ public class SpringExceptionHandler extends ResponseEntityExceptionHandler {
         return ProblemDetail.forStatusAndDetail(CONFLICT, ex.getMessage());
     }
 
+    
 }

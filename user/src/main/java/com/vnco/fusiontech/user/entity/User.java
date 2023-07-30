@@ -1,10 +1,13 @@
 package com.vnco.fusiontech.user.entity;
 
 import com.vnco.fusiontech.common.constant.DBConstant;
+import com.vnco.fusiontech.common.entity.FirebaseImage;
 import com.vnco.fusiontech.common.utils.FirebaseUtils;
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.Type;
 
 import java.util.Date;
 import java.util.Objects;
@@ -19,6 +22,11 @@ import java.util.Objects;
 @Entity
 @Table(name = DBConstant.USER_TABLE)
 public class User {
+    public enum Gender {
+        MALE,
+        FEMALE,
+        OTHER
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,13 +48,18 @@ public class User {
     @Basic
     @Column(name = "phone_number", unique = true)
     private String phoneNumber;
-    @Basic
-    @Column(name = "photo_url")
-    private String photoUrl;
+    
+    private boolean isStaff;
+    
+    private boolean isDisabled;
+
+    @Type(JsonType.class)
+    @Column(columnDefinition = "json")
+    private FirebaseImage image;
 
     private Date dateOfBirth;
 
-    private Boolean gender;
+    private Gender gender;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "default_address_id")

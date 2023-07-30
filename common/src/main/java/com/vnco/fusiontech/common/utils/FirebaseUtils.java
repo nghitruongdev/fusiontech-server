@@ -16,7 +16,15 @@ public class FirebaseUtils {
     
     public static String composeFullName(String firstName, String lastName) {
         String first = (firstName != null) ? firstName.trim() : "";
-        String last = (lastName != null) ? lastName.trim() : "";
+        String last  = (lastName != null) ? lastName.trim() : "";
+        return (first + " " + last).trim();
+    }
+    
+    public static String composeFullName(String firstName, String lastName, String userFirstName, String userLastName) {
+        String first = firstName != null && !firstName.isBlank() ? firstName.trim() : userFirstName != null?
+                                                                                      userFirstName.trim(): "";
+        String last  = lastName !=null && !lastName.isBlank() ? lastName.trim(): userLastName!=null?
+                                                                                 userLastName.trim(): "";
         return (first + " " + last).trim();
     }
 }

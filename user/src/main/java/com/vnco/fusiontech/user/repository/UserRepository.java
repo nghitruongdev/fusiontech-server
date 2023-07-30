@@ -19,7 +19,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByEmail(@Param("email") String email);
 
     @RestResource
-    boolean existsByPhoneNumber(@Param("phone") String phoneNumber);
+    boolean existsByPhoneNumber(@Param("phoneNumber") String phoneNumber);
 
     @RestResource(path = "findByFirebaseId")
     Optional<User> findByFirebaseUid(@Param("firebaseId") String firebaseUid);

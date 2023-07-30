@@ -17,9 +17,10 @@ import com.vnco.fusiontech.product.service.ProductService;
 import com.vnco.fusiontech.security.SecurityModuleConfiguration;
 import com.vnco.fusiontech.user.UserModuleConfiguration;
 import com.vnco.fusiontech.user.entity.ShippingAddress;
-import com.vnco.fusiontech.user.entity.User;
 import com.vnco.fusiontech.user.repository.ShippingAddressRepository;
 import com.vnco.fusiontech.user.repository.UserRepository;
+import com.vnco.fusiontech.user.service.AuthService;
+import com.vnco.fusiontech.user.web.rest.request.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -29,13 +30,13 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -82,22 +83,29 @@ public class FusionTechApplication {
                         "https://i.ibb.co/vHJkwzt/top3.webp",
                         "https://i.ibb.co/BNXTLkq/12.webp"
         };
-        
+
         private final ProductVariantRepository variantRepository;
         private final MailService mailService;
+        private final AuthService authService;
+        private final UserMapper  userMapper;
         @GetMapping("/api/test")
         @Transactional
-        public void test(){
-//                Variant variant = Variant.builder().sku(UUID.randomUUID().toString()).build();
-//                var savedSpec = Specification.builder().id(2L).name("Display").value("6.9 inch").build();
-//                var spec = Specification.builder().id(2L).name("Display").value("15 inch").build();
-//
-//                variant.addSpecification(savedSpec);
-//                variant.addSpecification(spec);
-//                variantRepository.save(variant);
+        public void test() {
+                // Variant variant =
+                // Variant.builder().sku(UUID.randomUUID().toString()).build();
+                // var savedSpec = Specification.builder().id(2L).name("Display").value("6.9
+                // inch").build();
+                // var spec = Specification.builder().id(2L).name("Display").value("15
+                // inch").build();
+                //
+                // variant.addSpecification(savedSpec);
+                // variant.addSpecification(spec);
+                // variantRepository.save(variant);
         }
-                @Bean
+
+        @Bean
         @Profile("bootstrap")
+        @Lazy
         public CommandLineRunner bootstrap(ProductRepository productRepository,
                         ProductVariantRepository variantRepository,
                         ShippingAddressRepository shippingAddressRepository,
@@ -112,122 +120,125 @@ public class FusionTechApplication {
                                         .mapToObj(i -> Brand.builder()
                                                         .name(faker.leagueOfLegends().champion())
                                                         .build())
+
                                         .toList();
                         brandRepo.saveAll(brands);
 
                         List<Category> categories = IntStream.rangeClosed(1, 20)
                                         .mapToObj(i -> Category.builder()
-                                                               .name(faker.commerce().department())
-                                                               .slug(Math.random() + faker.code().asin())
-                                                               .description(faker.educator().campus())
-                                                               .specifications(
-                                                                       List.of("Ram", "Bộ nhớ trong", "Cấu hình máy"))
-                                                               .build())
-                                                             .toList();
+                                                        .name(faker.commerce().department())
+                                                        .slug(Math.random() + faker.code().asin())
+                                                        .description(faker.educator().campus())
+                                                        .specifications(
+                                                                        List.of("Ram", "Bộ nhớ trong", "Cấu hình máy"))
+                                                        .build())
+                                        .toList();
                         categoryRepository.saveAll(categories);
-        
-                        List<User> users = IntStream.rangeClosed(1, 10)
-                                                    .mapToObj(i -> User.builder()
-                                                                       .firebaseUid(UUID.randomUUID().toString())
-                                                                       .build())
-                                                    .toList();
+
+//                        List<User> users = IntStream.rangeClosed(1, 10)
+//                                        .mapToObj(i -> User.builder()
+//                                                        .firebaseUid(UUID.randomUUID().toString())
+//                                                        .build())
+//                                        .toList();
+//                        userRepository.saveAll(users);
+                        var users = authService.findAll().stream().map(userMapper::toUser).toList();
                         userRepository.saveAll(users);
-                        var ramSpecs =
-                                Stream.of("16GB", "32GB", "64GB").map(item -> Specification.builder().name(
-                                        "Ram").value(item).build()).toList();
-                        var ssdSpecs =
-                                Stream.of("128GB", "256GB", "512GB", "1TB")
-                                      .map(item -> Specification.builder().name(
-                                            "Bộ nhớ trong").value(item).build())
-                                      .toList();
-                        var displaySpecs = Specification.builder().name("Display").value("6.9 inch").build();
-//                        var imageList = Arrays.stream(images).filter(image -> Math.random() > 0.5)
-//                                              .limit(number.numberBetween(2, 5)).toList();
-//                        var variant = Variant.builder().images(imageList)
-//                                             .sku(UUID.randomUUID().toString())
-//                                             .price(number.numberBetween(10_000_000, 30_000_000)).build();
-//                        var variant2 = Variant.builder().images(imageList)
-//                                             .sku(UUID.randomUUID().toString())
-//                                             .price(number.numberBetween(10_000_000, 30_000_000)).build();
-//                        ramSpecs.forEach(variant::addSpecification);
-//                        variant.addSpecification(displaySpecs);
-//
-//                        ramSpecs.forEach(variant2::addSpecification);
-//                        variant2.addSpecification(displaySpecs);
+                        users.forEach(user -> authService.setInitialClaims(user.getId(), user.getFirebaseUid()));
                         
-//                        variantRepository.saveAll(List.of(variant, variant2));
-                        //                        var attributeNames = List.of("Ram", "Bộ Nhớ Trong", "Phiên bản");
-                        //                        var productRequest = IntStream.rangeClosed(1, 100)
-                        //                                        .mapToObj(i -> {
-                        //                                                var localNames = new ArrayList<>
-                        //                                                (attributeNames);
-                        //                                                var attributes = IntStream.rangeClosed(1, 2)
-                        //                                                                .mapToObj(ai ->
-                        //                                                                ProductAttributeRequest
-                        //                                                                .builder()
-                        //                                                                                .name
-                        //                                                                                (localNames
-                        //                                                                                .remove(
-                        //                                                                                                number.numberBetween(0,
-                        //                                                                                                                localNames.size()
-                        //                                                                                                                                - 1)))
-                        //                                                                                .values
-                        //                                                                                (IntStream
-                        //                                                                                .rangeClosed(1, 3)
-                        //                                                                                                .mapToObj(vi -> faker
-                        //                                                                                                                .book()
-                        //                                                                                                                .title())
-                        //                                                                                                .toList())
-                        //                                                                                .build())
-                        //                                                                .toList();
+                        var ramSpecs = Stream.of("16GB", "32GB", "64GB").map(item -> Specification.builder().name(
+                                        "Ram").value(item).build()).toList();
+                        var ssdSpecs = Stream.of("128GB", "256GB", "512GB", "1TB")
+                                        .map(item -> Specification.builder().name(
+                                                        "Bộ nhớ trong").value(item).build())
+                                        .toList();
+                        var displaySpecs = Specification.builder().name("Display").value("6.9 inch").build();
+                        // var imageList = Arrays.stream(images).filter(image -> Math.random() > 0.5)
+                        // .limit(number.numberBetween(2, 5)).toList();
+                        // var variant = Variant.builder().images(imageList)
+                        // .sku(UUID.randomUUID().toString())
+                        // .price(number.numberBetween(10_000_000, 30_000_000)).build();
+                        // var variant2 = Variant.builder().images(imageList)
+                        // .sku(UUID.randomUUID().toString())
+                        // .price(number.numberBetween(10_000_000, 30_000_000)).build();
+                        // ramSpecs.forEach(variant::addSpecification);
+                        // variant.addSpecification(displaySpecs);
                         //
-                        //                                                var request = CreateProductRequest.builder()
-                        //                                                                .name(faker.commerce()
-                        //                                                                .productName())
-                        //                                                                .description(faker.commerce
-                        //                                                                ().material())
-                        //                                                                .category(categories.get
-                        //                                                                (number.numberBetween(0,
-                        //                                                                                categories
-                        //                                                                                .size() - 1)))
-                        //                                                                .thumbnail(new
-                        //                                                                FirebaseImage("",
-                        //                                                                                images[number.numberBetween(0,
-                        //                                                                                                images.length - 1)]))
-                        //                                                                .features(List.of("Feature
-                        //                                                                1", "Feature 2",
-                        //                                                                                "Feature 3"))
-                        //                                                                .summary(faker.commerce()
-                        //                                                                .department())
-                        //                                                                .brand(brands.get(number
-                        //                                                                .numberBetween(0,
-                        //                                                                                brands.size
-                        //                                                                                () - 1)))
-                        //                                                                .attributes(attributes)
+                        // ramSpecs.forEach(variant2::addSpecification);
+                        // variant2.addSpecification(displaySpecs);
+
+                        // variantRepository.saveAll(List.of(variant, variant2));
+                        // var attributeNames = List.of("Ram", "Bộ Nhớ Trong", "Phiên bản");
+                        // var productRequest = IntStream.rangeClosed(1, 100)
+                        // .mapToObj(i -> {
+                        // var localNames = new ArrayList<>
+                        // (attributeNames);
+                        // var attributes = IntStream.rangeClosed(1, 2)
+                        // .mapToObj(ai ->
+                        // ProductAttributeRequest
+                        // .builder()
+                        // .name
+                        // (localNames
+                        // .remove(
+                        // number.numberBetween(0,
+                        // localNames.size()
+                        // - 1)))
+                        // .values
+                        // (IntStream
+                        // .rangeClosed(1, 3)
+                        // .mapToObj(vi -> faker
+                        // .book()
+                        // .title())
+                        // .toList())
+                        // .build())
+                        // .toList();
                         //
-                        //                                                                .build();
-                        //                                                return request;
-                        //                                        }).toList();
-                        //                        productRequest.forEach(productService::createProduct);
-        
+                        // var request = CreateProductRequest.builder()
+                        // .name(faker.commerce()
+                        // .productName())
+                        // .description(faker.commerce
+                        // ().material())
+                        // .category(categories.get
+                        // (number.numberBetween(0,
+                        // categories
+                        // .size() - 1)))
+                        // .thumbnail(new
+                        // FirebaseImage("",
+                        // images[number.numberBetween(0,
+                        // images.length - 1)]))
+                        // .features(List.of("Feature
+                        // 1", "Feature 2",
+                        // "Feature 3"))
+                        // .summary(faker.commerce()
+                        // .department())
+                        // .brand(brands.get(number
+                        // .numberBetween(0,
+                        // brands.size
+                        // () - 1)))
+                        // .attributes(attributes)
+                        //
+                        // .build();
+                        // return request;
+                        // }).toList();
+                        // productRequest.forEach(productService::createProduct);
+
                         // var products = productRepository.findAll();
-        
-                        //                        var variants = variantRepository.findAll();
+
+                        // var variants = variantRepository.findAll();
                         //
-                        //                        variants.forEach(variant -> {
-                        //                                var imageList = Arrays.stream(images).filter(image -> Math.random() > 0.5)
-                        //                                                .limit(number.numberBetween(2, 5)).toList();
-                        //                                variant.setImages(imageList);
-                        //                                variant.setSku(UUID.randomUUID().toString());
-                        //                                variant.setPrice(number.numberBetween(10_000_000, 30_000_000));
-                        //                        });
+                        // variants.forEach(variant -> {
+                        // var imageList = Arrays.stream(images).filter(image -> Math.random() > 0.5)
+                        // .limit(number.numberBetween(2, 5)).toList();
+                        // variant.setImages(imageList);
+                        // variant.setSku(UUID.randomUUID().toString());
+                        // variant.setPrice(number.numberBetween(10_000_000, 30_000_000));
+                        // });
                         //
-                        //                        variantRepository.saveAll(variants);
+                        // variantRepository.saveAll(variants);
                         // products.forEach(product -> product.addFavoriteUser((new
                         // com.vnco.fusiontech.product.entity.proxy.User(
                         // users.get(faker.random().nextInt(1, 9)).getId()))
                         // ));
-        
+
                         // List<Variant> variants = IntStream.rangeClosed(1, 10)
                         // .mapToObj(i -> {
                         // Variant variant = new Variant();
@@ -237,7 +248,7 @@ public class FusionTechApplication {
                         // }).toList();
                         //
                         // variantRepository.saveAll(variants);
-
+        
                         List<ShippingAddress> addresses = IntStream.rangeClosed(1, 3)
                                         .mapToObj(i -> ShippingAddress.builder()
                                                         .address(faker.address()

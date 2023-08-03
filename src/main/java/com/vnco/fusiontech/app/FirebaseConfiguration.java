@@ -23,7 +23,9 @@ public class FirebaseConfiguration {
         var resource = loader.getResource(SERVICE_ACCOUNT_URL);
         
         FirebaseOptions options = FirebaseOptions.builder()
-                                                 .setCredentials(GoogleCredentials.fromStream(resource.getInputStream()))
+                                                 .setCredentials(
+                                                         GoogleCredentials.fromStream(resource.getInputStream()))
+                                                 .setStorageBucket("fusiontech-vnco4.appspot.com")
                                                  .build();
         if(FirebaseApp.getApps().isEmpty()){
             FirebaseApp.initializeApp(options);

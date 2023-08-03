@@ -2,9 +2,7 @@ package com.vnco.fusiontech.product.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vnco.fusiontech.common.constant.DBConstant;
-import com.vnco.fusiontech.common.entity.FirebaseImage;
 import com.vnco.fusiontech.product.entity.proxy.User;
-
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -41,17 +39,18 @@ public class Product extends RepresentationModel<Product> implements Serializabl
 
     private String summary;
 
+    @Column(columnDefinition = "text")
     private String description;
 
     @Type(JsonType.class)
     @Column(columnDefinition = "json")
     @Builder.Default
-    private List<FirebaseImage> images = new ArrayList<>();
+    private List<String> images = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(foreignKey = @ForeignKey(foreignKeyDefinition = "FOREIGN KEY (category_id) REFERENCES Category(id) ON DELETE SET NULL ON "
-            +
-            "UPDATE CASCADE"))
+    @JoinColumn(foreignKey = @ForeignKey(foreignKeyDefinition = """
+            FOREIGN KEY (category_id) REFERENCES Category(id) ON DELETE SET NULL ON UPDATE CASCADE
+            """))
     @ToString.Exclude
     private Category category;
 
@@ -60,7 +59,7 @@ public class Product extends RepresentationModel<Product> implements Serializabl
             " s WHERE s.product_id=id)")
     private Integer reviewCount;
 
-    @Formula("(SELECT  COALESCE(AVG(s.rating), 0) FROM " +
+    @Formula("(SELECT COALESCE(AVG(s.rating), 0) FROM " +
             DBConstant.REVIEW_TABLE +
             " s WHERE s.product_id=id)")
     private Double avgRating;
@@ -71,6 +70,11 @@ public class Product extends RepresentationModel<Product> implements Serializabl
     private List<String> features = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(foreignKey = @ForeignKey(foreignKeyDefinition = """
+            FOREIGN KEY (brand_id)
+            REFERENCES Brand(id) ON DELETE SET NULL ON UPDATE CASCADE
+            """))
+
     @ToString.Exclude
     private Brand brand;
 

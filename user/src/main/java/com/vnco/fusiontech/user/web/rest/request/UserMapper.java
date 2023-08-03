@@ -16,7 +16,8 @@ public interface UserMapper {
     
     @Mapping (
             target = "image",
-            expression = "java(new com.vnco.fusiontech.common.entity.FirebaseImage(null, null, source.getPhotoUrl()))"
+        source = "photoUrl"
+//            expression = "java(new com.vnco.fusiontech.common.entity.FirebaseImage(null, null, source.getPhotoUrl()))"
     )
     @Mapping (target = "firebaseUid", source = "uid")
     @Mapping (target = "firstName", source = "displayName")

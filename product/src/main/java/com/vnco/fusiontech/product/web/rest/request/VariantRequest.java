@@ -3,7 +3,6 @@ package com.vnco.fusiontech.product.web.rest.request;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.vnco.fusiontech.common.constraint.NullOrNotBlank;
 import com.vnco.fusiontech.common.constraint.NullOrNotEmpty;
-import com.vnco.fusiontech.common.entity.FirebaseImage;
 import com.vnco.fusiontech.product.entity.Product;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -14,24 +13,23 @@ import jakarta.validation.constraints.Positive;
 import java.util.List;
 
 public record VariantRequest(
-        @NotBlank(groups = OnCreate.class)
-        @NullOrNotBlank (groups = OnUpdate.class) String sku,
-       @NotNull(groups = OnCreate.class) @Positive Double price,
-        List<FirebaseImage> images,
-        @NotEmpty(groups = OnCreate.class)
-        @NullOrNotEmpty(groups = OnUpdate.class)
-        List<@Valid  VariantAttributeRequest> attributes,
-    
-       @NotNull(groups = OnCreate.class)  @JsonIncludeProperties("id")  Product product) {
+        @NotBlank(groups = OnCreate.class) @NullOrNotBlank(groups = OnUpdate.class) String sku,
+        @NotNull(groups = OnCreate.class) @Positive Double price,
+        List<String> images,
+        @NotEmpty(groups = OnCreate.class) @NullOrNotEmpty(groups = OnUpdate.class) List<@Valid VariantAttributeRequest> attributes,
+
+        @NotNull(groups = OnCreate.class) @JsonIncludeProperties("id") Product product) {
+
     public VariantRequest {
-        if(sku != null) sku = sku.trim();
+        if (sku != null)
+            sku = sku.trim();
     }
     public interface OnCreate {
-    
+
     }
-    
+
     public interface OnUpdate {
-    
+
     }
 }
 
@@ -40,8 +38,10 @@ record VariantAttributeRequest(
         @NotBlank String name,
         @NotBlank String value) {
     public VariantAttributeRequest {
-        if(name!= null) name = name.trim();
-        if(value!=null) value = value.trim();
+        if (name != null)
+            name = name.trim();
+        if (value != null)
+            value = value.trim();
     }
 
 }

@@ -2,7 +2,6 @@ package com.vnco.fusiontech.product.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vnco.fusiontech.common.constant.DBConstant;
-import com.vnco.fusiontech.common.entity.FirebaseImage;
 import com.vnco.fusiontech.common.utils.BeanUtils;
 import com.vnco.fusiontech.product.service.ProductVariantService;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
@@ -26,8 +25,8 @@ import java.util.*;
 @Table(name = DBConstant.PRODUCT_VARIANT_TABLE)
 public class Variant implements Serializable {
     public interface PROJECTION {
-        String PRODUCT      = "product";
-        String WITH_SPECS   = "specifications";
+        String PRODUCT = "product";
+        String WITH_SPECS = "specifications";
         String PRODUCT_NAME = "product-name";
         String BASIC = "basic";
     }
@@ -43,7 +42,7 @@ public class Variant implements Serializable {
     @Column(columnDefinition = "json")
     @Builder.Default
     @ToString.Exclude
-    private List<FirebaseImage> images = new ArrayList<>();
+    private List<String> images = new ArrayList<>();
 
     private double price;
 
@@ -61,16 +60,12 @@ public class Variant implements Serializable {
     private List<VariantInventoryDetail> inventories = new ArrayList<>();
 
     @ManyToMany(cascade = { CascadeType.MERGE, CascadeType.REFRESH }, fetch = FetchType.LAZY)
-    @JoinTable(name = DBConstant.VARIANT_SPEC_TABLE
-            , joinColumns = @JoinColumn(name = "variant_id"),
-               inverseJoinColumns =
-    @JoinColumn(name =
-                                                                                                                  "specification_id"))
+    @JoinTable(name = DBConstant.VARIANT_SPEC_TABLE, joinColumns = @JoinColumn(name = "variant_id"), inverseJoinColumns = @JoinColumn(name = "specification_id"))
     @Builder.Default
     @ToString.Exclude
     @JsonIgnore
     private Set<Specification> specifications = new HashSet<>();
-    
+
     public void addSpecification(Specification spec) {
         specifications.add(spec);
         spec.getVariants().add(this);

@@ -51,4 +51,10 @@ public class ProductRestController {
         productService.removeUserFavoriteProduct(productId, uid);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/products/{id}/specifications")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<?> getProductSpecifications(@PathVariable("id") Long productId) {
+        return ResponseEntity.ok(productService.getProductSpecifications(productId));
+    }
 }

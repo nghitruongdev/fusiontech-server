@@ -1,7 +1,10 @@
 package com.vnco.fusiontech.common.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.Nullable;
 
+import java.net.URLDecoder;
+@Slf4j
 public class FirebaseUtils {
     public static String convertToE164Format(@Nullable String phoneNumber) {
         if(phoneNumber == null) return null;
@@ -27,4 +30,22 @@ public class FirebaseUtils {
                                                                                  userLastName.trim(): "";
         return (first + " " + last).trim();
     }
+    
+    public static String getImagePath(String url) {
+        int lastSlashIndex = url.lastIndexOf("/images");
+        int questionMarkIndex = url.indexOf('?');
+        
+        if (lastSlashIndex >= 0 && questionMarkIndex >= 0) {
+            String encodedName = url.substring(lastSlashIndex + 1, questionMarkIndex);
+            try {
+                // Decode the URL component to replace %2F with forward slash
+                return URLDecoder.decode(encodedName, "UTF-8");
+            } catch (Exception e) {
+            log.error("UnsupportedEncoding: {}", e.getMessage());
+            }
+        }
+        
+        return "";
+    }
+    
 }

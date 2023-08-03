@@ -1,6 +1,5 @@
 package com.vnco.fusiontech.product.event;
 
-import com.vnco.fusiontech.common.exception.DuplicateKeyException;
 import com.vnco.fusiontech.product.entity.Category;
 import com.vnco.fusiontech.product.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,17 +18,17 @@ public class CategoryEventHandler {
     
     @HandleBeforeCreate
     public void handleBeforeCreate(Category o) {
-        var cat = repository.findBySlug(o.getSlug());
-        if (cat.isPresent()) {
-            throw new DuplicateKeyException("The given slug already exists");
-        }
+//        var cat = repository.findBySlug(o.getSlug());
+//        if (cat.isPresent()) {
+//            throw new DuplicateKeyException("The given slug already exists");
+//        }
     }
     
     @HandleBeforeSave
     public void handleBeforeSave(Category o) {
-        var cat = repository.findBySlug(o.getSlug());
-        if (cat.isPresent() && !cat.get().equals(o)) {
-            throw new DuplicateKeyException("The new slug already exists");
-        }
+//        var cat = repository.findBySlug(o.getSlug());
+//        if (cat.isPresent() && !cat.get().equals(o)) {
+//            throw new DuplicateKeyException("The new slug already exists");
+//        }
     }
 }

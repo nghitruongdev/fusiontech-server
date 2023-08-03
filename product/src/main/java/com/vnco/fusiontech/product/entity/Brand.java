@@ -1,18 +1,15 @@
 package com.vnco.fusiontech.product.entity;
 
 import com.vnco.fusiontech.common.constant.DBConstant;
-import com.vnco.fusiontech.common.entity.FirebaseImage;
-import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.Accessors;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.NaturalId;
 
 import java.io.Serializable;
 import java.util.Objects;
 
-@SuppressWarnings("serial")
 @Accessors(chain = true)
 @Builder
 @Setter
@@ -28,12 +25,12 @@ public class Brand implements Serializable {
     private Integer id;
 
     @NotBlank
-    // @NaturalId
+    @NaturalId(mutable = true)
     private String name;
 
-    @Type(JsonType.class)
-    @Column(columnDefinition = "json")
-    private FirebaseImage image;
+    // @Type(JsonType.class)
+    // @Column(columnDefinition = "json")
+    private String image;
 
     @Override
     public boolean equals(Object o) {

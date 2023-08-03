@@ -33,6 +33,7 @@ public class ProductServiceImpl implements ProductService {
     private final PublicUserService userService;
     private final ProductMapper mapper;
     private final SpecificationRepository specificationRepository;
+
     @Override
     public List<Product> getAllProducts() {
         return productRepository.findAll();
@@ -48,7 +49,9 @@ public class ProductServiceImpl implements ProductService {
     public Long createProduct(CreateProductRequest request) {
         var product = mapper.toProduct(request);
         var variants = createProductVariant(request.specifications());
-        variants.stream().flatMap(variant -> variant.getSpecifications().stream()).forEach(specificationRepository::save);
+        variants.forEach(variant -> variant.setPrice(0).setSku(""));
+        variants.stream().flatMap(variant -> variant.getSpecifications().stream())
+                .forEach(specificationRepository::save);
         product.setVariants(variants);
         return productRepository.save(product).getId();
     }
@@ -111,52 +114,52 @@ public class ProductServiceImpl implements ProductService {
     @Transactional(readOnly = true)
     public List<ProductSpecificationDTO> getProductSpecifications(Long productId) {
         var product = productRepository.findById(productId).orElseThrow();
-             var specs =   product.getVariants().stream()
-                       .flatMap(variant -> variant.getSpecifications().stream()).toList();
-             var distinctNames = specs.stream().map(Specification::getName).distinct().toList();
+        var specs = product.getVariants().stream()
+                .flatMap(variant -> variant.getSpecifications().stream()).toList();
+        var distinctNames = specs.stream().map(Specification::getName).distinct().toList();
 
-             return  distinctNames.stream().map(name -> {
-                 var values =
-                         specs.stream().filter(specification -> specification.getName().equals(name)).distinct().toList();
-                    return new ProductSpecificationDTO(name, values);
-              }).toList();
+        return distinctNames.stream().map(name -> {
+            var values = specs.stream().filter(specification -> specification.getName().equals(name)).distinct()
+                    .toList();
+            return new ProductSpecificationDTO(name, values);
+        }).toList();
     }
-    
-    public List<Variant> createProductVariant(List<ListSpecificationRequest> specs){
-        if(specs == null || specs.isEmpty()){
-            return List.of();
+
+    public List<Variant> createProductVariant(List<ListSpecificationRequest> specs) {
+        if (specs == null || specs.isEmpty()) {
+            return List.of(Variant.builder().build());
         }
         List<ListSpecificationRequest> multipleValueSpecs = new ArrayList<>();
-       List<ListSpecificationRequest>  singleValueSpecs   = new ArrayList<>();
-       specs.forEach(spec ->{
-           var list = spec.values();
-           if(list == null || list.isEmpty()){
-               throw new RuntimeException("Spec value is not valid");
-           }
-           if(list.size() == 1){
-               singleValueSpecs.add(spec);
-           }else{
-               multipleValueSpecs.add(spec);
-           }
-       });
-        var singleValueList =
-                singleValueSpecs.stream().flatMap(spec -> spec.values().stream()).toList();
-        var variants =  create(multipleValueSpecs);
+        List<ListSpecificationRequest> singleValueSpecs = new ArrayList<>();
+        specs.forEach(spec -> {
+            var list = spec.values();
+            if (list == null || list.isEmpty()) {
+                throw new RuntimeException("Spec value is not valid");
+            }
+            if (list.size() == 1) {
+                singleValueSpecs.add(spec);
+            } else {
+                multipleValueSpecs.add(spec);
+            }
+        });
+        var singleValueList = singleValueSpecs.stream().flatMap(spec -> spec.values().stream()).toList();
+        var variants = create(multipleValueSpecs);
         variants.forEach(variant -> singleValueList.forEach(variant::addSpecification));
         return variants;
     }
-    
-    private List<Variant> create(@NonNull List<ListSpecificationRequest> multiValueSpecs
-                                 ) {
-        if(multiValueSpecs.isEmpty()) return List.of(Variant.builder().build());
+
+    private List<Variant> create(@NonNull List<ListSpecificationRequest> multiValueSpecs) {
+        if (multiValueSpecs.isEmpty())
+            return List.of(Variant.builder().build());
+
         var localList = new ArrayList<>(multiValueSpecs);
-        
+
         var firstGroup = localList.remove(0);
 
         var baseList = new ArrayList<>(
                 firstGroup.values().stream()
-                          .map(spec -> new LinkedList<>(List.of(spec))).toList());
-        
+                        .map(spec -> new LinkedList<>(List.of(spec))).toList());
+
         localList.forEach((group) -> {
             var result = baseList.stream().flatMap(
                     base -> group.values().stream().map(value -> {
@@ -168,12 +171,11 @@ public class ProductServiceImpl implements ProductService {
             baseList.addAll(result);
         });
 
- 
         return baseList.stream().map((list) -> {
             var variant = new Variant();
             list.forEach(variant::addSpecification);
             return variant;
         }).toList();
     }
-    
+
 }

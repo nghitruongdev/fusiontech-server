@@ -12,7 +12,7 @@ spring:
   config:
     import:
   profiles:
-    active: dev, bootstrap
+    active: dev
   jpa:
     open-in-view: false
   mvc:
@@ -39,6 +39,9 @@ spring:
     multipart:
       max-file-size: '10MB'
       max-request-size: '50MB'
+#  batch:
+#    jdbc:
+#      initialize-schema: always
 #  main:
 #    lazy-initialization: true
 

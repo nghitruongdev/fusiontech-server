@@ -27,6 +27,10 @@ public interface ProductBasic {
 
   Object getFeatures();
 
+  Double getMinPrice();
+  
+  Double getMaxPrice();
+  
   @JsonIncludeProperties("id")
   Brand getBrand();
 

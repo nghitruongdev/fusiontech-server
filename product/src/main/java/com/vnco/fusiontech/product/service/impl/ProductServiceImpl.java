@@ -49,7 +49,7 @@ public class ProductServiceImpl implements ProductService {
     public Long createProduct(CreateProductRequest request) {
         var product = mapper.toProduct(request);
         var variants = createProductVariant(request.specifications());
-        variants.forEach(variant -> variant.setPrice(0).setSku(""));
+        variants.forEach(variant -> variant.setPrice(0).setSku(UUID.randomUUID().toString()));
         variants.stream().flatMap(variant -> variant.getSpecifications().stream())
                 .forEach(specificationRepository::save);
         product.setVariants(variants);

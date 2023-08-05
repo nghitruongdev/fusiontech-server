@@ -28,7 +28,13 @@ public class Product extends RepresentationModel<Product> implements Serializabl
         String FULL = "full";
         String BASIC = "basic";
     }
-
+    public interface FORMULA{
+        String MIN_PRICE  = "SELECT MIN(v.price) FROM " +
+                            DBConstant.PRODUCT_VARIANT_TABLE + " v WHERE v.product_id=id" ;
+        String MAX_PRICE  = "SELECT MAX(v.price) FROM " +
+                            DBConstant.PRODUCT_VARIANT_TABLE + " v WHERE v.product_id=id" ;
+        
+    }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -63,6 +69,12 @@ public class Product extends RepresentationModel<Product> implements Serializabl
             DBConstant.REVIEW_TABLE +
             " s WHERE s.product_id=id)")
     private Double avgRating;
+    
+    @Formula(value = FORMULA.MIN_PRICE)
+    private Double minPrice;
+    
+    @Formula(value = FORMULA.MAX_PRICE)
+    private Double maxPrice;
 
     @Type(JsonType.class)
     @Column(columnDefinition = "json")

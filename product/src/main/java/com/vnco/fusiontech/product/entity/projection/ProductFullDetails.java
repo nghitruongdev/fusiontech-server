@@ -5,6 +5,8 @@ import com.vnco.fusiontech.product.entity.Brand;
 import com.vnco.fusiontech.product.entity.Category;
 import com.vnco.fusiontech.product.entity.Product;
 import com.vnco.fusiontech.product.entity.Variant;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.rest.core.config.Projection;
 
 import java.util.List;
@@ -30,7 +32,11 @@ public interface ProductFullDetails {
 
     Object getFeatures();
 
-    @JsonIncludeProperties("id")
+    Double getMinPrice();
+
+    Double getMaxPrice();
+
+    @JsonIncludeProperties({ "id", "name" })
     Brand getBrand();
 
     @JsonIncludeProperties("id")
@@ -38,4 +44,7 @@ public interface ProductFullDetails {
 
     @JsonIncludeProperties({ "id", "price" })
     List<Variant> getVariants();
+
+    @Value("#{@productServiceImpl.getProductSpecifications(target.id)}")
+    Object getSpecifications();
 }

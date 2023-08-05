@@ -5,7 +5,6 @@ import com.vnco.fusiontech.common.utils.FirebaseUtils;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
-import org.hibernate.annotations.Where;
 
 import java.util.Date;
 import java.util.Objects;
@@ -19,7 +18,7 @@ import java.util.Objects;
 @ToString
 @Entity
 @Table(name = DBConstant.USER_TABLE)
-@Where(clause = "is_disabled=false")
+//@Where(clause = "is_disabled=false")
 public class User {
     public enum Gender {
         MALE,

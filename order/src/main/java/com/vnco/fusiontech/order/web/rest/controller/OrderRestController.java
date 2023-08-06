@@ -1,12 +1,15 @@
 package com.vnco.fusiontech.order.web.rest.controller;
 
+import com.vnco.fusiontech.common.service.PublicVoucherService;
 import com.vnco.fusiontech.order.entity.OrderStatus;
 import com.vnco.fusiontech.order.entity.OrderStatusGroup;
+import com.vnco.fusiontech.order.entity.proxy.Voucher;
 import com.vnco.fusiontech.order.service.OrderService;
 import com.vnco.fusiontech.order.web.rest.request.CreateOrderRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +23,7 @@ import java.util.Optional;
 public class OrderRestController {
     
     private final OrderService service;
+    private final PublicVoucherService voucherService;
     
     @PostMapping ("/orders")
     @ResponseStatus (HttpStatus.CREATED)
@@ -53,5 +57,10 @@ public class OrderRestController {
         var list = Arrays.stream(OrderStatusGroup.values()).map(OrderStatusGroup::getFullDetail).toList();
         return ResponseEntity.ok(list);
     }
-    
+
+    @GetMapping("/orders/vouchers/{code}")
+    public ResponseEntity<?> checkVoucher(@PathVariable("code") String code) {
+        String usage = service.checkVoucherUsage(code);
+        return ResponseEntity.ok(usage);
+    }
 }

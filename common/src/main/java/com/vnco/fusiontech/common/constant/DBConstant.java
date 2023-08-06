@@ -21,5 +21,7 @@ public interface DBConstant {
     String ORDER_ITEM_TABLE = "order_item";
     String SHIPPING_ADDRESS_TABLE = "shipping_address";
     String PAYMENT_TABLE      = "payment";
+
+    String VOUCHER_TABLE = "voucher";
     String    VARIANT_SPEC_TABLE = "variant_specification";
 }

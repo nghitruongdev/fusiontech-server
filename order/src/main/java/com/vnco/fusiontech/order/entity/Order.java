@@ -2,6 +2,7 @@ package com.vnco.fusiontech.order.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.vnco.fusiontech.common.constant.DBConstant;
+import com.vnco.fusiontech.order.entity.proxy.Voucher;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -15,7 +16,7 @@ import java.util.UUID;
 
 import static com.vnco.fusiontech.common.utils.ManyToOneUtils.*;
 
-@Accessors (chain = true)
+@Accessors(chain = true)
 @Getter
 @Setter
 @Builder
@@ -23,64 +24,69 @@ import static com.vnco.fusiontech.common.utils.ManyToOneUtils.*;
 @AllArgsConstructor
 @ToString
 @Entity
-@Table (name = DBConstant.ORDER_TABLE)
-@EntityListeners (OrderListener.class)
-@JsonIgnoreProperties (allowGetters = true, value = {"paymentId"})
+@Table(name = DBConstant.ORDER_TABLE)
+@EntityListeners(OrderListener.class)
+@JsonIgnoreProperties(allowGetters = true, value = {"paymentId"})
 public class Order implements Serializable {
-    
+
     @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     private Double total;
-    
+
     private String note;
-    
+
     private String email;
-    
+
     private Instant purchasedAt;
-    
-    @Enumerated (EnumType.STRING)
+
+    @Enumerated(EnumType.STRING)
     //    @Column (nullable = false)
     @NotNull
     private OrderStatus status;
-    
-    @JoinColumn (name = "user_id", table = DBConstant.USER_TABLE)
+
+    @JoinColumn(name = "user_id", table = DBConstant.USER_TABLE)
     private Long userId;
-    
-    @JoinColumn (name = "address_id", table = DBConstant.SHIPPING_ADDRESS_TABLE)
+
+    @JoinColumn(name = "address_id", table = DBConstant.SHIPPING_ADDRESS_TABLE)
     private Long addressId;
-    
-    @Column (name = "payment_id", insertable = false, updatable = false)
+
+    @Column(name = "payment_id", insertable = false, updatable = false)
     private Long paymentId;
-    
-    @OneToOne (cascade = CascadeType.PERSIST, optional = false, orphanRemoval = true)
-    @JoinColumn (name = "payment_id")
+
+    @OneToOne(cascade = CascadeType.PERSIST, optional = false, orphanRemoval = true)
+    @JoinColumn(name = "payment_id")
     @ToString.Exclude
     private Payment payment;
-    
+
+    @ManyToOne
+    @JoinColumn(name = "voucher_id")
+    @ToString.Exclude
+    private Voucher voucher;
+
     public void setPayment(@NonNull Payment payment) {
         payment.setOrder(this);
         this.payment = payment;
     }
-    
-    @OneToMany (mappedBy = "order", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
+
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
     @ToString.Exclude
     @Builder.Default
     private Set<OrderItem> items = new HashSet<>();
-    
+
     //TODO: add modification table mapping
-    
+
     public void addOrderItem(OrderItem item) {
         addItem(this, items, item);
     }
-    
+
     public void removeOrderItem(OrderItem item) {
         removeItem(this, items, item);
     }
-    
+
     public void setOrderItems(Set<OrderItem> items) {
         this.items = replace(this, this.items, items);
     }
-    
+
 }

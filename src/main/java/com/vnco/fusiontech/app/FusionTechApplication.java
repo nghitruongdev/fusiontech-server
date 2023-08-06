@@ -35,6 +35,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -95,8 +98,8 @@ public class FusionTechApplication {
         private final MailService              mailService;
         private final AuthService              authService;
         private final UserMapper               userMapper;
-        
-        
+
+
         @Bean
         @Profile ("bootstrap")
         public CommandLineRunner bootstrapByScript() {
@@ -105,7 +108,7 @@ public class FusionTechApplication {
                         var users = authService.findAll().stream().map(userMapper::toUser).toList();
                         userRepository.saveAll(users);
                         users.forEach(user -> authService.setInitialClaims(user.getId(), user.getFirebaseUid()));
-                        System.exit(200);
+//                        System.exit(200);
                 };
         }
         private final List<String> imageList =Arrays.asList(images);

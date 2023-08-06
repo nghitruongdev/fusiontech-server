@@ -2,6 +2,7 @@ package com.vnco.fusiontech.order.repository;
 
 import com.vnco.fusiontech.order.entity.Order;
 import com.vnco.fusiontech.order.entity.OrderStatus;
+import com.vnco.fusiontech.order.entity.proxy.Voucher;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
@@ -14,4 +15,5 @@ import java.util.UUID;
 public interface OrderRepository extends JpaRepository<Order, Long> {
     @RestResource (path = "byUserIdAndStatusIn")
     List<Order> findAllByUserIdAndStatusIn(@Param ("uid") UUID userId, @Param ("st") List<OrderStatus> statusList);
+    Long countOrderByVoucher(Voucher voucher);
 }

@@ -54,7 +54,7 @@ public class ReviewRestController {
             reviewDTO.setId(review.getId());
             reviewDTO.setRating(review.getRating());
             reviewDTO.setComment(review.getComment());
-            reviewDTO.setCreatedAt(review.getCreate_at());
+            reviewDTO.setCreatedAt(review.getCreatedAt());
             reviewDTO.setUser(review.getUser());
 
             reviewDTOs.add(reviewDTO);

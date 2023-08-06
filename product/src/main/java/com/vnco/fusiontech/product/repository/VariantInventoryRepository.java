@@ -29,7 +29,7 @@ public interface VariantInventoryRepository extends JpaRepository<VariantInvento
     
     @Query("SELECT COALESCE(SUM (detail.quantity), 0) FROM VariantInventoryDetail detail WHERE detail.inventory" +
            ".id=:inventoryId")
-    Integer getTotalQuantity(Long inventoryId);
+    Integer getTotalQuantity(@Param("inventoryId") Long inventoryId);
     
     //todo: add admin can update and delete inventory record
 }

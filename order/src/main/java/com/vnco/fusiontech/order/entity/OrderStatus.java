@@ -13,7 +13,7 @@ public enum OrderStatus {
     DELIVERED_SUCCESS(OrderStatusGroup.COMPLETED, "Giao thành công"),
     DELIVERED_FAILED(OrderStatusGroup.FAILED, "Trả hàng"),
     CANCELLED(OrderStatusGroup.CANCELLED, "Đã huỷ"),
-    DENIED(OrderStatusGroup.CANCELLED, "Đã bị từ chối");
+    DENIED(OrderStatusGroup.CANCELLED, "Đã huỷ bởi hệ thống");
     
     private final OrderStatusGroup group;
     private final String           detailName;

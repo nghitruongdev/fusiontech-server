@@ -15,8 +15,8 @@ public record PaymentRequest(
 ) {
     public PaymentRequest {
         if (method == null) method = PaymentMethod.COD;
-        if (status == null) status = PaymentStatus.CHUA_THANH_TOAN;
-        if (status == PaymentStatus.DA_THANH_TOAN) {
+        if (status == null) status = PaymentStatus.UNPAID;
+        if (status == PaymentStatus.PAID) {
             paidAt = Instant.now();
         }
     }

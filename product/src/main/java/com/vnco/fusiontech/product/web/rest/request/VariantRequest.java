@@ -13,7 +13,7 @@ import jakarta.validation.constraints.Positive;
 import java.util.List;
 
 public record VariantRequest(
-        @NotBlank(groups = OnCreate.class) @NullOrNotBlank(groups = OnUpdate.class) String sku,
+        @NullOrNotBlank(groups = OnUpdate.class) String sku,
         @NotNull(groups = OnCreate.class) @Positive Double price,
         List<String> images,
         @NotEmpty(groups = OnCreate.class) @NullOrNotEmpty(groups = OnUpdate.class) List<@Valid VariantAttributeRequest> attributes,

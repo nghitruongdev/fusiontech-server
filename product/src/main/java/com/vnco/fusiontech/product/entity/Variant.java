@@ -2,12 +2,11 @@ package com.vnco.fusiontech.product.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vnco.fusiontech.common.constant.DBConstant;
-import com.vnco.fusiontech.common.utils.BeanUtils;
-import com.vnco.fusiontech.product.service.ProductVariantService;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 
@@ -30,7 +29,9 @@ public class Variant implements Serializable {
         String PRODUCT_NAME = "product-name";
         String BASIC = "basic";
     }
-
+    private interface FORMULA {
+        String AVAILABLE_QUANTITY = "(SELECT get_available_quantity(id))";
+    }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -44,8 +45,10 @@ public class Variant implements Serializable {
     @ToString.Exclude
     private List<String> images = new ArrayList<>();
 
-    private double price;
+    private Double price;
 
+    @Formula(FORMULA.AVAILABLE_QUANTITY)
+    private Integer availableQuantity;
     // private Boolean active;
 
     // todo: remember to add optional
@@ -81,10 +84,11 @@ public class Variant implements Serializable {
         inventories.add(inventory);
     }
 
-    public long getAvailableQuantity() {
-        var service = BeanUtils.getBean(ProductVariantService.class);
-        return service.getAvailableQuantity(this.id);
-    }
+    
+//    public long getAvailableQuantity() {
+//        var service = BeanUtils.getBean(ProductVariantService.class);
+//        return service.getAvailableQuantity(this.id);
+//    }
 
     @Override
     public boolean equals(Object o) {

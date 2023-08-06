@@ -25,4 +25,6 @@ public interface ProductVariantService extends PublicProductVariantService {
     long getAvailableQuantity(Long variantId);
     
     void updateVariant(Long id, VariantRequest request);
+    
+    void generateSku(List<Variant> variants);
 }

@@ -2,7 +2,6 @@ package com.vnco.fusiontech.app;
 
 import com.github.javafaker.Faker;
 import com.vnco.fusiontech.common.CommonModuleConfiguration;
-import com.vnco.fusiontech.common.service.PublicStorageService;
 import com.vnco.fusiontech.mail.MailConfiguration;
 import com.vnco.fusiontech.mail.service.MailService;
 import com.vnco.fusiontech.order.OrderModuleConfiguration;
@@ -20,7 +19,6 @@ import com.vnco.fusiontech.user.service.AuthService;
 import com.vnco.fusiontech.user.web.rest.request.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -31,8 +29,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
@@ -199,8 +195,8 @@ public class FusionTechApplication {
                                                                                         .mapToObj(i-> Variant.builder()
                                                                                                             .images(getImages())
                                                                                                             .sku(UUID.randomUUID().toString())
-                                                                                                            .price(number.numberBetween(10_000_000,
-                                                                                                                                        30_000_000))
+                                                                                                            .price((double) number.numberBetween(10_000_000,
+                                                                                                                                                 30_000_000))
                                                                                                             .product(product)
                                                                                                               .specifications(getRandomSpecs.get())
                                                                                                             .build());
@@ -236,12 +232,12 @@ public class FusionTechApplication {
                 };
         }
         
-        @Autowired
-        @Lazy
-        private  PublicStorageService storageService;
-        
-        @GetMapping("/api/test")
-        public void removeImage(@RequestParam("url") String imageUrl){
-                storageService.removeImages(List.of(imageUrl));
-        }
+//        @Autowired
+//        @Lazy
+//        private  PublicStorageService storageService;
+//        private final  ReportRepository reportRepository;
+//        @GetMapping("/api/test")
+//        public ResponseEntity<?> removeImage(){
+//                return ResponseEntity.of(Optional.ofNullable(reportRepository.topSpentCustomer()));
+//        }
 }

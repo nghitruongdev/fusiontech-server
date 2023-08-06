@@ -25,7 +25,7 @@ public class Review implements Serializable{
 
     private String comment;
 
-    private Instant create_at;
+    private Instant createdAt;
 
     @ManyToOne (fetch = FetchType.LAZY)
     @ToString.Exclude

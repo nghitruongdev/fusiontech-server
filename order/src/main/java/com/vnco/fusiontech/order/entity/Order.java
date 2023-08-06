@@ -2,6 +2,7 @@ package com.vnco.fusiontech.order.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.vnco.fusiontech.common.constant.DBConstant;
+import com.vnco.fusiontech.order.entity.listener.OrderListener;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -11,7 +12,6 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 import static com.vnco.fusiontech.common.utils.ManyToOneUtils.*;
 
@@ -41,11 +41,19 @@ public class Order implements Serializable {
     private Instant purchasedAt;
     
     @Enumerated (EnumType.STRING)
-    //    @Column (nullable = false)
     @NotNull
     private OrderStatus status;
     
-    @JoinColumn (name = "user_id", table = DBConstant.USER_TABLE)
+    @JoinColumn (
+            name = "user_id", table = DBConstant.USER_TABLE,
+            foreignKey = @ForeignKey (
+                    name = "FK_order_user",
+                    foreignKeyDefinition = """
+                           FOREIGN KEY (user_id) REFERENCES app_user (id)
+                                ON DELETE NO ACTION
+                                """
+            )
+    )
     private Long userId;
     
     @JoinColumn (name = "address_id", table = DBConstant.SHIPPING_ADDRESS_TABLE)
@@ -54,7 +62,7 @@ public class Order implements Serializable {
     @Column (name = "payment_id", insertable = false, updatable = false)
     private Long paymentId;
     
-    @OneToOne (cascade = CascadeType.PERSIST, optional = false, orphanRemoval = true)
+    @OneToOne (cascade = {CascadeType.PERSIST, CascadeType.MERGE}, optional = false, orphanRemoval = true)
     @JoinColumn (name = "payment_id")
     @ToString.Exclude
     private Payment payment;

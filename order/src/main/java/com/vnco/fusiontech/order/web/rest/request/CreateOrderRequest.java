@@ -8,7 +8,6 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
-import java.util.UUID;
 
 public record CreateOrderRequest(
         String email,
@@ -20,8 +19,8 @@ public record CreateOrderRequest(
         @NotEmpty @Validated @Valid List<OrderItemRequest> items
 ) {
     public CreateOrderRequest {
-        if (status == null) {
-            if (payment != null && PaymentStatus.DA_THANH_TOAN.equals(payment.status())) {
+           if (status == null) {
+            if (PaymentStatus.PAID.equals(payment.status())) {
                 status = OrderStatus.VERIFIED;
             } else {
                 status = OrderStatus.PLACED;

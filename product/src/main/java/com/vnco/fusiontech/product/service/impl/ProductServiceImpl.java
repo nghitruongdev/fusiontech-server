@@ -3,18 +3,20 @@ package com.vnco.fusiontech.product.service.impl;
 import com.vnco.fusiontech.common.exception.InvalidRequestException;
 import com.vnco.fusiontech.common.exception.RecordNotFoundException;
 import com.vnco.fusiontech.common.service.PublicUserService;
+import com.vnco.fusiontech.common.utils.BeanUtils;
 import com.vnco.fusiontech.product.entity.Product;
 import com.vnco.fusiontech.product.entity.Specification;
 import com.vnco.fusiontech.product.entity.Variant;
 import com.vnco.fusiontech.product.entity.projection.ProductSpecificationDTO;
 import com.vnco.fusiontech.product.entity.proxy.User;
-import com.vnco.fusiontech.product.web.rest.request.mapper.ProductMapper;
 import com.vnco.fusiontech.product.repository.ProductRepository;
 import com.vnco.fusiontech.product.repository.SpecificationRepository;
 import com.vnco.fusiontech.product.service.ProductService;
+import com.vnco.fusiontech.product.service.ProductVariantService;
 import com.vnco.fusiontech.product.web.rest.request.CreateProductRequest;
 import com.vnco.fusiontech.product.web.rest.request.ListSpecificationRequest;
 import com.vnco.fusiontech.product.web.rest.request.UpdateProductRequest;
+import com.vnco.fusiontech.product.web.rest.request.mapper.ProductMapper;
 import jakarta.validation.Valid;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +24,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -33,7 +38,6 @@ public class ProductServiceImpl implements ProductService {
     private final PublicUserService userService;
     private final ProductMapper mapper;
     private final SpecificationRepository specificationRepository;
-
     @Override
     public List<Product> getAllProducts() {
         return productRepository.findAll();
@@ -48,12 +52,15 @@ public class ProductServiceImpl implements ProductService {
     @Transactional()
     public Long createProduct(CreateProductRequest request) {
         var product = mapper.toProduct(request);
-        var variants = createProductVariant(request.specifications());
-        variants.forEach(variant -> variant.setPrice(0).setSku(UUID.randomUUID().toString()));
-        variants.stream().flatMap(variant -> variant.getSpecifications().stream())
-                .forEach(specificationRepository::save);
+        productRepository.save(product);
+        var variants = createProductVariant(product, request.specifications());
         product.setVariants(variants);
-        return productRepository.save(product).getId();
+        BeanUtils.getBean(ProductVariantService.class)
+                         .generateSku(variants);
+        variants.stream().flatMap(variant -> variant.getSpecifications().stream())
+                .filter(specification -> Objects.isNull(specification.getId()))
+                .forEach(specificationRepository::save);
+        return product.getId();
     }
 
     @Override
@@ -125,10 +132,11 @@ public class ProductServiceImpl implements ProductService {
         }).toList();
     }
 
-    public List<Variant> createProductVariant(List<ListSpecificationRequest> specs) {
+    public List<Variant> createProductVariant(Product product, List<ListSpecificationRequest> specs) {
         if (specs == null || specs.isEmpty()) {
-            return List.of(Variant.builder().build());
+            return  List.of(Variant.builder().build());
         }
+        
         List<ListSpecificationRequest> multipleValueSpecs = new ArrayList<>();
         List<ListSpecificationRequest> singleValueSpecs = new ArrayList<>();
         specs.forEach(spec -> {
@@ -177,5 +185,5 @@ public class ProductServiceImpl implements ProductService {
             return variant;
         }).toList();
     }
-
+    
 }

@@ -1,7 +1,6 @@
 package com.vnco.fusiontech.order.service.impl;
 
 import com.vnco.fusiontech.common.exception.InvalidRequestException;
-import com.vnco.fusiontech.common.exception.NotAcceptedRequestException;
 import com.vnco.fusiontech.common.exception.RecordNotFoundException;
 import com.vnco.fusiontech.common.service.PublicUserService;
 import com.vnco.fusiontech.order.entity.Order;
@@ -62,38 +61,46 @@ public class OrderServiceImpl implements OrderService {
     public void updateOrderStatus(Long oid, @NonNull OrderStatus newStatus) {
         
         var order = repository.findById(oid).orElseThrow(RecordNotFoundException::new);
-        
-        if (newStatus == OrderStatus.CANCELLED) {
-            cancelOrder(order);
-            return;
-        }
-        
-        if (order.getStatus().isUnchangeable() || order.getStatus().compareTo(newStatus) >= 0) {
-            throw new NotAcceptedRequestException("Trạng thái đơn hàng mới không hợp lệ.");
-        }
-        
+    
+        checkUpdateOrder(order, newStatus);
         order.setStatus(newStatus);
+        updatePayment(order);
     }
     
-    private void cancelOrder(Order order) {
-        
-        if (!order.getStatus().isCancellable() || order.getPayment().getStatus() == PaymentStatus.DA_THANH_TOAN) {
-            throw new NotAcceptedRequestException(
-                    "Không thể huỷ đơn hàng. Liên hệ nhân viên để được hỗ trợ");
+    private void checkUpdateOrder(Order order, OrderStatus newStatus){
+        var status = order.getStatus();
+        var payment = order.getPayment();
+        if (status.isUnchangeable() || order.getStatus().compareTo(newStatus) >= 0) {
+            throw new InvalidRequestException("Trạng thái đơn hàng mới không hợp lệ.");
         }
-        
-        order.setStatus(OrderStatus.CANCELLED);
-    }
-    
-    private void denyOrder(Order order) {
-        if (order.getStatus() != OrderStatus.PLACED) {
-            throw new NotAcceptedRequestException("Không thể thay đổi trạng thái đơn hàng. Trạng thái " +
-                                                  "đơn hàng mới không hợp lệ.");
+        switch(status){
+            case CANCELLED -> {
+                if (!status.isCancellable() || payment.getStatus() == PaymentStatus.PAID) {
+                    throw new InvalidRequestException(
+                            "Không thể huỷ đơn hàng. Liên hệ nhân viên để được hỗ trợ");
+                }
+            }
+            case DENIED -> {
+                if (status.isUnchangeable()) {
+                    throw new InvalidRequestException("Không thể thay đổi trạng thái đơn hàng. Chỉ có thể huỷ  " +
+                                                          "đơn hàng mới không hợp lệ.");
+                }
+            }
+            case DELIVERED_SUCCESS -> {
+                log.warn("Order with id {} that's not been delivered is going to be completed.", order.getId());
+            }
         }
-        
-        order.setStatus(OrderStatus.DENIED);
     }
     
+    private void updatePayment(Order o){
+        var payment = o.getPayment();
+        switch(o.getStatus()){
+            case CANCELLED -> payment.setStatus(PaymentStatus.CANCELLED);
+            case DELIVERED_SUCCESS -> {
+                if(payment.getStatus() == PaymentStatus.UNPAID) payment.setStatus(PaymentStatus.PAID);
+            }
+        }
+    }
     
     private void checkEnoughQuantity(Collection<OrderItemRequest> items) {
         items.stream()
@@ -110,6 +117,7 @@ public class OrderServiceImpl implements OrderService {
     
     @Override
     @Transactional (readOnly = true)
+    @Deprecated
     public long getAvailableQuantity(Long variantId) {
         return orderItemRepository.getTotalQuantityOfVariant(variantId)
                - orderItemRepository.getSoldCountOfVariant(variantId, OrderStatus.soldStatusList());

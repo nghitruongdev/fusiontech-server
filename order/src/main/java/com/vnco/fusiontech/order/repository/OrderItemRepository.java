@@ -20,6 +20,7 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
             WHERE oi.variant.id=:variantId
                 AND oi.order.status IN :soldStatus
             """)
+    @Deprecated
     long getSoldCountOfVariant(@Param("variantId") Long variantId, @Param("soldStatus") List<OrderStatus> soldStatus);
 
     @Query("""
@@ -27,6 +28,7 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
             FROM VariantInventoryDetail vi
             WHERE vi.variant.id=:variantId
             """)
+    @Deprecated
     long getTotalQuantityOfVariant(@Param("variantId") Long variantId);
 
 }

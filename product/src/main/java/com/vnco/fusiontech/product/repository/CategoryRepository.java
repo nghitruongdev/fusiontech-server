@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface CategoryRepository extends JpaRepository<Category, Integer> {
     
-    Optional<Category> findBySlug(String slug);
+    Optional<Category> findBySlug(@Param("slug") String slug);
     
     @RestResource (path = "all", rel = "all")
     @Query ("from Category ")

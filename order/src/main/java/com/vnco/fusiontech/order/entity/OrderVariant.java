@@ -15,12 +15,13 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Entity(name = "productVariant")
+@Entity(name = "OrderVariant")
 @Table(name = DBConstant.PRODUCT_VARIANT_TABLE)
 @JsonIgnoreProperties (value = {"hibernateLazyInitializer"})
-public class ProductVariant implements Serializable {
+public class OrderVariant implements Serializable {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 }

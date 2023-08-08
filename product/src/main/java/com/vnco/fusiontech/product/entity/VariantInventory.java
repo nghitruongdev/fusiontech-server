@@ -1,17 +1,18 @@
 package com.vnco.fusiontech.product.entity;
 
-import com.vnco.fusiontech.common.AbstractAuditingEntity;
+import com.vnco.fusiontech.common.entity.AbstractAuditingEntity;
 import com.vnco.fusiontech.common.constant.DBConstant;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Formula;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@Builder
+@SuperBuilder
 @Setter
 @Getter
 @NoArgsConstructor
@@ -20,16 +21,17 @@ import java.util.Objects;
 @Entity
 @Table (name = DBConstant.VARIANT_INVENTORY_TABLE)
 public class VariantInventory extends AbstractAuditingEntity<Long> {
-    
+    private interface FORMULA{
+        String TOTAL_QUANTITY =  "(SELECT COALESCE(SUM(s.quantity), 0) FROM " +
+                                 DBConstant.VARIANT_INVENTORY_DETAIL_TABLE +
+                                 " s WHERE s.inventory_id=id)";
+    }
     @Id
+    @Column(name = "id")
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Formula (
-            "(SELECT COALESCE(SUM(s.quantity), 0) FROM " +
-            DBConstant.VARIANT_INVENTORY_DETAIL_TABLE +
-            " s WHERE s.inventory_id=id)"
-    )
+    @Formula (FORMULA.TOTAL_QUANTITY)
     private Integer totalQuantity;
 
     @NotEmpty

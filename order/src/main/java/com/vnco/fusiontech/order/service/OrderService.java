@@ -1,7 +1,7 @@
 package com.vnco.fusiontech.order.service;
 
 import com.vnco.fusiontech.common.service.PublicOrderService;
-import com.vnco.fusiontech.order.entity.OrderStatus;
+import com.vnco.fusiontech.common.constant.OrderStatus;
 import com.vnco.fusiontech.order.web.rest.request.CreateOrderRequest;
 import jakarta.validation.Valid;
 

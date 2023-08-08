@@ -22,14 +22,19 @@ import java.util.Objects;
 public class Brand implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
 
     @NotBlank
-    @NaturalId(mutable = true)
+    @Column(name = "name")
     private String name;
+    
+    @NotBlank
+    @Column(name = "slug")
+    @NaturalId(mutable = true)
+    private String slug;
 
-    // @Type(JsonType.class)
-    // @Column(columnDefinition = "json")
+    @Column(name = "image")
     private String image;
 
     @Override

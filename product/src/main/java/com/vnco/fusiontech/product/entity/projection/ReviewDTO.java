@@ -7,9 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 @Getter
 @Setter
@@ -25,8 +23,8 @@ public class ReviewDTO {
 
         private User user;
 
-        public void setCreatedAt(Instant createdAt) {
-                this.createdAt = LocalDateTime.ofInstant(createdAt, ZoneId.systemDefault());
+        public void setCreatedAt(LocalDateTime createdAt) {
+                this.createdAt = createdAt;
         }
 
 }

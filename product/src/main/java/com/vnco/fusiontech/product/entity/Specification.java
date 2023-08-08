@@ -23,8 +23,10 @@ import java.util.Set;
 // @Table(name = DBConstant.SPEC_TABLE)
 public class Specification {
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  @Column (name = "id")
+  @GeneratedValue (strategy = GenerationType.IDENTITY)
+  private Long   id;
+  @Column (name = "name")
   private String name;
   @Column(name = "specification_value")
   private String value;

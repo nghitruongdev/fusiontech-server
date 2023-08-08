@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Objects;
 
 @Accessors(chain = true)
@@ -33,28 +33,32 @@ public class User {
 
     @Column(name = "firebase_uid", unique = true)
     private String firebaseUid;
-    @Basic
+
     @Column(name = "first_name")
     private String firstName;
 
     @Column(name = "last_name")
     private String lastName;
-
-    @Basic
+    
     @Column(name = "email", unique = true)
     private String email;
-    @Basic
+    
     @Column(name = "phone_number", unique = true)
     private String phoneNumber;
 
+    @Column(name = "is_staff")
     private boolean isStaff;
 
+    @Column(name = "is_disabled")
     private boolean isDisabled;
-
+    
+    @Column(name = "image")
     private String image;
+    
+    @Column(name = "date_of_birth")
+    private LocalDate dateOfBirth;
 
-    private Date dateOfBirth;
-
+    @Column(name = "gender")
     private Gender gender;
 
     @OneToOne(fetch = FetchType.LAZY)

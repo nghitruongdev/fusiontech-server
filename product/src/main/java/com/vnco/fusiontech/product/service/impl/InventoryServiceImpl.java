@@ -20,7 +20,6 @@ public class InventoryServiceImpl implements InventoryService {
   
     @Override
     public Long createInventory(VariantInventory inventory) {
-        inventory.setCreatedBy("SYSTEM");
         return repository.save(inventory).getId();
     }
     

@@ -2,13 +2,18 @@ package com.vnco.fusiontech.product.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vnco.fusiontech.common.constant.DBConstant;
+import com.vnco.fusiontech.common.constant.ProductStatus;
 import com.vnco.fusiontech.product.entity.proxy.User;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.Formula;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Type;
+import org.hibernate.type.SqlTypes;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serializable;
@@ -36,20 +41,21 @@ public class Product extends RepresentationModel<Product> implements Serializabl
         
     }
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Column(name = "name")
     private String name;
-
+    @Column(name = "slug")
     private String slug;
-
+    @Column(name = "summary")
     private String summary;
 
-    @Column(columnDefinition = "text")
+    @Column(name = "description", columnDefinition = "text")
     private String description;
 
     @Type(JsonType.class)
-    @Column(columnDefinition = "json")
+    @Column(name = "images",columnDefinition = "json")
     @Builder.Default
     private List<String> images = new ArrayList<>();
 
@@ -59,6 +65,11 @@ public class Product extends RepresentationModel<Product> implements Serializabl
             """))
     @ToString.Exclude
     private Category category;
+    
+    @JdbcTypeCode (SqlTypes.TINYINT)
+    @Min (0) @Max (100)
+    @Column(name = "discount")
+    private Byte discount;
 
     @Formula("(SELECT COUNT(s.id) FROM " +
             DBConstant.REVIEW_TABLE +
@@ -70,6 +81,12 @@ public class Product extends RepresentationModel<Product> implements Serializabl
             " s WHERE s.product_id=id)")
     private Double avgRating;
     
+    @Enumerated(EnumType.STRING)
+    private ProductStatus status;
+    
+    @Builder.Default
+    private Boolean active = Boolean.TRUE;
+    
     @Formula(value = FORMULA.MIN_PRICE)
     private  Double minPrice;
     
@@ -77,7 +94,7 @@ public class Product extends RepresentationModel<Product> implements Serializabl
     private  Double maxPrice;
 
     @Type(JsonType.class)
-    @Column(columnDefinition = "json")
+    @Column(name = "features", columnDefinition = "json")
     @Builder.Default
     private List<String> features = new ArrayList<>();
 
@@ -86,7 +103,6 @@ public class Product extends RepresentationModel<Product> implements Serializabl
             FOREIGN KEY (brand_id)
             REFERENCES Brand(id) ON DELETE SET NULL ON UPDATE CASCADE
             """))
-
     @ToString.Exclude
     private Brand brand;
 

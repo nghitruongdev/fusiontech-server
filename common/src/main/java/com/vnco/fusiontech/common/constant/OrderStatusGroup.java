@@ -1,4 +1,4 @@
-package com.vnco.fusiontech.order.entity;
+package com.vnco.fusiontech.common.constant;
 
 
 import java.util.Map;

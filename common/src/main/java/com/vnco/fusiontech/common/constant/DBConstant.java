@@ -1,25 +1,26 @@
 package com.vnco.fusiontech.common.constant;
 
 public interface DBConstant {
-    String USER_TABLE = "app_user";
-    String AUTHORITY_TABLE = "authority";
-    String ROLE_TABLE = "role";
+    String USER_TABLE = "APP_USER";
+    String AUTHORITY_TABLE = "AUTHORITY";
+    String ROLE_TABLE = "ROLE";
 
-    String CATEGORY_TABLE = "category";
-    String BRAND_TABLE = "brand";
-    String ATTRIBUTE_TABLE = "attribute";
-    String REVIEW_TABLE = "review";
-    String SPEC_TABLE = "product_specification";
-    String PRODUCT_TABLE = "product";
-    String VARIANT_ATTRIBUTE_TABLE = "product_attribute";
-    String PRODUCT_VARIANT_TABLE = "product_variant";
-    String VARIANT_INVENTORY_TABLE = "product_variant_inventory";
-    String VARIANT_INVENTORY_DETAIL_TABLE = "variant_inventory_detail";
-    String FAVORITE_TABLE = "favorite";
+    String CATEGORY_TABLE = "CATEGORY";
+    String BRAND_TABLE = "BRAND";
+    String ATTRIBUTE_TABLE = "ATTRIBUTE";
+    String REVIEW_TABLE = "REVIEW";
+    String SPEC_TABLE = "PRODUCT_SPECIFICATION";
+    String PRODUCT_TABLE = "PRODUCT";
+    String VARIANT_ATTRIBUTE_TABLE = "PRODUCT_ATTRIBUTE";
+    String PRODUCT_VARIANT_TABLE = "PRODUCT_VARIANT";
+    String VARIANT_INVENTORY_TABLE = "PRODUCT_VARIANT_INVENTORY";
+    String VARIANT_INVENTORY_DETAIL_TABLE = "VARIANT_INVENTORY_DETAIL";
+    String FAVORITE_TABLE = "FAVORITE";
 
-    String ORDER_TABLE = "app_order";
-    String ORDER_ITEM_TABLE = "order_item";
-    String SHIPPING_ADDRESS_TABLE = "shipping_address";
-    String PAYMENT_TABLE      = "payment";
-    String    VARIANT_SPEC_TABLE = "variant_specification";
+    String ORDER_TABLE = "APP_ORDER";
+    String ORDER_ITEM_TABLE = "ORDER_ITEM";
+    String SHIPPING_ADDRESS_TABLE = "SHIPPING_ADDRESS";
+    String PAYMENT_TABLE      = "PAYMENT";
+    String VARIANT_SPEC_TABLE = "VARIANT_SPECIFICATION";
+    String VOUCHER_TABLE = "VOUCHER";
 }

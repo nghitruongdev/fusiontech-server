@@ -22,6 +22,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -91,17 +93,13 @@ public class SpringExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.badRequest().body(ex.getMessage());
     }
 
-//    @ExceptionHandler(RuntimeException.class)
-//    ProblemDetail handleRuntimeException(RuntimeException ex) {
-//        return ProblemDetail.forStatusAndDetail(I_AM_A_TEAPOT, ex.getMessage());
-//    }
-
     @ExceptionHandler(DataIntegrityViolationException.class)
     ProblemDetail handleDataIntegration(DataIntegrityViolationException ex) {
         var cause = ex.getCause();
         var root = ex.getRootCause();
         var specific = ex.getMostSpecificCause();
                 if (cause instanceof org.hibernate.exception.ConstraintViolationException constraintEx) {
+                    log.debug(constraintEx.getConstraintName());
             return ProblemDetail.forStatusAndDetail(CONFLICT, getMessage(constraintEx));
         }
         return ProblemDetail.forStatusAndDetail(CONFLICT,ex.getMessage());
@@ -109,9 +107,19 @@ public class SpringExceptionHandler extends ResponseEntityExceptionHandler {
     private String getMessage(org.hibernate.exception.ConstraintViolationException ex){
         var sqlCode = ex.getSQLState();
         var constraint = ex.getSQLException().getMessage();
-        var error = constraint.substring(0, constraint.indexOf(";"))
-                                 .replace("\"", "");
-        
+        var error = "";
+        if(constraint.startsWith("Duplicate")){
+            String  regex   = "'.+?'"; // Regular expression to match inside single quotes
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(constraint);
+            if(matcher.find()){
+                return String.format("Lỗi trùng lặp dữ liệu: %s - [%s]", matcher.group(),  sqlCode);
+            }
+        }
+        else{
+            error = constraint.substring(0, constraint.indexOf(";"))
+                              .replace("\"", "");
+        }
 //        switch (sqlCode) {
 //            case "23502" -> {
 //                var exMessage = constraintEx.getConstraintName();
@@ -127,8 +135,8 @@ public class SpringExceptionHandler extends ResponseEntityExceptionHandler {
 //            default -> errorMessage = constraintEx.getSQLException().getMessage();
 //        }
         return String.format("%s - [%s]",error,  sqlCode);
-    
     }
+    
     @ExceptionHandler(TransactionSystemException.class)
     ProblemDetail handleTransaction(TransactionSystemException ex) {
 

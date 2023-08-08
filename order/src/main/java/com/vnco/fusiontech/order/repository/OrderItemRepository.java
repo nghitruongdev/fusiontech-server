@@ -1,7 +1,7 @@
 package com.vnco.fusiontech.order.repository;
 
 import com.vnco.fusiontech.order.entity.OrderItem;
-import com.vnco.fusiontech.order.entity.OrderStatus;
+import com.vnco.fusiontech.common.constant.OrderStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

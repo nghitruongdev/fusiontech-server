@@ -7,7 +7,6 @@ import lombok.Getter;
 @Getter
 public enum MailTemplate {
     ORDER_SUCCESS("");
-    
     private final String name;
     
 }

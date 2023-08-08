@@ -18,6 +18,9 @@ spring:
     console:
       enabled: true
       path: /h2
+  sql:
+    init:
+      mode: embedded
 logging:
 #  file:
 #    name: spring.log

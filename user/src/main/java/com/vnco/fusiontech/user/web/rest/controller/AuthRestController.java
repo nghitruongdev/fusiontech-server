@@ -1,5 +1,6 @@
 package com.vnco.fusiontech.user.web.rest.controller;
 
+import com.vnco.fusiontech.common.utils.SecurityUtils;
 import com.vnco.fusiontech.user.service.UserService;
 import com.vnco.fusiontech.user.web.rest.request.UserRequest;
 import jakarta.validation.Valid;
@@ -44,4 +45,9 @@ public class AuthRestController {
         return ResponseEntity.ok().build();
     }
     
+    @GetMapping("/test")
+    public ResponseEntity<?> getCurrentUser() {
+     var user =   SecurityUtils.getCurrentUserLogin().get();
+        return ResponseEntity.ok(Map.of("token", user));
+    }
 }

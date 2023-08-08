@@ -13,13 +13,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.List;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -27,14 +25,15 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @Slf4j
 //@Order(1)
 @RequiredArgsConstructor
-public class  FirebaseTokenFilter extends OncePerRequestFilter {
-
-   private final SecurityService authService;
-
+public class FirebaseTokenFilter extends OncePerRequestFilter {
+    
+    private final SecurityService   securityService;
+    
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+                                    FilterChain filterChain
+    ) throws ServletException, IOException {
         log.info("Logging filter invoked...");
         String authHeader = request.getHeader(AUTHORIZATION);
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -42,15 +41,15 @@ public class  FirebaseTokenFilter extends OncePerRequestFilter {
             return;
         }
         try {
-            String token = authHeader.substring(7);
+            String        token        = authHeader.substring(7);
             FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(token);
-            String uid = decodedToken.getUid();
-            List<GrantedAuthority> authorities = authService.getAuthorities(
-                    FirebaseAuth.getInstance().getUser(uid).getCustomClaims()
-            );
-            Authentication authentication = new UsernamePasswordAuthenticationToken(uid, null, authorities);
+            String        uid          = decodedToken.getUid();
+            var           user         = securityService.getCurrentUser(decodedToken);
+            Authentication authentication =
+                    new UsernamePasswordAuthenticationToken(user, token, user.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
             log.info("User's authorities {}", SecurityContextHolder.getContext().getAuthentication().getAuthorities());
+            filterChain.doFilter(request, response);
         } catch (FirebaseAuthException e) {
             log.error("Firebase authentication failed", e);
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Firebase authentication failed");

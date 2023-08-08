@@ -31,7 +31,7 @@ public class OrderMapper {
     
     OrderItem toOrderItem(OrderItemRequest request) {
         return OrderItem.builder()
-                        .variant(new ProductVariant(request.variantId()))
+                        .variant(new OrderVariant(request.variantId()))
                         .price(request.price())
                         .quantity(request.quantity())
                         .build();

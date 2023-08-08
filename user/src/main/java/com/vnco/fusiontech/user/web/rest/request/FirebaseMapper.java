@@ -30,7 +30,10 @@ public interface FirebaseMapper {
     // @Mapping (target = "phoneNumber", source = "request.phoneNumber",
     // conditionExpression = "java(request.phoneNumber()!=null &&
     // !request.phoneNumber().equals(user.getPhoneNumber()))")
-    @Mapping(target = "displayName", expression = "java(com.vnco.fusiontech.common.utils.FirebaseUtils.composeFullName(request.firstName(),request.lastName(),user.getFirstName(), user.getLastName()))")
+    @Mapping(target = "displayName", expression = """
+                                                  java(
+                                                  com.vnco.fusiontech.common.utils.FirebaseUtils.composeFullName(request.firstName(),request.lastName(),user.getFirstName(), user.getLastName())
+                                                  )""")
     UserRecord.UpdateRequest toFirebaseUpdateRequest(UserRequest request, User user,
             @MappingTarget UserRecord.UpdateRequest target);
 

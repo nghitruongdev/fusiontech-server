@@ -18,11 +18,13 @@ import java.util.Objects;
 @Table (name = DBConstant.VARIANT_INVENTORY_DETAIL_TABLE)
 public class VariantInventoryDetail {
     @Id
+    @Column(name = "id")
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
     
     @NotNull
     @Positive
+    @Column(name = "quantity")
     private Integer quantity;
     
     @Column(name = "variant_id",nullable = false)

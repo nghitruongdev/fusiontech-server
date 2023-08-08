@@ -1,15 +1,15 @@
 package com.vnco.fusiontech.product.service.impl;
 
 import com.vnco.fusiontech.common.service.PublicOrderService;
-import com.vnco.fusiontech.product.entity.Specification;
-import com.vnco.fusiontech.product.entity.Variant;
-import com.vnco.fusiontech.product.entity.VariantInventory;
+import com.vnco.fusiontech.product.entity.*;
 import com.vnco.fusiontech.product.entity.projection.ProductSpecificationDTO;
+import com.vnco.fusiontech.product.repository.ProductRepository;
 import com.vnco.fusiontech.product.repository.ProductVariantRepository;
 import com.vnco.fusiontech.product.service.ProductService;
 import com.vnco.fusiontech.product.service.ProductVariantService;
 import com.vnco.fusiontech.product.web.rest.request.VariantRequest;
 import com.vnco.fusiontech.product.web.rest.request.mapper.VariantMapper;
+import jakarta.persistence.EntityManager;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.function.Function;
@@ -34,8 +35,10 @@ public class ProductVariantServiceImpl implements ProductVariantService {
 
     private final VariantMapper mapper;
     
-    private final ProductService productService;
-
+    private final ProductService    productService;
+    private final ProductRepository productRepository;
+    
+    private final EntityManager em;
     @Autowired
     @Lazy
     public void setOrderService(PublicOrderService orderService) {
@@ -107,24 +110,29 @@ public class ProductVariantServiceImpl implements ProductVariantService {
         generateSku(variants, names);
     }
     
-    private void generateSku(@NotEmpty List<Variant> variants, List<ProductSpecificationDTO> specs){
-        var names=   specs.stream()
-                              .filter(item -> item.values().size() > 1)
-                              .map(ProductSpecificationDTO::name).toList();
-        var product = variants.get(0).getProduct();
-        Long id = product.getId();
-        String name = product.getName().substring(0, 3);
-        String brandName = standardizeCode(product.getBrand().getName(), 3);
-        String categoryCode = standardizeCode(product.getCategory().toString(), 3);
-        Function<Variant, String> getSpecCode = variant ->  variant.getSpecifications().stream()
-                                                                   .filter(spec -> names.contains(spec.getName()))
-                                                                   .map(this::convertSpecToSkuCode)
-                                                                   .collect(Collectors.joining("-"));
+    private void generateSku(@NotEmpty List<Variant> variants, List<ProductSpecificationDTO> specs) {
+        StringBuilder skuBuilder = new StringBuilder();
+        var names = specs.stream()
+                         .filter(item -> item.values().size() > 1)
+                         .map(ProductSpecificationDTO::name).toList();
+        var productId = variants.get(0).getProduct().getId();
+        var product   = em.find(Product.class, productId);
+        skuBuilder.append(productId);
+        if (product.getCategory() != null)
+            skuBuilder.append("-")
+                      .append(em.find(Category.class, product.getCategory().getId()).getName().substring(0, 2));
+        if (product.getBrand() != null)
+            skuBuilder.append("-").append(em.find(Brand.class, product.getBrand().getId()).getName().substring(0, 2));
+        if (product.getName() != null) skuBuilder.append("-").append(product.getName().substring(0, 2));
+    
+        Function<Variant, String> getSpecCode = variant -> variant.getSpecifications().stream()
+                                                                  .filter(spec -> names.contains(spec.getName()))
+                                                                  .map(this::convertSpecToSkuCode)
+                                                                  .collect(Collectors.joining("-"));
+        var sku = skuBuilder.toString();
         variants.forEach(variant -> {
             var specCode = getSpecCode.apply(variant);
-            String sku =  id +  "-" + brandName + "-" + categoryCode + "-" + name + (!specCode.isEmpty()?
-                                                                                     "-" + specCode: "");
-            variant.setSku(sku);
+            variant.setSku(String.format("%s%s", sku, StringUtils.hasText(specCode) ? "-" + specCode : ""));
         });
     }
     

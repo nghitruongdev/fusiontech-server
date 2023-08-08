@@ -2,14 +2,14 @@ package com.vnco.fusiontech.order.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.vnco.fusiontech.common.constant.DBConstant;
+import com.vnco.fusiontech.common.constant.OrderStatus;
 import com.vnco.fusiontech.order.entity.listener.OrderListener;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,33 +30,36 @@ public class Order implements Serializable {
     
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
     
-    private Double total;
-    
+    @Column(name = "note")
     private String note;
     
+    @Column(name = "email")
     private String email;
     
-    private Instant purchasedAt;
+    @Column(name = "purchased_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime purchasedAt;
     
+    @Column(name = "status")
     @Enumerated (EnumType.STRING)
-    @NotNull
     private OrderStatus status;
     
-    @JoinColumn (
-            name = "user_id", table = DBConstant.USER_TABLE,
-            foreignKey = @ForeignKey (
-                    name = "FK_order_user",
-                    foreignKeyDefinition = """
-                           FOREIGN KEY (user_id) REFERENCES app_user (id)
-                                ON DELETE NO ACTION
-                                """
-            )
-    )
+    @Column (name = "user_id" )
     private Long userId;
     
-    @JoinColumn (name = "address_id", table = DBConstant.SHIPPING_ADDRESS_TABLE)
+    @ManyToOne(cascade = CascadeType.REFRESH, optional = false)
+    @JoinColumn(name ="user_id", updatable = false, insertable = false)
+    private UserOrder user;
+    
+    @ManyToOne(cascade ={CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinColumn(name = "voucher_id")
+    private Voucher voucher;
+    
+    @JoinColumn (table = DBConstant.SHIPPING_ADDRESS_TABLE)
+    @Column(name = "address_id")
     private Long addressId;
     
     @Column (name = "payment_id", insertable = false, updatable = false)
@@ -76,8 +79,6 @@ public class Order implements Serializable {
     @ToString.Exclude
     @Builder.Default
     private Set<OrderItem> items = new HashSet<>();
-    
-    //TODO: add modification table mapping
     
     public void addOrderItem(OrderItem item) {
         addItem(this, items, item);

@@ -1,6 +1,5 @@
 package com.vnco.fusiontech.user.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.vnco.fusiontech.common.constant.DBConstant;
 import jakarta.persistence.*;
@@ -24,16 +23,17 @@ public class ShippingAddress {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    @Column(name = "name")
     private String name;
-    
+    @Column(name = "phone")
     private String phone;
-    
+    @Column(name = "address")
     private String address;
-    
+    @Column(name = "ward")
     private String ward;
-    
+    @Column(name = "district")
     private String district;
-    
+    @Column(name = "province")
     private String province;
     
     @Transient

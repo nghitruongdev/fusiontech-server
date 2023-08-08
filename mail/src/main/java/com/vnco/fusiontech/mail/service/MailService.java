@@ -1,7 +1,6 @@
 package com.vnco.fusiontech.mail.service;
 
-import com.vnco.fusiontech.common.constant.MailTemplate;
+import com.vnco.fusiontech.common.service.PublicMailService;
 
-public interface MailService {
-    void sendMail(String emailAddress, String subject, MailTemplate template);
+public interface MailService extends PublicMailService {
 }

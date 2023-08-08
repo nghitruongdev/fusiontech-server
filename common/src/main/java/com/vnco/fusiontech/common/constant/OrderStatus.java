@@ -1,4 +1,4 @@
-package com.vnco.fusiontech.order.entity;
+package com.vnco.fusiontech.common.constant;
 
 import java.util.Arrays;
 import java.util.List;
@@ -10,8 +10,8 @@ public enum OrderStatus {
     VERIFIED(OrderStatusGroup.PROCESSING, "Đã xác nhận"),
     PREPARED(OrderStatusGroup.PROCESSING, "Đang chuẩn bị"),
     ON_DELIVERY(OrderStatusGroup.ON_DELIVERY, "Đang giao"),
-    DELIVERED_SUCCESS(OrderStatusGroup.COMPLETED, "Giao thành công"),
-    DELIVERED_FAILED(OrderStatusGroup.FAILED, "Trả hàng"),
+    COMPLETED(OrderStatusGroup.COMPLETED, "Giao thành công"),
+    FAILED(OrderStatusGroup.FAILED, "Trả hàng"),
     CANCELLED(OrderStatusGroup.CANCELLED, "Đã huỷ"),
     DENIED(OrderStatusGroup.CANCELLED, "Đã huỷ bởi hệ thống");
     
@@ -28,15 +28,15 @@ public enum OrderStatus {
     }
     
     public boolean isUnchangeable() {
-        return Set.of(CANCELLED, DELIVERED_SUCCESS, DELIVERED_FAILED, DENIED).contains(this);
+        return Set.of(CANCELLED, COMPLETED, FAILED, DENIED).contains(this);
     }
     
     public static List<OrderStatus> soldStatusList() {
-        return List.of(PLACED, VERIFIED, PREPARED, ON_DELIVERY, DELIVERED_SUCCESS);
+        return List.of(PLACED, VERIFIED, PREPARED, ON_DELIVERY, COMPLETED);
     }
     
     public boolean isCompleted() {
-        return Set.of(DELIVERED_SUCCESS, DELIVERED_FAILED).contains(this);
+        return Set.of(COMPLETED, FAILED).contains(this);
     }
     
     public Map<String, Object> getFullStatus() {

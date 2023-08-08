@@ -1,7 +1,7 @@
 package com.vnco.fusiontech.order.web.rest.request;
 
-import com.vnco.fusiontech.order.entity.OrderStatus;
-import com.vnco.fusiontech.order.entity.PaymentStatus;
+import com.vnco.fusiontech.common.constant.OrderStatus;
+import com.vnco.fusiontech.common.constant.PaymentStatus;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -20,7 +20,7 @@ public record CreateOrderRequest(
 ) {
     public CreateOrderRequest {
            if (status == null) {
-            if (PaymentStatus.PAID.equals(payment.status())) {
+            if (PaymentStatus.COMPLETED.equals(payment.status())) {
                 status = OrderStatus.VERIFIED;
             } else {
                 status = OrderStatus.PLACED;

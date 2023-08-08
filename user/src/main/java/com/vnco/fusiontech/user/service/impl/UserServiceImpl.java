@@ -1,5 +1,6 @@
 package com.vnco.fusiontech.user.service.impl;
 
+import com.vnco.fusiontech.common.entity.AppUser;
 import com.vnco.fusiontech.common.exception.InvalidRequestException;
 import com.vnco.fusiontech.common.exception.RecordNotFoundException;
 import com.vnco.fusiontech.user.entity.ShippingAddress;
@@ -78,13 +79,22 @@ public class UserServiceImpl implements UserService {
     }
     
     @Override
+    public Optional<AppUser> findByFirebaseId(String id) {
+        return repository.findByFirebaseUid(id)
+                         .map(user -> AppUser.builder()
+                                              .id(user.getId())
+                                              .displayName(user.getFullName())
+                                              .build());
+    }
+    
+    @Override
     @Transactional (readOnly = true)
     public boolean existsByFirebaseId(String firebaseId) {
         return repository.findByFirebaseUid(firebaseId).isPresent();
     }
-
+    
     @Override
-    @Transactional(readOnly = true)
+    @Transactional (readOnly = true)
     public boolean hasShippingAddress(Long userId, Long addressId) {
         return addressRepository.existsByIdAndUserId(addressId, userId);
     }

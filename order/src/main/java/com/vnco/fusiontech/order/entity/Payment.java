@@ -1,12 +1,14 @@
 package com.vnco.fusiontech.order.entity;
 
 import com.vnco.fusiontech.common.constant.DBConstant;
+import com.vnco.fusiontech.common.constant.PaymentMethod;
+import com.vnco.fusiontech.common.constant.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Accessors (chain = true)
 @Getter
@@ -20,19 +22,22 @@ import java.time.Instant;
 public class Payment implements Serializable {
     
     @Id
+    @Column(name = "id")
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    private Double amount;
-    
-    private Instant       paidAt;
+    @Column(name = "amount")
+    private Double        amount;
+    @Column(name = "paid_at")
+    private LocalDateTime paidAt;
     
     @Enumerated (EnumType.STRING)
-    @Column(nullable = false)
+//    @Column(name = "status", nullable = false)
+    @JoinColumn(name = "status")
     private PaymentStatus status;
     
     @Enumerated (EnumType.STRING)
-    @Column(nullable = false)
+//    @Column(nullable = false)
+    @JoinColumn(name = "method")
     private PaymentMethod method;
     
     @OneToOne (mappedBy = "payment", optional = false)

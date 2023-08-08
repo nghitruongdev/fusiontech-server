@@ -1,11 +1,11 @@
 package com.vnco.fusiontech.order.service.impl;
 
+import com.vnco.fusiontech.common.constant.OrderStatus;
+import com.vnco.fusiontech.common.constant.PaymentStatus;
 import com.vnco.fusiontech.common.exception.InvalidRequestException;
 import com.vnco.fusiontech.common.exception.RecordNotFoundException;
 import com.vnco.fusiontech.common.service.PublicUserService;
 import com.vnco.fusiontech.order.entity.Order;
-import com.vnco.fusiontech.order.entity.OrderStatus;
-import com.vnco.fusiontech.order.entity.PaymentStatus;
 import com.vnco.fusiontech.order.exception.InsufficientQuantityException;
 import com.vnco.fusiontech.order.mapper.OrderMapper;
 import com.vnco.fusiontech.order.repository.OrderItemRepository;
@@ -19,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
 import java.util.Collection;
 
 @Service
@@ -48,7 +47,8 @@ public class OrderServiceImpl implements OrderService {
         
         Order order = mapper.toOrder(request);
         
-        order.setPurchasedAt(Instant.now());
+        log.warn("Order has not been set purchased at");
+//        order.setPurchasedAt(Instant.now());
         
         var saved = repository.save(order);
         
@@ -75,7 +75,7 @@ public class OrderServiceImpl implements OrderService {
         }
         switch(status){
             case CANCELLED -> {
-                if (!status.isCancellable() || payment.getStatus() == PaymentStatus.PAID) {
+                if (!status.isCancellable() || payment.getStatus() == PaymentStatus.COMPLETED) {
                     throw new InvalidRequestException(
                             "Không thể huỷ đơn hàng. Liên hệ nhân viên để được hỗ trợ");
                 }
@@ -86,7 +86,7 @@ public class OrderServiceImpl implements OrderService {
                                                           "đơn hàng mới không hợp lệ.");
                 }
             }
-            case DELIVERED_SUCCESS -> {
+            case COMPLETED -> {
                 log.warn("Order with id {} that's not been delivered is going to be completed.", order.getId());
             }
         }
@@ -96,8 +96,8 @@ public class OrderServiceImpl implements OrderService {
         var payment = o.getPayment();
         switch(o.getStatus()){
             case CANCELLED -> payment.setStatus(PaymentStatus.CANCELLED);
-            case DELIVERED_SUCCESS -> {
-                if(payment.getStatus() == PaymentStatus.UNPAID) payment.setStatus(PaymentStatus.PAID);
+            case COMPLETED -> {
+                if(payment.getStatus() == PaymentStatus.PENDING) payment.setStatus(PaymentStatus.COMPLETED);
             }
         }
     }

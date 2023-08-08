@@ -21,11 +21,14 @@ public class OrderItem implements Serializable, ManyToOneRelation<Order> {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
     
+    @Column(name = "quantity")
     private int quantity;
     
-    private double price;
+    @Column(name = "price")
+    private Double price;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn (name = "order_id", nullable = false)
@@ -35,7 +38,7 @@ public class OrderItem implements Serializable, ManyToOneRelation<Order> {
     @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn (name = "variant_id")
     @ToString.Exclude
-    private ProductVariant variant;
+    private OrderVariant variant;
     
     @Override
     public void set(Order e) {

@@ -26,20 +26,23 @@ import java.util.Objects;
 @Table(name = DBConstant.CATEGORY_TABLE)
 public class Category implements Serializable {
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NotBlank
+    @Column(name = "name")
     private String name;
-
     @NotBlank
     @NaturalId(mutable = true)
+    @Column(name = "slug")
     private String slug;
-
+    @Column(name = "description")
     private String description;
 
     // @Type(JsonType.class)
     // @Column(columnDefinition = "json")
+    @Column(name = "image")
     private String image;
 
     // @ManyToOne(fetch = FetchType.LAZY)
@@ -48,7 +51,7 @@ public class Category implements Serializable {
     // private Category parent;
 
     @Type(JsonType.class)
-    @Column(columnDefinition = "json")
+    @Column(name = "specifications",columnDefinition = "json")
     private List<String> specifications;
 
     @OneToMany(mappedBy = "category")

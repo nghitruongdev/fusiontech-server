@@ -2,17 +2,20 @@ package com.vnco.fusiontech.app;
 
 import com.github.javafaker.Faker;
 import com.vnco.fusiontech.common.CommonModuleConfiguration;
+import com.vnco.fusiontech.common.entity.AppUser;
 import com.vnco.fusiontech.mail.MailConfiguration;
 import com.vnco.fusiontech.mail.service.MailService;
 import com.vnco.fusiontech.order.OrderModuleConfiguration;
 import com.vnco.fusiontech.product.ProductModuleConfiguration;
-import com.vnco.fusiontech.product.entity.*;
+import com.vnco.fusiontech.product.entity.Product;
+import com.vnco.fusiontech.product.entity.Variant;
+import com.vnco.fusiontech.product.entity.VariantInventory;
 import com.vnco.fusiontech.product.repository.*;
 import com.vnco.fusiontech.product.service.ProductService;
+import com.vnco.fusiontech.product.service.ProductVariantService;
 import com.vnco.fusiontech.security.SecurityModuleConfiguration;
 import com.vnco.fusiontech.storage.StorageModuleConfiguration;
 import com.vnco.fusiontech.user.UserModuleConfiguration;
-import com.vnco.fusiontech.user.entity.ShippingAddress;
 import com.vnco.fusiontech.user.repository.ShippingAddressRepository;
 import com.vnco.fusiontech.user.repository.UserRepository;
 import com.vnco.fusiontech.user.service.AuthService;
@@ -22,19 +25,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -51,13 +54,14 @@ import java.util.stream.Stream;
         MailConfiguration.class,
         StorageModuleConfiguration.class
 })
-@EntityScan(basePackages = "com.vnco.fusiontech.common.entity")
+@EnableScheduling
 public class FusionTechApplication {
         private final ProductRepository productRepository;
         
         public static void main(String[] args) {
                 SpringApplication.run(FusionTechApplication.class, args);
         }
+        
         
         private final Faker faker = new Faker();
         
@@ -91,7 +95,7 @@ public class FusionTechApplication {
         private final MailService              mailService;
         private final AuthService              authService;
         private final UserMapper               userMapper;
-        
+        private final ProductVariantService variantService;
         
         @Bean
         @Profile ("bootstrap")
@@ -128,110 +132,114 @@ public class FusionTechApplication {
                 return args -> {
                         var number = faker.number();
                         
-                        List<Brand> brands = IntStream.rangeClosed(1, 20)
-                                                      .mapToObj(i -> Brand.builder()
-                                                                          .name(faker.leagueOfLegends().champion())
-                                                                             .image(getRandomImage())
-                                                                          .build())
-                                                      .toList();
-                        brandRepo.saveAll(brands);
+//                        List<Brand> brands = IntStream.rangeClosed(1, 20)
+//                                                      .mapToObj(i -> Brand.builder()
+//                                                                          .name(faker.leagueOfLegends().champion())
+//                                                                             .image(getRandomImage())
+//                                                                          .build())
+//                                                      .toList();
+//                        brandRepo.saveAll(brands);
+//
+//                        List<Category> categories = IntStream.rangeClosed(1, 20)
+//                                                             .mapToObj(i -> Category.builder()
+//                                                                                    .name(faker.commerce().department())
+//                                                                                    .slug(Math.random() + faker.code().asin())
+//                                                                                    .image(getRandomImage())
+//                                                                                    .description(faker.educator().campus())
+//                                                                                    .specifications(
+//                                                                                            List.of("Ram",
+//                                                                                                    "Bộ nhớ trong",
+//                                                                                                    "Màn hình"))
+//                                                                                    .build())
+//                                                             .toList();
+//                        categoryRepository.saveAll(categories);
                         
-                        List<Category> categories = IntStream.rangeClosed(1, 20)
-                                                             .mapToObj(i -> Category.builder()
-                                                                                    .name(faker.commerce().department())
-                                                                                    .slug(Math.random() + faker.code().asin())
-                                                                                    .image(getRandomImage())
-                                                                                    .description(faker.educator().campus())
-                                                                                    .specifications(
-                                                                                            List.of("Ram",
-                                                                                                    "Bộ nhớ trong",
-                                                                                                    "Màn hình"))
-                                                                                    .build())
-                                                             .toList();
-                        categoryRepository.saveAll(categories);
+//                        var ramSpecs = Stream.of("16GB", "32GB", "64GB").map(item -> Specification.builder().name(
+//                                "Ram").value(item).build()).toList();
+//                        var ssdSpecs = Stream.of("128GB", "256GB", "512GB", "1TB")
+//                                             .map(item -> Specification.builder().name(
+//                                                     "Bộ nhớ trong").value(item).build())
+//                                             .toList();
+//                        var displaySpecs =
+//                                Stream.of("13 inch", "15 inch", "17 inch").map(item -> Specification.builder().name(
+//                                        "Màn hình").value(item).build()).toList();
+//
+//                        List<Specification> list = new ArrayList<>();
+//                        List.of(ramSpecs, ssdSpecs, displaySpecs).forEach(list::addAll);
+//                        specificationRepository.saveAll(list);
                         
-                        var ramSpecs = Stream.of("16GB", "32GB", "64GB").map(item -> Specification.builder().name(
-                                "Ram").value(item).build()).toList();
-                        var ssdSpecs = Stream.of("128GB", "256GB", "512GB", "1TB")
-                                             .map(item -> Specification.builder().name(
-                                                     "Bộ nhớ trong").value(item).build())
-                                             .toList();
-                        var displaySpecs =
-                                Stream.of("13 inch", "15 inch", "17 inch").map(item -> Specification.builder().name(
-                                        "Màn hình").value(item).build()).toList();
+//                        var features = List.of("Di động và tiện lợi", "Kết nối đa dạng", "Pin trâu, hiệu suất mạnh " +
+//                                                                                         "mẽ");
                         
-                        List<Specification> list = new ArrayList<>();
-                        List.of(ramSpecs, ssdSpecs, displaySpecs).forEach(list::addAll);
-                        specificationRepository.saveAll(list);
-                        
-                        var features = List.of("Di động và tiện lợi", "Kết nối đa dạng", "Pin trâu, hiệu suất mạnh " +
-                                                                                         "mẽ");
-                        
-                        List<Product> products = IntStream.rangeClosed(1, 20)
-                                                          .mapToObj(i -> Product.builder()
-                                                                                .name(faker.commerce().productName())
-                                                                                .brand(brands.get(
-                                                                                        number.numberBetween(0,
-                                                                                                             brands.size() - 1)))
-                                                                                .category(categories.get(
-                                                                                        number.numberBetween(0,
-                                                                                                             categories.size() - 1)))
-                                                                                .description(String.join("\n\n", faker.lorem().paragraphs(
-                                                                                        number.numberBetween(2, 4))))
-                                                                                .features(features)
-                                                                                .summary(
-                                                                                        faker.lorem().paragraphs(1).get(0))
-                                                                                .images(getImages())
-                                                                                .slug(faker.code().asin())
-                                                                                .build())
-                                                          .toList();
-                        productRepository.saveAll(products);
-                        Supplier<Set<Specification>> getRandomSpecs = ()->
-                                 Stream.of(ramSpecs, ssdSpecs, displaySpecs).filter(specs -> Math.random() > 0.5)
-                                      .map(specs -> specs.get(number.numberBetween(0, specs.size() -1 )))
-                                      .collect(Collectors.toSet());
-                        ;
+//                        List<Product> products = IntStream.rangeClosed(1, 20)
+//                                                          .mapToObj(i -> Product.builder()
+//                                                                                .name(faker.commerce().productName())
+//                                                                                .brand(brands.get(
+//                                                                                        number.numberBetween(0,
+//                                                                                                             brands.size() - 1)))
+//                                                                                .category(categories.get(
+//                                                                                        number.numberBetween(0,
+//                                                                                                             categories.size() - 1)))
+//                                                                                .description(String.join("\n\n", faker.lorem().paragraphs(
+//                                                                                        number.numberBetween(2, 4))))
+//                                                                                .features(features)
+//                                                                                .summary(
+//                                                                                        faker.lorem().paragraphs(1).get(0))
+//                                                                                .images(getImages())
+//                                                                                .slug(faker.code().asin())
+//                                                                                .build())
+//                                                          .toList();
+//                        productRepository.saveAll(products);
+//                        Supplier<Set<Specification>> getRandomSpecs = ()->
+//                                 Stream.of(ramSpecs, ssdSpecs, displaySpecs).filter(specs -> Math.random() > 0.5)
+//                                      .map(specs -> specs.get(number.numberBetween(0, specs.size() -1 )))
+//                                      .collect(Collectors.toSet());
+//                        ;
                         Function<Product, Stream<Variant>> createVariant = (product)-> IntStream.rangeClosed(1, 10)
                                                                                         .mapToObj(i-> Variant.builder()
                                                                                                             .images(getImages())
                                                                                                             .sku(UUID.randomUUID().toString())
                                                                                                             .price((double) number.numberBetween(10_000_000,
                                                                                                                                                  30_000_000))
-                                                                                                            .product(product)
-                                                                                                              .specifications(getRandomSpecs.get())
-                                                                                                            .build());
+                                                                                                            .product(product).build());
+                        List<Product> products = productRepository.findAll();
                         List<Variant> variants =
                                 products.stream().flatMap(createVariant).toList();
                         variantRepository.saveAll(variants);
+               
+                        List<VariantInventory> inventories =
+                                (List<VariantInventory>) IntStream.rangeClosed(0, 10).mapToObj(images -> VariantInventory.builder().createdBy(AppUser.builder().id(1L).build())).toList();
                         
-                        var users = authService.findAll().stream().map(userMapper::toUser).toList();
-                        userRepository.saveAll(users);
-                        users.forEach(user -> authService.setInitialClaims(user.getId(), user.getFirebaseUid()));
-                        List<ShippingAddress> addresses = IntStream.rangeClosed(1, 3)
-                                                                   .mapToObj(i -> ShippingAddress.builder()
-                                                                                                 .address(
-                                                                                                         faker.address()
-                                                                                                              .streetAddress())
-                                                                                                 .ward(faker.address()
-                                                                                                            .city())
-                                                                                                 .district(
-                                                                                                         faker.address()
-                                                                                                              .countryCode())
-                                                                                                 .phone(faker.phoneNumber()
-                                                                                                             .cellPhone())
-                                                                                                 .name(faker.name()
-                                                                                                            .fullName())
-                                                                                                 .province(
-                                                                                                         faker.address()
-                                                                                                              .country())
-                                                                                                 .user(users.get(0))
-                                                                                                 .build())
-                                                                   .toList();
-                        shippingAddressRepository.saveAll(addresses);
+//                        var users = authService.findAll().stream().map(userMapper::toUser).toList();
+//                        userRepository.saveAll(users);
+//                        users.forEach(user -> authService.setInitialClaims(user.getId(), user.getFirebaseUid()));
+//                        List<ShippingAddress> addresses = IntStream.rangeClosed(1, 3)
+//                                                                   .mapToObj(i -> ShippingAddress.builder()
+//                                                                                                 .address(
+//                                                                                                         faker.address()
+//                                                                                                              .streetAddress())
+//                                                                                                 .ward(faker.address()
+//                                                                                                            .city())
+//                                                                                                 .district(
+//                                                                                                         faker.address()
+//                                                                                                              .countryCode())
+//                                                                                                 .phone(faker.phoneNumber()
+//                                                                                                             .cellPhone())
+//                                                                                                 .name(faker.name()
+//                                                                                                            .fullName())
+//                                                                                                 .province(
+//                                                                                                         faker.address()
+//                                                                                                              .country())
+//                                                                                                 .user(users.get(0))
+//                                                                                                 .build())
+//                                                                   .toList();
+//                        shippingAddressRepository.saveAll(addresses);
                         System.exit(0);
                 };
         }
         
+        
+      
 //        @Autowired
 //        @Lazy
 //        private  PublicStorageService storageService;

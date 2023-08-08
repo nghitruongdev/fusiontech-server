@@ -25,4 +25,6 @@ public interface AuthService {
     void setActiveAccount(@NotEmpty String firebaseId, boolean isDisabled);
     
     List<UserRecord> findAll();
+
+    String verifyEmail(String email);
 }

@@ -121,7 +121,18 @@ public class AuthServiceImpl implements AuthService {
         }
         return users;
     }
-    
+
+    @Override
+    public String verifyEmail(String email) {
+        var message = "error when sent email";
+        try {
+            return FirebaseAuth.getInstance().generateEmailVerificationLink(email);
+        } catch (FirebaseAuthException e) {
+            handleFirebaseAuthException(e);
+        }
+        return message;
+    }
+
     private Map<String, Object> getInitialClaims(Long id) {
         return Map.of(AuthoritiesConstant.ROLE_NAME, List.of(AuthoritiesConstant.USER), "id", id);
     }

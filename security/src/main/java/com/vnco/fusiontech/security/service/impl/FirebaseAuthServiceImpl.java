@@ -1,5 +1,6 @@
 package com.vnco.fusiontech.security.service.impl;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 import com.vnco.fusiontech.common.constant.AuthoritiesConstant;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class FirebaseAuthServiceImpl implements SecurityService {
     private final PublicUserService userService;
-    
+
     @Override
     public List<GrantedAuthority> getAuthorities(Map<String, Object> claims) {
         var claim = claims.get(AuthoritiesConstant.ROLE_NAME);
@@ -37,12 +38,12 @@ public class FirebaseAuthServiceImpl implements SecurityService {
         }
         return List.of();
     }
-    
+
     @Override
     public AppUser getCurrentUser(FirebaseToken token) {
         var idClaim     = token.getClaims().get("id");
         var authorities = getAuthorities(token.getClaims());
-        
+
         if (idClaim != null) {
             try {
                 var id = Long.parseLong(String.valueOf(idClaim));
@@ -61,8 +62,6 @@ public class FirebaseAuthServiceImpl implements SecurityService {
                           .stream()
                           .peek(user1 -> user1.setAuthorities(authorities)).findFirst().orElse(null);
     }
-    
-    
     private static List<String> convertObjectToList(Object obj) {
         List<String> list = new ArrayList<>();
         if (obj.getClass().isArray()) {
@@ -75,7 +74,7 @@ public class FirebaseAuthServiceImpl implements SecurityService {
         }
         return list;
     }
-    
+
     private void handleFirebaseAuthException(FirebaseAuthException ex){
         var authCode = ex.getAuthErrorCode().name();
         switch (ex.getErrorCode()){
@@ -87,6 +86,6 @@ public class FirebaseAuthServiceImpl implements SecurityService {
                 throw new InvalidRequestException(authCode);
         }
     }
-    
-    
+
+
 }

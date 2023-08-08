@@ -1,6 +1,7 @@
 package com.vnco.fusiontech.user.web.rest.controller;
 
 import com.vnco.fusiontech.common.utils.SecurityUtils;
+import com.vnco.fusiontech.user.service.AuthService;
 import com.vnco.fusiontech.user.service.UserService;
 import com.vnco.fusiontech.user.web.rest.request.UserRequest;
 import jakarta.validation.Valid;
@@ -22,6 +23,7 @@ import java.util.Map;
 public class AuthRestController {
 
     private final UserService userService;
+    private final AuthService authService;
 
     @PostMapping("/register")
     @Validated({UserRequest.OnRegister.class})
@@ -49,5 +51,12 @@ public class AuthRestController {
     public ResponseEntity<?> getCurrentUser() {
      var user =   SecurityUtils.getCurrentUserLogin().get();
         return ResponseEntity.ok(Map.of("token", user));
+    }
+
+    @GetMapping("/verify")
+    public ResponseEntity<?> verify(@RequestBody String email) {
+        var token = authService.verifyEmail(email);
+        log.info("message: {}", token);
+        return ResponseEntity.ok(token);
     }
 }

@@ -7,6 +7,8 @@ import com.vnco.fusiontech.common.constant.AuthoritiesConstant;
 import com.vnco.fusiontech.common.exception.InvalidRequestException;
 import com.vnco.fusiontech.common.exception.RecordExistsException;
 import com.vnco.fusiontech.common.exception.RecordNotFoundException;
+import com.vnco.fusiontech.common.service.PublicMailService;
+import com.vnco.fusiontech.common.web.request.mail.MailRequest;
 import com.vnco.fusiontech.user.entity.User;
 import com.vnco.fusiontech.user.service.AuthService;
 import com.vnco.fusiontech.user.web.rest.request.FirebaseMapper;
@@ -27,6 +29,7 @@ public class AuthServiceImpl implements AuthService {
         return FirebaseAuth.getInstance();
     }
     private final FirebaseMapper mapper;
+    private final PublicMailService mailService;
     @Override
     public UserRecord registerWithEmailProvider(UserRequest request) {
         try {
@@ -121,18 +124,23 @@ public class AuthServiceImpl implements AuthService {
         }
         return users;
     }
-
+    
     @Override
-    public String verifyEmail(String email) {
-        var message = "error when sent email";
+    public String generateVerifyLink(String email) {
         try {
-            return FirebaseAuth.getInstance().generateEmailVerificationLink(email);
+            var message =  FirebaseAuth.getInstance().generateEmailVerificationLink(email);
+            mailService.sendMail(MailRequest.builder()
+                                         .mail(email)
+                                         .subject("Xác thực email FusionTech")
+                                         .body("Truy cập đường link đây để xác thực email của bạn: " + message)
+                                         .build());
+            return "URL to verify: " + message;
         } catch (FirebaseAuthException e) {
             handleFirebaseAuthException(e);
         }
-        return message;
+        return "Sent successfully";
     }
-
+    
     private Map<String, Object> getInitialClaims(Long id) {
         return Map.of(AuthoritiesConstant.ROLE_NAME, List.of(AuthoritiesConstant.USER), "id", id);
     }

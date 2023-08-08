@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.Nullable;
 
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+
 @Slf4j
 public class FirebaseUtils {
     public static String convertToE164Format(@Nullable String phoneNumber) {
@@ -39,7 +41,7 @@ public class FirebaseUtils {
             String encodedName = url.substring(lastSlashIndex + 1, questionMarkIndex);
             try {
                 // Decode the URL component to replace %2F with forward slash
-                return URLDecoder.decode(encodedName, "UTF-8");
+                return URLDecoder.decode(encodedName, StandardCharsets.UTF_8);
             } catch (Exception e) {
             log.error("UnsupportedEncoding: {}", e.getMessage());
             }

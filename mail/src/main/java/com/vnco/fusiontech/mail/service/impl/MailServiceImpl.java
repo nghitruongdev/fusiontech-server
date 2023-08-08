@@ -9,11 +9,13 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.Queue;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +36,7 @@ public class MailServiceImpl implements MailService {
     
  
     
-//    @Scheduled(timeUnit = TimeUnit.SECONDS, fixedRate = 3)
+    @Scheduled (timeUnit = TimeUnit.SECONDS, fixedRate = 5)
     private void createMail(){
         log.debug("There are {} going to be created", mailRequests.size());
     
@@ -43,7 +45,7 @@ public class MailServiceImpl implements MailService {
         }
     }
     
-//    @Scheduled(timeUnit = TimeUnit.SECONDS, fixedRate = 10)
+    @Scheduled(timeUnit = TimeUnit.SECONDS, fixedRate = 10)
     private void sendMail(){
         log.debug("There are {} going to be sent", messages.size());
         emailSender.send(messages.toArray(new MimeMessage[]{}));
@@ -61,7 +63,7 @@ public class MailServiceImpl implements MailService {
         helper.setText(request.body());
         if(request.template() != null){
             // Đọc nội dung của file HTML từ tệp trong thư mục resources
-            helper.setText(thymeleafService.getContent(request.template()), true);
+            helper.setText(thymeleafService.getContent(request), true);
         }
         return message;
     }

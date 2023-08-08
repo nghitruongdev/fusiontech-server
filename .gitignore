@@ -41,3 +41,4 @@ out/
 *.trace.db
 
 *.local.*
+*.log

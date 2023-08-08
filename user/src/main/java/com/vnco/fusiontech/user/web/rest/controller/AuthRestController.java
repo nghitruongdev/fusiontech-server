@@ -20,6 +20,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
 @CrossOrigin("*")
+@Validated
 public class AuthRestController {
 
     private final UserService userService;
@@ -52,11 +53,10 @@ public class AuthRestController {
      var user =   SecurityUtils.getCurrentUserLogin().get();
         return ResponseEntity.ok(Map.of("token", user));
     }
-
+    
     @GetMapping("/verify")
-    public ResponseEntity<?> verify(@RequestBody String email) {
-        var token = authService.verifyEmail(email);
-        log.info("message: {}", token);
-        return ResponseEntity.ok(token);
+    public ResponseEntity<?> getVerifyLink(@RequestBody String email) {
+        var url = authService.generateVerifyLink(email);
+        return ResponseEntity.ok(url);
     }
 }

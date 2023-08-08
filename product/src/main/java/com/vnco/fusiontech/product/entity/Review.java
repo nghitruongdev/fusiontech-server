@@ -1,5 +1,6 @@
 package com.vnco.fusiontech.product.entity;
 
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.vnco.fusiontech.common.constant.DBConstant;
 import com.vnco.fusiontech.product.entity.proxy.User;
 import jakarta.persistence.*;
@@ -32,11 +33,13 @@ public class Review implements Serializable{
     @ManyToOne (fetch = FetchType.LAZY)
     @ToString.Exclude
     @JoinColumn(name = "user_id")
+    @JsonIncludeProperties({"id"})
     private User user;
 
     @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     @ToString.Exclude
+    @JsonIncludeProperties({"id"})
     private Product product;
 
 

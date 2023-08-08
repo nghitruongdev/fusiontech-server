@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class FirebaseAuthServiceImpl implements SecurityService {
+public class FirebaseSecurityServiceImpl implements SecurityService {
     private final PublicUserService userService;
 
     @Override

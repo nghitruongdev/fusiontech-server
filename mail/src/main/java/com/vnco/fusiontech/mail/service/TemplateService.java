@@ -1,7 +1,7 @@
 package com.vnco.fusiontech.mail.service;
 
-import com.vnco.fusiontech.common.constant.MailTemplate;
+import com.vnco.fusiontech.common.web.request.mail.MailRequest;
 
 public interface TemplateService {
-    String getContent(MailTemplate template);
+    String getContent(MailRequest request);
 }

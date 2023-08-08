@@ -16,7 +16,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MailRequest {
-    @NotNull@Email
+    @NotNull @Email
     protected String mail;
     protected String subject;
     protected String body;

@@ -36,12 +36,7 @@ public class SpringExceptionHandler extends ResponseEntityExceptionHandler {
     ProblemDetail handleNotFound(EntityNotFoundException ex) {
         return ProblemDetail.forStatusAndDetail(NOT_FOUND, ex.getMessage());
     }
-
-    @ExceptionHandler(InvalidRequestException.class)
-    ProblemDetail handleInvalid(InvalidRequestException ex) {
-        return ProblemDetail.forStatusAndDetail(BAD_REQUEST, ex.getMessage());
-    }
-
+    
     @ExceptionHandler(ConstraintViolationException.class)
     ProblemDetail handleConstraintViolation(ConstraintViolationException ex) {
         var errors = ex
@@ -61,7 +56,7 @@ public class SpringExceptionHandler extends ResponseEntityExceptionHandler {
         problem.setProperty("errors", errors);
         return problem;
     }
-
+    
     private String convertString(@Nullable Object invalid) {
         if (ObjectUtils.isArray(invalid)) {
             return Arrays.toString((ObjectUtils.toObjectArray(invalid)));
@@ -152,6 +147,14 @@ public class SpringExceptionHandler extends ResponseEntityExceptionHandler {
     ProblemDetail handleDuplicateKey(DuplicateKeyException ex) {
         return ProblemDetail.forStatusAndDetail(CONFLICT, ex.getMessage());
     }
-
     
+    @ExceptionHandler(InvalidRequestException.class)
+    ProblemDetail handleInvalid(InvalidRequestException ex) {
+        return ProblemDetail.forStatusAndDetail(BAD_REQUEST, ex.getMessage());
+    }
+    
+    @ExceptionHandler(RecordExistsException.class)
+    ProblemDetail handleExists(RecordExistsException ex) {
+        return ProblemDetail.forStatusAndDetail(CONFLICT, ex.getMessage());
+    }
 }

@@ -1,0 +1,125 @@
+package com.vnco.fusiontech.order.service.impl;
+
+import com.vnco.fusiontech.common.constant.OrderStatus;
+import com.vnco.fusiontech.common.constant.PaymentStatus;
+import com.vnco.fusiontech.common.exception.InvalidRequestException;
+import com.vnco.fusiontech.common.exception.RecordNotFoundException;
+import com.vnco.fusiontech.common.service.PublicUserService;
+import com.vnco.fusiontech.order.entity.Order;
+import com.vnco.fusiontech.order.exception.InsufficientQuantityException;
+import com.vnco.fusiontech.order.mapper.OrderMapper;
+import com.vnco.fusiontech.order.repository.OrderItemRepository;
+import com.vnco.fusiontech.order.repository.OrderRepository;
+import com.vnco.fusiontech.order.service.OrderService;
+import com.vnco.fusiontech.order.web.rest.request.CreateOrderRequest;
+import com.vnco.fusiontech.order.web.rest.request.OrderItemRequest;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collection;
+
+@Service
+@Transactional
+@RequiredArgsConstructor
+@Slf4j
+public class OrderServiceImpl implements OrderService {
+    
+    private final OrderRepository     repository;
+    private final OrderItemRepository orderItemRepository;
+    private final PublicUserService   userService;
+    private final OrderMapper         mapper;
+    
+    @Override
+    public Long createOrder(CreateOrderRequest request) {
+        
+        if (!userService.existsById(request.userId())) {
+            throw new RecordNotFoundException("No user was found with the given id: " + request.userId());
+        }
+        
+        if (!userService.hasShippingAddress(request.userId(), request.addressId())) {
+            throw new InvalidRequestException("No address was found with the given user");
+        }
+        
+        checkEnoughQuantity(request.items());
+        
+        Order order = mapper.toOrder(request);
+        
+        log.warn("Order has not been set purchased at");
+//        order.setPurchasedAt(Instant.now());
+        
+        var saved = repository.save(order);
+        
+        clearCartItems(request.items());
+
+        return saved.getId();
+    }
+    
+    @Override
+    public void updateOrderStatus(Long oid, @NonNull OrderStatus newStatus) {
+        
+        var order = repository.findById(oid).orElseThrow(RecordNotFoundException::new);
+    
+        checkUpdateOrder(order, newStatus);
+        order.setStatus(newStatus);
+        updatePayment(order);
+    }
+    
+    private void checkUpdateOrder(Order order, OrderStatus newStatus){
+        var status = order.getStatus();
+        var payment = order.getPayment();
+        if (status.isUnchangeable() || order.getStatus().compareTo(newStatus) >= 0) {
+            throw new InvalidRequestException("Trạng thái đơn hàng mới không hợp lệ.");
+        }
+        switch(status){
+            case CANCELLED -> {
+                if (!status.isCancellable() || payment.getStatus() == PaymentStatus.COMPLETED) {
+                    throw new InvalidRequestException(
+                            "Không thể huỷ đơn hàng. Liên hệ nhân viên để được hỗ trợ");
+                }
+            }
+            case DENIED -> {
+                if (status.isUnchangeable()) {
+                    throw new InvalidRequestException("Không thể thay đổi trạng thái đơn hàng. Chỉ có thể huỷ  " +
+                                                          "đơn hàng mới không hợp lệ.");
+                }
+            }
+            case COMPLETED -> {
+                log.warn("Order with id {} that's not been delivered is going to be completed.", order.getId());
+            }
+        }
+    }
+    
+    private void updatePayment(Order o){
+        var payment = o.getPayment();
+        switch(o.getStatus()){
+            case CANCELLED -> payment.setStatus(PaymentStatus.CANCELLED);
+            case COMPLETED -> {
+                if(payment.getStatus() == PaymentStatus.PENDING) payment.setStatus(PaymentStatus.COMPLETED);
+            }
+        }
+    }
+    
+    private void checkEnoughQuantity(Collection<OrderItemRequest> items) {
+        items.stream()
+             .filter(item -> getAvailableQuantity(item.variantId()) < item.quantity())
+             .findFirst()
+             .ifPresent((item) -> {
+                 throw new InsufficientQuantityException(item.variantId());
+             });
+    }
+    
+    private void clearCartItems(Collection<OrderItemRequest> items) {
+        log.warn("Clear cart items is not implemented");
+    }
+    
+    @Override
+    @Transactional (readOnly = true)
+    @Deprecated
+    public long getAvailableQuantity(Long variantId) {
+        return orderItemRepository.getTotalQuantityOfVariant(variantId)
+               - orderItemRepository.getSoldCountOfVariant(variantId, OrderStatus.soldStatusList());
+    }
+}

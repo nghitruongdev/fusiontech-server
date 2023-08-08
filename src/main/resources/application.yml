@@ -1,0 +1,52 @@
+server:
+  port: 8080
+  error:
+    whitelabel:
+      enabled: false
+  forward-headers-strategy: framework
+
+#App properties
+spring:
+  application:
+    name: "FusionTech"
+  config:
+    import:
+  profiles:
+    active: dev
+  jpa:
+    open-in-view: false
+  mvc:
+    problemdetails:
+      enabled: true
+    properties:
+      jakarta:
+        persistence:
+          sharedCache:
+            mode: NONE
+  data:
+    rest:
+      base-path: api
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+#    deserialization:
+#      fail-on-unknown-properties: true
+  security:
+    user:
+      name: user
+      password: user
+  servlet:
+    multipart:
+      max-file-size: '10MB'
+      max-request-size: '50MB'
+#  batch:
+#    jdbc:
+#      initialize-schema: always
+#  main:
+#    lazy-initialization: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: 'startup'

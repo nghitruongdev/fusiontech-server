@@ -33,13 +33,15 @@ public class Product extends RepresentationModel<Product> implements Serializabl
         String FULL = "full";
         String BASIC = "basic";
     }
-    public interface FORMULA{
-        String MIN_PRICE  = "(SELECT MIN(v.price) FROM " +
-                            DBConstant.PRODUCT_VARIANT_TABLE + " v WHERE v.product_id=id)" ;
-        String MAX_PRICE  = "(SELECT MAX(v.price) FROM " +
-                            DBConstant.PRODUCT_VARIANT_TABLE + " v WHERE v.product_id=id)" ;
-        
+
+    public interface FORMULA {
+        String MIN_PRICE = "(SELECT MIN(v.price) FROM " +
+                DBConstant.PRODUCT_VARIANT_TABLE + " v WHERE v.product_id=id AND v.active = TRUE)";
+        String MAX_PRICE = "(SELECT MAX(v.price) FROM " +
+                DBConstant.PRODUCT_VARIANT_TABLE + " v WHERE v.product_id=id AND v.active = TRUE)";
+
     }
+
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,7 +57,7 @@ public class Product extends RepresentationModel<Product> implements Serializabl
     private String description;
 
     @Type(JsonType.class)
-    @Column(name = "images",columnDefinition = "json")
+    @Column(name = "images", columnDefinition = "json")
     @Builder.Default
     private List<String> images = new ArrayList<>();
 
@@ -65,9 +67,10 @@ public class Product extends RepresentationModel<Product> implements Serializabl
             """))
     @ToString.Exclude
     private Category category;
-    
-    @JdbcTypeCode (SqlTypes.TINYINT)
-    @Min (0) @Max (100)
+
+    @JdbcTypeCode(SqlTypes.TINYINT)
+    @Min(0)
+    @Max(100)
     @Column(name = "discount")
     private Byte discount;
 
@@ -80,18 +83,19 @@ public class Product extends RepresentationModel<Product> implements Serializabl
             DBConstant.REVIEW_TABLE +
             " s WHERE s.product_id=id)")
     private Double avgRating;
-    
+
     @Enumerated(EnumType.STRING)
     private ProductStatus status;
-    
+
+    @Column(name = "active")
     @Builder.Default
     private Boolean active = Boolean.TRUE;
-    
+
     @Formula(value = FORMULA.MIN_PRICE)
-    private  Double minPrice;
-    
+    private Double minPrice;
+
     @Formula(value = FORMULA.MAX_PRICE)
-    private  Double maxPrice;
+    private Double maxPrice;
 
     @Type(JsonType.class)
     @Column(name = "features", columnDefinition = "json")

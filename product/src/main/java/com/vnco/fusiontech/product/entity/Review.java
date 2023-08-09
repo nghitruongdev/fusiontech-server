@@ -30,10 +30,10 @@ public class Review implements Serializable{
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @ManyToOne (fetch = FetchType.LAZY)
+    @ManyToOne
     @ToString.Exclude
     @JoinColumn(name = "user_id")
-    @JsonIncludeProperties({"id"})
+    @JsonIncludeProperties({"id", "firstName", "image"})
     private User user;
 
     @ManyToOne (fetch = FetchType.LAZY)

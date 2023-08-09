@@ -26,5 +26,7 @@ public interface AuthService {
     
     List<UserRecord> findAll();
     
+    Boolean verifyEmail(String email);
+    
     String generateVerifyLink(String email);
 }

@@ -14,4 +14,7 @@ public class UserOrder {
     private Long id;
     @Column(name = "first_name")
     private String firstName;
+    
+    @Column(name = "email")
+    private String email;
 }

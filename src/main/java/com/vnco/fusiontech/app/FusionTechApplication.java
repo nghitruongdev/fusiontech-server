@@ -3,8 +3,8 @@ package com.vnco.fusiontech.app;
 import com.github.javafaker.Faker;
 import com.vnco.fusiontech.common.CommonModuleConfiguration;
 import com.vnco.fusiontech.common.entity.AppUser;
+import com.vnco.fusiontech.common.service.PublicMailService;
 import com.vnco.fusiontech.mail.MailConfiguration;
-import com.vnco.fusiontech.mail.service.MailService;
 import com.vnco.fusiontech.order.OrderModuleConfiguration;
 import com.vnco.fusiontech.product.ProductModuleConfiguration;
 import com.vnco.fusiontech.product.entity.Product;
@@ -92,7 +92,7 @@ public class FusionTechApplication {
         private final BrandRepository          brandRepository;
         private final UserRepository           userRepository;
         private final SpecificationRepository  specificationRepository;
-        private final MailService              mailService;
+        private final PublicMailService              mailService;
         private final AuthService              authService;
         private final UserMapper               userMapper;
         private final ProductVariantService variantService;
@@ -239,13 +239,13 @@ public class FusionTechApplication {
         }
         
         
-      
-//        @Autowired
-//        @Lazy
-//        private  PublicStorageService storageService;
-//        private final  ReportRepository reportRepository;
-//        @GetMapping("/api/test")
-//        public ResponseEntity<?> removeImage(){
+//        @GetMapping ("/api/test")
+//        public ResponseEntity<?> removeImage(@RequestParam("email") String email){
+//                OrderRequest.builder()
+//                            .mail(email)
+//                        .orderId(1L)
+//                        .name()
+//
 //                return ResponseEntity.of(Optional.ofNullable(reportRepository.topSpentCustomer()));
 //        }
 }

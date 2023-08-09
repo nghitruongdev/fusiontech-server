@@ -60,6 +60,9 @@ public class User {
 
     @Column(name = "gender")
     private Gender gender;
+    
+    @Column(name = "is_verified")
+    private Boolean isVerified;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "default_address_id")

@@ -1,6 +1,7 @@
 package com.vnco.fusiontech.mail.service.impl;
 
 import com.vnco.fusiontech.common.web.request.mail.MailRequest;
+import com.vnco.fusiontech.common.web.request.mail.OrderRequest;
 import com.vnco.fusiontech.mail.service.TemplateService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -16,9 +17,20 @@ public class ThymeleafTemplateServiceImpl implements TemplateService {
     @Override
     public String getContent(@NonNull MailRequest request) {
         var template = request.template();
+        if(request instanceof OrderRequest orderRequest){
+            return getOrderContent(orderRequest);
+        }
         final Context context = new Context();
         context.setVariable("name", "ReallllToo");
         context.setVariable("project_name", "spring-email-with-thymeleaf Demo");
         return templateEngine.process(template.getName(), context);
+    }
+    
+    private String getOrderContent(OrderRequest request){
+        final Context context = new Context();
+        context.setVariable("orderId", request.orderId());
+        context.setVariable("name", request.name());
+        context.setVariable("productImageUrl",request.productImageUrl());
+        return templateEngine.process(request.template().getName(), context);
     }
 }

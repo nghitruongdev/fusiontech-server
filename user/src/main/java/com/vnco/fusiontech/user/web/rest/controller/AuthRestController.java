@@ -54,9 +54,17 @@ public class AuthRestController {
         return ResponseEntity.ok(Map.of("token", user));
     }
     
-    @GetMapping("/verify")
+    @GetMapping ("/verify-email")
     public ResponseEntity<?> getVerifyLink(@RequestBody String email) {
-        var url = authService.generateVerifyLink(email);
-        return ResponseEntity.ok(url);
+        var user = authService.verifyEmail(email);
+        if (user) return ResponseEntity.ok(true);
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
     }
+    
+    @GetMapping("/test-verify")
+    public ResponseEntity<?> vefiry(@RequestBody String email) {
+        var user = authService.generateVerifyLink(email);
+        return ResponseEntity.ok(user);
+    }
+    
 }

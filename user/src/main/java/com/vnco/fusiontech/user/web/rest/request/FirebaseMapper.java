@@ -12,7 +12,7 @@ import static org.mapstruct.NullValuePropertyMappingStrategy.IGNORE;
 public interface FirebaseMapper {
 
     @Mapping(target = "uid", ignore = true)
-    @Mapping(target = "emailVerified", constant = "true")
+    @Mapping(target = "emailVerified", ignore = true)
     @Mapping(target = "disabled", constant = "false")
     @Mapping(target = "password", defaultExpression = "java(java.util.UUID.randomUUID().toString())")
     @Mapping(target = "photoUrl", source = "image", conditionExpression = "java(request.image() != null)")

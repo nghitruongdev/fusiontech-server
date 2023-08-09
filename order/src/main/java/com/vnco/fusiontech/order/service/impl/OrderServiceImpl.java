@@ -1,11 +1,16 @@
 package com.vnco.fusiontech.order.service.impl;
 
+import com.vnco.fusiontech.common.constant.MailTemplate;
 import com.vnco.fusiontech.common.constant.OrderStatus;
 import com.vnco.fusiontech.common.constant.PaymentStatus;
 import com.vnco.fusiontech.common.exception.InvalidRequestException;
 import com.vnco.fusiontech.common.exception.RecordNotFoundException;
+import com.vnco.fusiontech.common.service.PublicMailService;
+import com.vnco.fusiontech.common.service.PublicProductVariantService;
 import com.vnco.fusiontech.common.service.PublicUserService;
+import com.vnco.fusiontech.common.web.request.mail.OrderRequest;
 import com.vnco.fusiontech.order.entity.Order;
+import com.vnco.fusiontech.order.entity.UserOrder;
 import com.vnco.fusiontech.order.exception.InsufficientQuantityException;
 import com.vnco.fusiontech.order.mapper.OrderMapper;
 import com.vnco.fusiontech.order.repository.OrderItemRepository;
@@ -13,12 +18,14 @@ import com.vnco.fusiontech.order.repository.OrderRepository;
 import com.vnco.fusiontech.order.service.OrderService;
 import com.vnco.fusiontech.order.web.rest.request.CreateOrderRequest;
 import com.vnco.fusiontech.order.web.rest.request.OrderItemRequest;
+import jakarta.persistence.EntityManager;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 @Service
@@ -31,7 +38,9 @@ public class OrderServiceImpl implements OrderService {
     private final OrderItemRepository orderItemRepository;
     private final PublicUserService   userService;
     private final OrderMapper         mapper;
-    
+    private final PublicMailService   mailService;
+    private final EntityManager       entityManager;
+    private final PublicProductVariantService variantService;
     @Override
     public Long createOrder(CreateOrderRequest request) {
         
@@ -47,13 +56,12 @@ public class OrderServiceImpl implements OrderService {
         
         Order order = mapper.toOrder(request);
         
-        log.warn("Order has not been set purchased at");
-//        order.setPurchasedAt(Instant.now());
+        order.setPurchasedAt(LocalDateTime.now());
         
         var saved = repository.save(order);
         
         clearCartItems(request.items());
-
+        sendMailAfterOrderCheckoutSuccess(saved);
         return saved.getId();
     }
     
@@ -121,5 +129,29 @@ public class OrderServiceImpl implements OrderService {
     public long getAvailableQuantity(Long variantId) {
         return orderItemRepository.getTotalQuantityOfVariant(variantId)
                - orderItemRepository.getSoldCountOfVariant(variantId, OrderStatus.soldStatusList());
+    }
+    
+    private void sendMailAfterOrderCheckoutSuccess(Order order) {
+        var user = entityManager.find(UserOrder.class, order.getUserId());
+        String mail = order.getEmail()!=null? order.getEmail() : user.getEmail();
+//
+//        if (mail == null) return;
+//        order.getItems().stream().map(item -> OrderRequest.ProductItem
+//                                                      .builder()
+//                                                      .image()
+//                                                      .url()
+//                                                      .name()
+//                                                      .build());
+//        String imageUrl = variantService.getVariantOrProductImages(order.getItems());
+        var mailRequest =
+                OrderRequest.builder()
+                            .mail(mail)
+                            .subject("Đặt hàng thành công")
+                            .template(MailTemplate.ORDER_SUCCESS)
+                            .orderId(order.getId())
+                            .name(user.getFirstName())
+//                            .productImageUrl()
+                            .build();
+        mailService.sendMail(mailRequest);
     }
 }

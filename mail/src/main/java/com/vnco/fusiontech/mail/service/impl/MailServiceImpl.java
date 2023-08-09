@@ -36,18 +36,18 @@ public class MailServiceImpl implements MailService {
     
  
     
-    @Scheduled (timeUnit = TimeUnit.SECONDS, fixedRate = 5)
+    @Scheduled (timeUnit = TimeUnit.SECONDS, fixedRate = 30)
     private void createMail(){
-        log.debug("There are {} going to be created", mailRequests.size());
+//        log.debug("There are {} going to be created", mailRequests.size());
     
         while(!mailRequests.isEmpty()){
             messages.add(createMessage(mailRequests.remove()));
         }
     }
     
-    @Scheduled(timeUnit = TimeUnit.SECONDS, fixedRate = 10)
+    @Scheduled (timeUnit = TimeUnit.SECONDS, fixedRate = 60)
     private void sendMail(){
-        log.debug("There are {} going to be sent", messages.size());
+        //        log.debug("There are {} going to be sent", messages.size());
         emailSender.send(messages.toArray(new MimeMessage[]{}));
         messages.clear();
     }
@@ -60,10 +60,11 @@ public class MailServiceImpl implements MailService {
         // Thiết lập các thông tin cần thiết
         helper.setTo(request.mail());
         helper.setSubject(request.subject());
-        helper.setText(request.body());
-        if(request.template() != null){
+        if (request.template() != null) {
             // Đọc nội dung của file HTML từ tệp trong thư mục resources
             helper.setText(thymeleafService.getContent(request), true);
+        } else if (request.body() != null) {
+            helper.setText(request.body());
         }
         return message;
     }

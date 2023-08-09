@@ -19,4 +19,6 @@ public interface VariantBasic {
   Product getProduct();
 
   int getAvailableQuantity();
+
+  Boolean getActive();
 }

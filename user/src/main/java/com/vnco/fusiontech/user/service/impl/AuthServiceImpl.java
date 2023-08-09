@@ -10,6 +10,7 @@ import com.vnco.fusiontech.common.exception.RecordNotFoundException;
 import com.vnco.fusiontech.common.service.PublicMailService;
 import com.vnco.fusiontech.common.web.request.mail.MailRequest;
 import com.vnco.fusiontech.user.entity.User;
+import com.vnco.fusiontech.user.repository.UserRepository;
 import com.vnco.fusiontech.user.service.AuthService;
 import com.vnco.fusiontech.user.web.rest.request.FirebaseMapper;
 import com.vnco.fusiontech.user.web.rest.request.UserRequest;
@@ -30,11 +31,14 @@ public class AuthServiceImpl implements AuthService {
     }
     private final FirebaseMapper mapper;
     private final PublicMailService mailService;
+    private final UserRepository userRepository;
     @Override
     public UserRecord registerWithEmailProvider(UserRequest request) {
         try {
             var        user       = mapper.toFirebaseCreateRequest(request);
-            return FirebaseAuth.getInstance().createUser(user);
+            var newUser = FirebaseAuth.getInstance().createUser(user);
+            generateVerifyLink(newUser.getEmail());
+            return newUser;
         } catch (FirebaseAuthException e) {
             handleFirebaseAuthException(e);
             return null;
@@ -132,13 +136,31 @@ public class AuthServiceImpl implements AuthService {
             mailService.sendMail(MailRequest.builder()
                                          .mail(email)
                                          .subject("Xác thực email FusionTech")
-                                         .body("Truy cập đường link đây để xác thực email của bạn: " + message)
+                                         .body("Truy cập đường link sau để xác thực email của bạn: \n\n" + message)
                                          .build());
             return "URL to verify: " + message;
         } catch (FirebaseAuthException e) {
             handleFirebaseAuthException(e);
         }
         return "Sent successfully";
+    }
+    
+    @Override
+    public Boolean verifyEmail(String email) {
+        try {
+            var user = auth().getUserByEmail(email);
+            var dbUser = userRepository.findByEmail(user.getEmail()).orElseThrow();
+            if (user.isEmailVerified()) {
+                dbUser.setIsVerified(true);
+                userRepository.save(dbUser);
+                return dbUser.getIsVerified();
+            } else {
+                throw new InvalidRequestException("INVALID: " + email);
+            }
+        } catch (FirebaseAuthException e) {
+            handleFirebaseAuthException(e);
+        }
+        return false;
     }
     
     private Map<String, Object> getInitialClaims(Long id) {

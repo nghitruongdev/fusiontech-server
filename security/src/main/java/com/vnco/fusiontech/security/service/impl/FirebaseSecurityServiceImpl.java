@@ -1,6 +1,5 @@
 package com.vnco.fusiontech.security.service.impl;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 import com.vnco.fusiontech.common.constant.AuthoritiesConstant;
@@ -50,7 +49,7 @@ public class FirebaseSecurityServiceImpl implements SecurityService {
                 return AppUser.builder()
                               .id(id)
                               .displayName(token.getName())
-                               .emailVerified(token.isEmailVerified())
+                               .isVerified(token.isEmailVerified())
                               .authorities(authorities)
                               .build();
             } catch (NumberFormatException e) {

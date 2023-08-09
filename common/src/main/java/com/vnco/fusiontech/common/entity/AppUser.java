@@ -27,8 +27,8 @@ public class AppUser implements UserDetails {
     @Transient
     private String displayName;
     
-    @Transient
-    private boolean emailVerified;
+    @Column(name = "is_verified")
+    private boolean isVerified;
     
     @Transient
     @Setter

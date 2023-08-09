@@ -70,24 +70,20 @@ public class OrderListener {
         }
     }
     
-    @PostPersist
-    public void postPersist(Order o) {
-        log.debug("Post persist order: {{}}", o);
-        if(o.getEmail() != null){
-           var request =  OrderRequest.builder()
-                        .mail(o.getEmail()).subject("Đặt hàng thành công")
-                                                             .body( """
-                                                                           Xin chào,
-                                                                           Bạn đã đặt hàng thành công.
-                                                                           %s
-                                                                           Xin cám ơn ơn.
-                                                                            """.formatted(
-                                                                                    o.toString()))
-                        .build();
-            getMailService().sendMail(request);
-                       
-        }
-    }
+//    @PostPersist
+//    public void postPersist(Order o) {
+//        log.debug("Post persist order: {{}}", o);
+//        if(o.getEmail() != null){
+//           var request =  OrderRequest.builder()
+//                                      .mail(o.getEmail())
+//                                      .subject("Đặt hàng thành công")
+//                                  .orderId(o.getId())
+////                                  .name(o.getUser())
+//                                      .build();
+//            getMailService().sendMail(request);
+//
+//        }
+//    }
     
     private PublicMailService getMailService(){
         return BeanUtils.getBean(PublicMailService.class);

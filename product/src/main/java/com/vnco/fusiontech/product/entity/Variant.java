@@ -24,46 +24,47 @@ import java.util.*;
 @Table(name = DBConstant.PRODUCT_VARIANT_TABLE)
 public class Variant implements Serializable {
     public interface PROJECTION {
-        String PRODUCT      = "product";
-        String WITH_SPECS   = "specifications";
+        String PRODUCT = "product";
+        String WITH_SPECS = "specifications";
         String PRODUCT_NAME = "product-name";
-        String BASIC        = "basic";
+        String BASIC = "basic";
     }
-    
+
     private interface FORMULA {
         String AVAILABLE_QUANTITY = "(SELECT get_available_quantity(id))";
     }
-    
+
     @Id
-    @Column (name = "id")
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @Column (name = "sku")
-    @NaturalId (mutable = true)
+
+    @Column(name = "sku")
+    @NaturalId(mutable = true)
     private String sku;
-    
-    @Type (JsonType.class)
-    @Column (name = "images", columnDefinition = "json")
+
+    @Type(JsonType.class)
+    @Column(name = "images", columnDefinition = "json")
     @Builder.Default
     @ToString.Exclude
     private List<String> images = new ArrayList<>();
-    
-    @Column (name = "price")
+
+    @Column(name = "price")
     private Double price;
-    
-    @Formula (FORMULA.AVAILABLE_QUANTITY)
+
+    @Formula(FORMULA.AVAILABLE_QUANTITY)
     private Integer availableQuantity;
-    
+
     @Column(name = "active")
-    private Boolean active;
-    
-    @ManyToOne (fetch = FetchType.LAZY, optional = false)
+    @Builder.Default
+    private Boolean active = Boolean.TRUE;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @ToString.Exclude
-    @JoinColumn (name = "product_id")
+    @JoinColumn(name = "product_id")
     private Product product;
-    
-    @OneToMany (mappedBy = "variant", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+
+    @OneToMany(mappedBy = "variant", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     @ToString.Exclude
     @JsonIgnore
@@ -91,11 +92,10 @@ public class Variant implements Serializable {
         inventories.add(inventory);
     }
 
-    
-//    public long getAvailableQuantity() {
-//        var service = BeanUtils.getBean(ProductVariantService.class);
-//        return service.getAvailableQuantity(this.id);
-//    }
+    // public long getAvailableQuantity() {
+    // var service = BeanUtils.getBean(ProductVariantService.class);
+    // return service.getAvailableQuantity(this.id);
+    // }
 
     @Override
     public boolean equals(Object o) {

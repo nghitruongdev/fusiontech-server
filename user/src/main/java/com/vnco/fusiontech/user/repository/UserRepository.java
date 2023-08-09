@@ -23,6 +23,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @RestResource(path = "findByFirebaseId")
     Optional<User> findByFirebaseUid(@Param("firebaseId") String firebaseUid);
+    
+    @RestResource
+    Optional<User> findByEmail(String email);
 
 //    @RestResource(path = "include-disabled")
 //    @Query(" FROM User")

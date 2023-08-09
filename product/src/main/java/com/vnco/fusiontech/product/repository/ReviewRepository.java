@@ -10,6 +10,4 @@ import java.util.List;
 @RepositoryRestResource(exported = true)
 public interface ReviewRepository extends JpaRepository<Review,Long> {
     List<Review> findAllByProductId(@Param("productId") Long productId);
-
-
 }

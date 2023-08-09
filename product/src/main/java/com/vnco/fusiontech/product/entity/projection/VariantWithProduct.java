@@ -18,4 +18,6 @@ public interface VariantWithProduct {
         Object getImages();
 
         double getPrice();
+
+        Boolean getActive();
 }

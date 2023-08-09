@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Objects;
-import java.util.UUID;
 
 @SuppressWarnings("serial")
 @Getter
@@ -20,6 +19,12 @@ public class User implements Serializable {
     @Id
     @Column(name = "id")
     private Long   id;
+    
+    @Column(name = "first_name")
+    private String firstName;
+    
+    @Column(name = "image")
+    private String image;
     
     public User(Long id) {
         this.id = id;

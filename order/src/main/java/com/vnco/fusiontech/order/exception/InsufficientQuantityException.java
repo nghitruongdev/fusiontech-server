@@ -5,6 +5,6 @@ import com.vnco.fusiontech.common.exception.InvalidRequestException;
 public class InsufficientQuantityException extends InvalidRequestException {
    
     public InsufficientQuantityException(Long variantId) {
-        super("Order quantity exceeds available quantity for product variant with id " + variantId);
+        super("Số lượng tồn kho không đủ cho sản phẩm " + variantId);
     }
 }

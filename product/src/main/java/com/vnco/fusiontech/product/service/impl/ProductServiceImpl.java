@@ -7,6 +7,7 @@ import com.vnco.fusiontech.common.utils.BeanUtils;
 import com.vnco.fusiontech.product.entity.Product;
 import com.vnco.fusiontech.product.entity.Specification;
 import com.vnco.fusiontech.product.entity.Variant;
+import com.vnco.fusiontech.product.entity.projection.DynamicProductInfo;
 import com.vnco.fusiontech.product.entity.projection.ProductSpecificationDTO;
 import com.vnco.fusiontech.product.entity.proxy.User;
 import com.vnco.fusiontech.product.repository.ProductRepository;
@@ -24,10 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -130,6 +128,12 @@ public class ProductServiceImpl implements ProductService {
                     .toList();
             return new ProductSpecificationDTO(name, values);
         }).toList();
+    }
+    
+    @Override
+    public Optional<DynamicProductInfo> getProductDynamicInfo(Long productId) {
+//        return  Optional.of(productRepository.getDynamicProductInfo(productId));
+        throw new  UnsupportedOperationException();
     }
 
     public List<Variant> createProductVariant(Product product, List<ListSpecificationRequest> specs) {

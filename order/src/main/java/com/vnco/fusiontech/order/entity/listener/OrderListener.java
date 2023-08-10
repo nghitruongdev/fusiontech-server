@@ -70,8 +70,8 @@ public class OrderListener {
         }
     }
     
-//    @PostPersist
-//    public void postPersist(Order o) {
+    @PostPersist
+    public void postPersist(Order o) {
 //        log.debug("Post persist order: {{}}", o);
 //        if(o.getEmail() != null){
 //           var request =  OrderRequest.builder()
@@ -83,7 +83,7 @@ public class OrderListener {
 //            getMailService().sendMail(request);
 //
 //        }
-//    }
+    }
     
     private PublicMailService getMailService(){
         return BeanUtils.getBean(PublicMailService.class);

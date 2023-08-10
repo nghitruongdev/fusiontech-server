@@ -58,4 +58,18 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                 """
         )
         Slice<Product> findTopFrequentBoughtTogether(@Param ("id") Long productId, Pageable pageable);
+        
+//        @Query (
+//                """
+//                SELECT new com.vnco.fusiontech.product.entity.projection.DynamicProductInfo(
+//                p.discount,
+//                p.status,
+//                p.active,
+//                get_product_available_quantity(p.id),
+//                get_product_min_price(p.id),
+//                get_product_max_price(p.id)
+//                ) FROM Product p WHERE p.id =:id
+//                """
+//        )
+//        DynamicProductInfo getDynamicProductInfo(@Param ("id") Long productId);
 }

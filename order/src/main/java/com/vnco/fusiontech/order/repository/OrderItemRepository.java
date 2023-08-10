@@ -12,7 +12,7 @@ import java.util.List;
 
 @Transactional(readOnly = true)
 @RepositoryRestResource
-public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
+public interface OrderItemRepository extends JpaRepository<OrderItem, Long>, CustomOrderItemRepository {
 
     @Query("""
             SELECT COALESCE (SUM (oi.quantity), 0)

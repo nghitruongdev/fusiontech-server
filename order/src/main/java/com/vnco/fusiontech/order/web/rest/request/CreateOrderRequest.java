@@ -2,6 +2,7 @@ package com.vnco.fusiontech.order.web.rest.request;
 
 import com.vnco.fusiontech.common.constant.OrderStatus;
 import com.vnco.fusiontech.common.constant.PaymentStatus;
+import com.vnco.fusiontech.order.entity.Voucher;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -16,7 +17,8 @@ public record CreateOrderRequest(
         @NotNull Long addressId,
         @NotNull @Valid PaymentRequest payment,
         OrderStatus status,
-        @NotEmpty @Validated @Valid List<OrderItemRequest> items
+        @NotEmpty @Validated @Valid List<OrderItemRequest> items,
+        Voucher voucher
 ) {
     public CreateOrderRequest {
            if (status == null) {

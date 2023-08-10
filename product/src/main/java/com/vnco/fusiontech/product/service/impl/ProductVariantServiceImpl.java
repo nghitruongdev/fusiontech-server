@@ -142,7 +142,7 @@ public class ProductVariantServiceImpl implements ProductVariantService {
     }
     
     @Override
-    public List<VariantWithProductInfoDTO> getVariantOrProductImages(Long variantId) {
-        throw new UnsupportedOperationException();
+    public List<VariantWithProductInfoDTO> getVariantOrProductImages(List<Long> variantIds) {
+      return  repository.findVariantsWithProductInfo(variantIds);
     }
 }

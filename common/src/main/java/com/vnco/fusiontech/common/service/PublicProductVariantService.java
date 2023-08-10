@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface PublicProductVariantService {
     
-    List<VariantWithProductInfoDTO> getVariantOrProductImages(Long variantId);
+    List<VariantWithProductInfoDTO> getVariantOrProductImages(List<Long> variantIds);
 }

@@ -22,12 +22,12 @@ public class OrderMapper {
                          .addressId(request.addressId())
                          .payment(payment)
                          .status(request.status())
-    
-                         //                       .total()
+                         .voucher(request.voucher())
                          .build();
         order.setOrderItems(items);
         return order;
     }
+    
     
     OrderItem toOrderItem(OrderItemRequest request) {
         return OrderItem.builder()

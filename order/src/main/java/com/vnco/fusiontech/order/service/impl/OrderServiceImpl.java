@@ -10,6 +10,7 @@ import com.vnco.fusiontech.common.service.PublicProductVariantService;
 import com.vnco.fusiontech.common.service.PublicUserService;
 import com.vnco.fusiontech.common.web.request.mail.OrderRequest;
 import com.vnco.fusiontech.order.entity.Order;
+import com.vnco.fusiontech.order.entity.OrderItem;
 import com.vnco.fusiontech.order.entity.UserOrder;
 import com.vnco.fusiontech.order.exception.InsufficientQuantityException;
 import com.vnco.fusiontech.order.mapper.OrderMapper;
@@ -24,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -43,7 +45,6 @@ public class OrderServiceImpl implements OrderService {
     private final PublicProductVariantService variantService;
     @Override
     public Long createOrder(CreateOrderRequest request) {
-        
         if (!userService.existsById(request.userId())) {
             throw new RecordNotFoundException("No user was found with the given id: " + request.userId());
         }
@@ -55,21 +56,25 @@ public class OrderServiceImpl implements OrderService {
         checkEnoughQuantity(request.items());
         
         Order order = mapper.toOrder(request);
-        
+    
         order.setPurchasedAt(LocalDateTime.now());
-        
+    
         var saved = repository.save(order);
-        
+    
         clearCartItems(request.items());
         sendMailAfterOrderCheckoutSuccess(saved);
         return saved.getId();
+    }
+    
+    private void throwError() {
+        throw new InvalidRequestException("Hello there");
     }
     
     @Override
     public void updateOrderStatus(Long oid, @NonNull OrderStatus newStatus) {
         
         var order = repository.findById(oid).orElseThrow(RecordNotFoundException::new);
-    
+        
         checkUpdateOrder(order, newStatus);
         order.setStatus(newStatus);
         updatePayment(order);
@@ -132,17 +137,19 @@ public class OrderServiceImpl implements OrderService {
     }
     
     private void sendMailAfterOrderCheckoutSuccess(Order order) {
-        var user = entityManager.find(UserOrder.class, order.getUserId());
-        String mail = order.getEmail()!=null? order.getEmail() : user.getEmail();
+        var    user = entityManager.find(UserOrder.class, order.getUserId());
+        String mail = StringUtils.hasText(order.getEmail()) ? order.getEmail().trim() : user.getEmail();
 //
-//        if (mail == null) return;
-//        order.getItems().stream().map(item -> OrderRequest.ProductItem
-//                                                      .builder()
+                if (mail == null) return;
+//                order.getItems().stream().map(item -> OrderRequest.OrderItemMailDTO
+//                                                              .builder()
 //                                                      .image()
 //                                                      .url()
 //                                                      .name()
 //                                                      .build());
 //        String imageUrl = variantService.getVariantOrProductImages(order.getItems());
+        var ids = order.getItems().stream().map(OrderItem::getId).toList();
+        var items = orderItemRepository.findOrderItemInfoIn(ids);
         var mailRequest =
                 OrderRequest.builder()
                             .mail(mail)
@@ -150,7 +157,7 @@ public class OrderServiceImpl implements OrderService {
                             .template(MailTemplate.ORDER_SUCCESS)
                             .orderId(order.getId())
                             .name(user.getFirstName())
-//                            .productImageUrl()
+                            .items(items)
                             .build();
         mailService.sendMail(mailRequest);
     }

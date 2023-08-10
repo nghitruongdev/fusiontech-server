@@ -3,9 +3,9 @@ package com.vnco.fusiontech.mail.service.impl;
 import com.vnco.fusiontech.common.web.request.mail.MailRequest;
 import com.vnco.fusiontech.mail.service.MailService;
 import com.vnco.fusiontech.mail.service.TemplateService;
+import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -52,19 +52,21 @@ public class MailServiceImpl implements MailService {
         messages.clear();
     }
     
-    @SneakyThrows
-    private MimeMessage createMessage(MailRequest request){
+    private MimeMessage createMessage(MailRequest request) {
         MimeMessage       message = emailSender.createMimeMessage();
-        MimeMessageHelper helper  = new MimeMessageHelper(message, true, StandardCharsets.UTF_8.name());
-    
-        // Thiết lập các thông tin cần thiết
-        helper.setTo(request.mail());
-        helper.setSubject(request.subject());
-        if (request.template() != null) {
-            // Đọc nội dung của file HTML từ tệp trong thư mục resources
-            helper.setText(thymeleafService.getContent(request), true);
-        } else if (request.body() != null) {
-            helper.setText(request.body());
+        MimeMessageHelper helper  = null;
+        try {
+            helper = new MimeMessageHelper(message, true, StandardCharsets.UTF_8.name());
+            helper.setTo(request.mail());
+            helper.setSubject(request.subject());
+            if (request.template() != null) {
+                // Đọc nội dung của file HTML từ tệp trong thư mục resources
+                helper.setText(thymeleafService.getContent(request), true);
+            } else if (request.body() != null) {
+                helper.setText(request.body());
+            }
+        } catch (MessagingException e) {
+            log.error("Error occured while send mail", e);
         }
         return message;
     }

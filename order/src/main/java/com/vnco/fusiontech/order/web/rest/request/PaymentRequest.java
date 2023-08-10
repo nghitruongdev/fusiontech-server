@@ -2,13 +2,11 @@ package com.vnco.fusiontech.order.web.rest.request;
 
 import com.vnco.fusiontech.common.constant.PaymentMethod;
 import com.vnco.fusiontech.common.constant.PaymentStatus;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 
 import java.time.LocalDateTime;
 
 public record PaymentRequest(
-        @NotNull @Positive Double amount,
+         Double amount,
         PaymentMethod method,
         PaymentStatus status,
         LocalDateTime paidAt

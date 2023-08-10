@@ -14,6 +14,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.lang.Nullable;
 import org.springframework.transaction.TransactionSystemException;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -111,10 +112,10 @@ public class SpringExceptionHandler extends ResponseEntityExceptionHandler {
                 return String.format("Lỗi trùng lặp dữ liệu: %s - [%s]", matcher.group(),  sqlCode);
             }
         }
-        else{
-            error = constraint.substring(0, constraint.indexOf(";"))
-                              .replace("\"", "");
-        }
+//        else{
+//            error = constraint.substring(0, constraint.indexOf(";"))
+//                              .replace("\"", "");
+//        }
 //        switch (sqlCode) {
 //            case "23502" -> {
 //                var exMessage = constraintEx.getConstraintName();
@@ -129,7 +130,7 @@ public class SpringExceptionHandler extends ResponseEntityExceptionHandler {
 //                                                         constraintEx.getConstraintName());
 //            default -> errorMessage = constraintEx.getSQLException().getMessage();
 //        }
-        return String.format("%s - [%s]",error,  sqlCode);
+        return String.format("%s - [%s]", StringUtils.hasText(error)? error: constraint, sqlCode);
     }
     
     @ExceptionHandler(TransactionSystemException.class)

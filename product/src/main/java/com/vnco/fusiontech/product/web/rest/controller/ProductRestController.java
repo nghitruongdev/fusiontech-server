@@ -1,5 +1,6 @@
 package com.vnco.fusiontech.product.web.rest.controller;
 
+import com.vnco.fusiontech.product.entity.projection.DynamicProductInfo;
 import com.vnco.fusiontech.product.service.ProductService;
 import com.vnco.fusiontech.product.web.rest.request.CreateProductRequest;
 import com.vnco.fusiontech.product.web.rest.request.UpdateProductRequest;
@@ -56,5 +57,11 @@ public class ProductRestController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> getProductSpecifications(@PathVariable("id") Long productId) {
         return ResponseEntity.ok(productService.getProductSpecifications(productId));
+    }
+    
+    @GetMapping("/products/search/dynamic")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<DynamicProductInfo> getDynamicInfo(@RequestParam("id") Long productId){
+        return ResponseEntity.of(productService.getProductDynamicInfo(productId));
     }
 }

@@ -1,6 +1,7 @@
 package com.vnco.fusiontech.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vnco.fusiontech.common.constant.DBConstant;
 import jakarta.persistence.*;
 import lombok.*;
@@ -35,8 +36,12 @@ public class ShippingAddress {
     private String district;
     @Column(name = "province")
     private String province;
+
+    @Transient
+    private String type;
     
     @Transient
+    @JsonProperty("default")
     private boolean isDefault;
     
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

@@ -2,6 +2,7 @@ package com.vnco.fusiontech.order.web.rest.controller;
 
 import com.vnco.fusiontech.common.constant.OrderStatus;
 import com.vnco.fusiontech.common.constant.OrderStatusGroup;
+import com.vnco.fusiontech.common.exception.InvalidRequestException;
 import com.vnco.fusiontech.order.service.OrderService;
 import com.vnco.fusiontech.order.web.rest.request.CreateOrderRequest;
 import jakarta.validation.Valid;
@@ -24,8 +25,9 @@ public class OrderRestController {
     @PostMapping ("/orders")
     @ResponseStatus (HttpStatus.CREATED)
     public ResponseEntity<?> createOrder(@Valid @RequestBody CreateOrderRequest request) {
-        var id = service.createOrder(request);
-        return ResponseEntity.ok(id);
+        throw new InvalidRequestException("Not found");
+//        var id = service.createOrder(request);
+//        return ResponseEntity.ok(id);
     }
     
     @PatchMapping ("/orders/{id}")

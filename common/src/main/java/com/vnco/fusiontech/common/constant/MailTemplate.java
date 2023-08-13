@@ -6,7 +6,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum MailTemplate {
-    ORDER_SUCCESS("order-success");
+    ORDER_SUCCESS("order-success-mail");
     private final String name;
     
 }

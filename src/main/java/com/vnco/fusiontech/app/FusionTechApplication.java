@@ -8,8 +8,10 @@ import com.vnco.fusiontech.mail.MailConfiguration;
 import com.vnco.fusiontech.order.OrderModuleConfiguration;
 import com.vnco.fusiontech.product.ProductModuleConfiguration;
 import com.vnco.fusiontech.product.entity.Product;
+import com.vnco.fusiontech.product.entity.Specification;
 import com.vnco.fusiontech.product.entity.Variant;
 import com.vnco.fusiontech.product.entity.VariantInventory;
+import com.vnco.fusiontech.product.entity.projection.ProductSpecificationDTO;
 import com.vnco.fusiontech.product.repository.*;
 import com.vnco.fusiontech.product.service.ProductService;
 import com.vnco.fusiontech.product.service.ProductVariantService;
@@ -20,6 +22,10 @@ import com.vnco.fusiontech.user.repository.ShippingAddressRepository;
 import com.vnco.fusiontech.user.repository.UserRepository;
 import com.vnco.fusiontech.user.service.AuthService;
 import com.vnco.fusiontech.user.web.rest.request.UserMapper;
+import jakarta.persistence.EntityGraph;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -34,10 +40,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -197,55 +202,207 @@ public class FusionTechApplication {
 //                        ;
                         Function<Product, Stream<Variant>> createVariant = (product)-> IntStream.rangeClosed(1, 10)
                                                                                         .mapToObj(i-> Variant.builder()
-                                                                                                            .images(getImages())
-                                                                                                            .sku(UUID.randomUUID().toString())
-                                                                                                            .price((double) number.numberBetween(10_000_000,
-                                                                                                                                                 30_000_000))
-                                                                                                            .product(product).build());
-                        List<Product> products = productRepository.findAll();
-                        List<Variant> variants =
-                                products.stream().flatMap(createVariant).toList();
-                        variantRepository.saveAll(variants);
-               
-                        List<VariantInventory> inventories =
-                                (List<VariantInventory>) IntStream.rangeClosed(0, 10).mapToObj(images -> VariantInventory.builder().createdBy(AppUser.builder().id(1L).build())).toList();
-                        
-//                        var users = authService.findAll().stream().map(userMapper::toUser).toList();
-//                        userRepository.saveAll(users);
-//                        users.forEach(user -> authService.setInitialClaims(user.getId(), user.getFirebaseUid()));
-//                        List<ShippingAddress> addresses = IntStream.rangeClosed(1, 3)
-//                                                                   .mapToObj(i -> ShippingAddress.builder()
-//                                                                                                 .address(
-//                                                                                                         faker.address()
-//                                                                                                              .streetAddress())
-//                                                                                                 .ward(faker.address()
-//                                                                                                            .city())
-//                                                                                                 .district(
-//                                                                                                         faker.address()
-//                                                                                                              .countryCode())
-//                                                                                                 .phone(faker.phoneNumber()
-//                                                                                                             .cellPhone())
-//                                                                                                 .name(faker.name()
-//                                                                                                            .fullName())
-//                                                                                                 .province(
-//                                                                                                         faker.address()
-//                                                                                                              .country())
-//                                                                                                 .user(users.get(0))
-//                                                                                                 .build())
-//                                                                   .toList();
-//                        shippingAddressRepository.saveAll(addresses);
-                        System.exit(0);
+                                                                                                             .images(getImages())
+                                                                                                             .sku(UUID.randomUUID()
+                                                                                                                      .toString())
+                                                                                                             .price((double) number.numberBetween(
+                                                                                                                     10_000_000,
+                                                                                                                     30_000_000))
+                                                                                                             .product(
+                                                                                                                     product)
+                                                                                                             .build());
+                    List<Product> products = productRepository.findAll();
+                    List<Variant> variants =
+                            products.stream().flatMap(createVariant).toList();
+                    variantRepository.saveAll(variants);
+    
+                    List<VariantInventory> inventories =
+                            (List<VariantInventory>) IntStream.rangeClosed(0, 10)
+                                                              .mapToObj(images -> VariantInventory.builder()
+                                                                                                  .createdBy(
+                                                                                                          AppUser.builder()
+                                                                                                                 .id(1L)
+                                                                                                                 .build()))
+                                                              .toList();
+    
+                    //                        var users = authService.findAll().stream().map(userMapper::toUser)
+                    //                        .toList();
+                    //                        userRepository.saveAll(users);
+                    //                        users.forEach(user -> authService.setInitialClaims(user.getId(), user
+                    //                        .getFirebaseUid()));
+                    //                        List<ShippingAddress> addresses = IntStream.rangeClosed(1, 3)
+                    //                                                                   .mapToObj(i ->
+                    //                                                                   ShippingAddress.builder()
+                    //                                                                                                 .address(
+                    //                                                                                                         faker.address()
+                    //                                                                                                              .streetAddress())
+                    //                                                                                                 .ward(faker.address()
+                    //                                                                                                            .city())
+                    //                                                                                                 .district(
+                    //                                                                                                         faker.address()
+                    //                                                                                                              .countryCode())
+                    //                                                                                                 .phone(faker.phoneNumber()
+                    //                                                                                                             .cellPhone())
+                    //                                                                                                 .name(faker.name()
+                    //                                                                                                            .fullName())
+                    //                                                                                                 .province(
+                    //                                                                                                         faker.address()
+                    //                                                                                                              .country())
+                    //                                                                                                 .user(users.get(0))
+                    //                                                                                                 .build())
+                    //                                                                   .toList();
+                    //                        shippingAddressRepository.saveAll(addresses);
+                    System.exit(0);
                 };
         }
+    
+    @PersistenceContext
+    EntityManager entityManager;
+    private final ProductService productService;
+    
+//    @PostConstruct
+    //        @Transactional
+    public void generateSKUForVariant() {
+        //                                var graph  =entityManager.createEntityGraph(Variant.class);
+        //                                graph.addAttributeNodes("specifications");
         
+        var duplicateVariant = new ArrayList<Variant>();
+        var graph            = entityManager.createEntityGraph(Product.class);
+        //                                entityManager.createQuery("SELECT p FROM Product p JOIN FETCH p.variants JOIN
+        //                                Variant v ON p.id = " +
+        //                                                          "v.product.id JOIN FETCH v.specifications")
+        EntityGraph<Product> entityGraph = entityManager.createEntityGraph(Product.class);
+        entityGraph.addSubgraph("variants").addSubgraph("specifications");
         
-//        @GetMapping ("/api/test")
-//        public ResponseEntity<?> removeImage(@RequestParam("email") String email){
-//                OrderRequest.builder()
-//                            .mail(email)
-//                        .orderId(1L)
-//                        .name()
-//
-//                return ResponseEntity.of(Optional.ofNullable(reportRepository.topSpentCustomer()));
-//        }
+        Map<String, Object> hints = new HashMap<>();
+        hints.put("javax.persistence.fetchgraph", entityGraph);
+        
+        String jpql =
+                "SELECT p FROM Product p JOIN FETCH p.variants v JOIN FETCH v.specifications";
+        TypedQuery<Product> query = entityManager.createQuery(jpql, Product.class);
+        query.setHint("jakarta.persistence.fetchgraph", entityGraph);
+        
+        List<Product> list = query.getResultList();
+        //                               List<Variant> list = entityManager.createQuery("SELECT v FROM Variant v JOIN
+        //                               FETCH v" +
+        //                                                                     ".specifications").getResultList();
+        List<Variant> duplicateList = new ArrayList<>();
+        
+        //        try {
+        //            var distinct  = new HashSet<>();
+        //            var duplicate = new HashSet<String>();
+        list.forEach(variantService::generateSku);
+        ////            variantService.generateSku(list.get(0));
+        list.forEach(product -> {
+                         product.getVariants().forEach(variant -> {
+                             try {
+                                 variantRepository.save(variant);
+                             } catch (Exception e) {
+                                 log.debug("");
+                             }
+                         });
+        });
+    
+                         //            });
+                         //                                     list.stream().flatMap(product -> product.getVariants().stream())
+                         //                                     .forEach(
+                         //                                             item -> {
+                         //                                                     if(distinct.contains(item.getSku())){
+                         //                                                           duplicateList.add(item);
+                         //                                                           return;
+                         //                                                     }
+                         //                                                     distinct.add(item.getSku());
+                         //                                             }
+                         //                                     );
+    
+                         //                                     duplicateList.size();
+                         //            variantRepository.saveAll(list.stream().flatMap(product -> product.getVariants().stream())
+                         //            .toList());
+                         //                var duplicateVariant = new ArrayList<Variant>();
+                             //                var graph            = entityManager.createEntityGraph(Product.class);
+        //                entityManager.createQuery("SELECT p FROM Product p JOIN FETCH p.variants JOIN
+        //                Variant v ON p.id = " +
+        //                                          "v.product.id JOIN FETCH v.specifications")
+        
+        //
+        //                variantRepository.deleteAll(duplicateVariant);
+        
+    }
+    
+    //    @PostConstruct
+    public void cleanProduct() {
+        EntityGraph<Product> entityGraph = entityManager.createEntityGraph(Product.class);
+        entityGraph.addSubgraph("variants").addSubgraph("specifications");
+        
+        Map<String, Object> hints = new HashMap<>();
+        hints.put("javax.persistence.fetchgraph", entityGraph);
+        
+        String jpql =
+                "SELECT p FROM Product p JOIN FETCH p.variants v JOIN FETCH v.specifications";
+        TypedQuery<Product> query = entityManager.createQuery(jpql, Product.class);
+        query.setHint("jakarta.persistence.fetchgraph", entityGraph);
+        
+        List<Product>   list                   = query.getResultList();
+        var             duplicateVariants      = new ArrayList<Variant>();
+        List<Variant[]> duplicateArrayVariants = new ArrayList<>();
+        list.stream()
+            .forEach(product -> {
+                var distinctVariants = new HashSet<Variant>();
+                var names =
+                        productService.getProductSpecifications(product.getId()).stream().map(
+                                ProductSpecificationDTO::name).toList();
+                ((Product) product).getVariants()
+                                   .forEach(variant -> {
+                                       try {
+                                           var specMap =
+                                                   variant.getSpecifications()
+                                                          .stream()
+                                                          .distinct()
+                                                          .collect(Collectors.toMap(
+                                                                  Specification::getName,
+                                                                  Specification::getValue));
+                    
+                                           var result = distinctVariants
+                                                                .stream()
+                                                                .filter(distinct ->
+                                    
+                                                                                //                                                                                  var distinctSpec =
+                                                                                //                                                                                          distinct.getSpecifications().stream().collect(Collectors.toMap(Specification::getName, Specification::getValue));
+                                                                                //                                                                                  names.forEach(name ->{
+                                                                                //                                                                                      if()
+                                                                                //                                                                                  });
+                                                                                distinct.getSpecifications()
+                                                                                        .containsAll(
+                                                                                                variant.getSpecifications())
+                                                                        //                                                                                                  .stream()
+                                                                        //                                                                                                  .allMatch(
+                                                                        //                                                                                                          specification -> specification.getValue()
+                                                                        //                                                                                                                                        .equalsIgnoreCase(
+                                                                        //                                                                                                                                                specMap.get(
+                                                                        //                                                                                                                                                        specification.getValue()))
+                                                                ).findFirst();
+                                           if (result.isEmpty()) {
+                                               distinctVariants.add(variant);
+                                           } else {
+                                               duplicateArrayVariants.add(new Variant[] {variant, result.get()});
+                                               //                                                   duplicateVariants
+                                               //                                                   .add(variant);
+                                           }
+                                       } catch (Exception e) {
+                                           duplicateVariants.add(variant);
+                                       }
+                                   });
+            });
+        duplicateArrayVariants.size();
+        variantRepository.deleteAll(duplicateVariants);
+    }
+    //        @GetMapping ("/api/test")
+    //        public ResponseEntity<?> removeImage(@RequestParam("email") String email){
+    //                OrderRequest.builder()
+    //                            .mail(email)
+    //                        .orderId(1L)
+    //                        .name()
+    //
+    //                return ResponseEntity.of(Optional.ofNullable(reportRepository.topSpentCustomer()));
+    //        }
 }

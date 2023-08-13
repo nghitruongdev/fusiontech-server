@@ -108,7 +108,7 @@ public class OrderServiceImpl implements OrderService {
     private void updatePayment(Order o){
         var payment = o.getPayment();
         switch(o.getStatus()){
-            case CANCELLED -> payment.setStatus(PaymentStatus.CANCELLED);
+//            case CANCELLED -> payment.setStatus(PaymentStatus.CANCELLED);
             case COMPLETED -> {
                 if(payment.getStatus() == PaymentStatus.PENDING) payment.setStatus(PaymentStatus.COMPLETED);
             }
@@ -137,18 +137,20 @@ public class OrderServiceImpl implements OrderService {
     }
     
     private void sendMailAfterOrderCheckoutSuccess(Order order) {
-        var    user = entityManager.find(UserOrder.class, order.getUserId());
-        String mail = StringUtils.hasText(order.getEmail()) ? order.getEmail().trim() : user.getEmail();
-//
-                if (mail == null) return;
-//                order.getItems().stream().map(item -> OrderRequest.OrderItemMailDTO
-//                                                              .builder()
-//                                                      .image()
-//                                                      .url()
-//                                                      .name()
-//                                                      .build());
-//        String imageUrl = variantService.getVariantOrProductImages(order.getItems());
-        var ids = order.getItems().stream().map(OrderItem::getId).toList();
+        var user = entityManager.find(UserOrder.class, order.getUserId());
+        String mail = StringUtils.hasText(order.getEmail())
+                      ? order.getEmail()
+                             .trim()
+                      : user.getEmail();
+        //
+        if (mail == null) return;
+        var ids   = order.getItems().stream().map(OrderItem::getId).toList();
+        var query = entityManager.createQuery("""
+                                              SELECT phone, CONCAT(address, ', ', ward, ', ', district, ', ', province ) FROM ShippingAddress WHERE ID=:id
+                                              """);
+        query.setParameter("id", order.getAddressId());
+        Object[] address = (Object[]) query.getSingleResult();
+        var voucherCode = order.getVoucher()!=null? order.getVoucher().getCode(): null;
         var items = orderItemRepository.findOrderItemInfoIn(ids);
         var mailRequest =
                 OrderRequest.builder()
@@ -157,6 +159,12 @@ public class OrderServiceImpl implements OrderService {
                             .template(MailTemplate.ORDER_SUCCESS)
                             .orderId(order.getId())
                             .name(user.getFirstName())
+                            .phone(address[0] + "")
+                        .orderTotal(order.getPayment().getAmount())
+                        .address(address[1] + "")
+                        .paymentStatus(order.getPayment().getStatus().name())
+                        .shipping(0d)
+                        .voucher(voucherCode)
                             .items(items)
                             .build();
         mailService.sendMail(mailRequest);

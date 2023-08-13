@@ -107,7 +107,40 @@ public class ProductVariantServiceImpl implements ProductVariantService {
         var names = productService.getProductSpecifications(variants.get(0).getProduct().getId());
         generateSku(variants, names);
     }
-
+    
+    @Override
+    public void generateSku(Product product){
+       var specs =  productService.getProductSpecifications(product.getId());
+       var variants = product.getVariants();
+       generateSku(variants, product.getId(), specs);
+    }
+    
+    private void generateSku(@NotEmpty List<Variant> variants,Long productId, List<ProductSpecificationDTO> specs) {
+        StringBuilder skuBuilder = new StringBuilder();
+        var names = specs.stream()
+                         .filter(item -> item.values().size() > 1)
+                         .map(ProductSpecificationDTO::name).toList();
+        Product product = em.find(Product.class, productId);
+        skuBuilder.append(productId);
+        if (product.getCategory() != null)
+            skuBuilder.append("-")
+                      .append(subName(em.find(Category.class, product.getCategory().getId()).getName()));
+        if (product.getBrand() != null)
+            skuBuilder.append("-").append(subName(em.find(Brand.class, product.getBrand().getId()).getName()));
+        if (product.getName() != null)
+            skuBuilder.append("-").append(subName(product.getName()));
+        
+        Function<Variant, String> getSpecCode = variant -> variant.getSpecifications().stream()
+                                                                  .filter(spec -> names.contains(spec.getName()))
+                                                                  .map(this::convertSpecToSkuCode)
+                                                                  .collect(Collectors.joining("-"));
+        var sku = skuBuilder.toString();
+        variants.forEach(variant -> {
+            var specCode = getSpecCode.apply(variant);
+            specCode = StringUtils.hasText(specCode)? specCode : String.valueOf(product.getVariants().size());
+            variant.setSku(String.format("%s%s", sku, StringUtils.hasText(specCode) ? "-" + specCode : ""));
+        });
+    }
     private void generateSku(@NotEmpty List<Variant> variants, List<ProductSpecificationDTO> specs) {
         StringBuilder skuBuilder = new StringBuilder();
         var names = specs.stream()
@@ -118,12 +151,12 @@ public class ProductVariantServiceImpl implements ProductVariantService {
         skuBuilder.append(productId);
         if (product.getCategory() != null)
             skuBuilder.append("-")
-                    .append(em.find(Category.class, product.getCategory().getId()).getName().substring(0, 2));
+                    .append(subName(em.find(Category.class, product.getCategory().getId()).getName()));
         if (product.getBrand() != null)
-            skuBuilder.append("-").append(em.find(Brand.class, product.getBrand().getId()).getName().substring(0, 2));
+            skuBuilder.append("-").append(subName(em.find(Brand.class, product.getBrand().getId()).getName()));
         if (product.getName() != null)
-            skuBuilder.append("-").append(product.getName().substring(0, 2));
-
+            skuBuilder.append("-").append(subName(product.getName()));
+        
         Function<Variant, String> getSpecCode = variant -> variant.getSpecifications().stream()
                 .filter(spec -> names.contains(spec.getName()))
                 .map(this::convertSpecToSkuCode)
@@ -136,13 +169,21 @@ public class ProductVariantServiceImpl implements ProductVariantService {
     }
 
     private String convertSpecToSkuCode(Specification spec) {
-        String name = spec.getName().trim().substring(0, 1);
-        String value = spec.getValue();
+        String name = subName(spec.getName());
+        String value = subName(spec.getValue());
         return String.format("%s%s", name, value);
     }
     
     @Override
     public List<VariantWithProductInfoDTO> getVariantOrProductImages(List<Long> variantIds) {
       return  repository.findVariantsWithProductInfo(variantIds);
+    }
+    
+    private String subName(String name){
+        if(StringUtils.hasText(name)){
+            var clean = name.trim();
+           return clean.substring(0, Math.min(clean.length(), 3)).trim().toUpperCase();
+        }
+        return name;
     }
 }

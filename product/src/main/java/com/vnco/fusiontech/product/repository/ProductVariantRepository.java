@@ -24,6 +24,10 @@ public interface ProductVariantRepository extends JpaRepository<Variant, Long> {
     @RestResource
     Optional<Variant> findBySku(@Param ("sku") String sku);
     
+    @RestResource(path = "get-available-quantity", rel = "get-available-quantity")
+    @Query("SELECT get_available_quantity(v.id) FROM Variant v WHERE v.id=:id")
+    Long getAvailableQuantity(@Param("id")Long id);
+    
     @Query (
             """
             select new com.vnco.fusiontech.common.web.response.VariantWithProductInfoDTO(

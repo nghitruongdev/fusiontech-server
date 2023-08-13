@@ -28,9 +28,15 @@ public class ThymeleafTemplateServiceImpl implements TemplateService {
     
     private String getOrderContent(OrderRequest request){
         final Context context = new Context();
-        context.setVariable("orderId", request.orderId());
-        context.setVariable("name", request.name());
-        context.setVariable("productImageUrl",request.productImageUrl());
+        context.setVariable("request", request);
+        //        context.setVariable("orderId", request.orderId());
+        //        context.setVariable("name", request.name());
+        //        context.setVariable("phoneNumber", request.phoneNumber());
+        //        context.setVariable("date", request.date());
+        //        context.setVariable("orderTotal", request.orderTotal());
+        //        context.setVariable("subtotal", request.subtotal());
+        //        context.setVariable("", request.);
+        //        context.setVariable("productImageUrl",request.productImageUrl());
         return templateEngine.process(request.template().getName(), context);
     }
 }

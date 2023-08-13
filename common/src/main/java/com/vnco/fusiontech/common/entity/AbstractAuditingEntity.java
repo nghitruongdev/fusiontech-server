@@ -1,5 +1,7 @@
 package com.vnco.fusiontech.common.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,7 +27,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor@AllArgsConstructor
 @MappedSuperclass
 @EntityListeners (AuditingEntityListener.class)
-//@JsonIgnoreProperties (value = {"createdBy", "createdDate", "lastModifiedBy", "lastModifiedDate" }, allowGetters = true)
+@JsonIgnoreProperties (value = {"createdBy", "createdDate", "lastModifiedBy", "lastModifiedDate" }, allowGetters = true)
 public abstract class AbstractAuditingEntity<T> implements Serializable {
 
     @Serial
@@ -36,6 +38,7 @@ public abstract class AbstractAuditingEntity<T> implements Serializable {
     @CreatedBy
     @ManyToOne
     @JoinColumn (name = "created_by", nullable = false, updatable = false)
+    @JsonIncludeProperties({"id, firstName"})
     private AppUser createdBy;
 
     @CreatedDate
@@ -45,6 +48,7 @@ public abstract class AbstractAuditingEntity<T> implements Serializable {
     @LastModifiedBy
     @ManyToOne
     @JoinColumn(name = "last_modified_by")
+    @JsonIncludeProperties({"id", "name"})
     private AppUser lastModifiedBy;
 
     @LastModifiedDate

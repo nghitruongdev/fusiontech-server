@@ -1,5 +1,8 @@
 package com.vnco.fusiontech.common.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vnco.fusiontech.common.constant.DBConstant;
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,11 +17,14 @@ import java.util.Collection;
 @NoArgsConstructor
 @Getter
 @Table(name = DBConstant.USER_TABLE)
+@JsonInclude(value = JsonInclude.Include.NON_EMPTY)
+@JsonIncludeProperties({"id", "name", "isDisabled"})
 public class AppUser implements UserDetails {
     @Id
     private Long id;
     
     @Column(name = "first_name")
+    @JsonProperty("name")
     private String firstName;
     
     @Column(name = "is_disabled")

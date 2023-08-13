@@ -117,6 +117,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional(readOnly = true)
+    //todo: convert to database function
     public List<ProductSpecificationDTO> getProductSpecifications(Long productId) {
         var product = productRepository.findById(productId).orElseThrow();
         var specs = product.getVariants().stream()

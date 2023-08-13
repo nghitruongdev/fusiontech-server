@@ -8,14 +8,10 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
 
 import java.util.List;
-import java.util.UUID;
 
 @RepositoryRestResource
 public interface OrderRepository extends JpaRepository<Order, Long> {
     
     @RestResource (path = "byUserIdAndStatusIn")
-    List<Order> findAllByUserIdAndStatusIn(@Param ("uid") UUID userId, @Param ("st") List<OrderStatus> statusList);
-    
-//    @Query (value = "SELECT new ORERREques. FROM order_item_info WHERE ID IN :ids", nativeQuery = true)
-//    List<OrderRequest.OrderItemMailDTO> findOrderInfoIn(@Param ("ids") List<Long> ids);
+    List<Order> findAllByUserIdAndStatusIn(@Param ("uid") Long userId, @Param ("st") List<OrderStatus> statusList);
 }

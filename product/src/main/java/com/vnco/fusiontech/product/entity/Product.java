@@ -2,7 +2,6 @@ package com.vnco.fusiontech.product.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vnco.fusiontech.common.constant.DBConstant;
-import com.vnco.fusiontech.common.constant.ProductStatus;
 import com.vnco.fusiontech.product.entity.proxy.User;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
@@ -84,8 +83,8 @@ public class Product extends RepresentationModel<Product> implements Serializabl
             " s WHERE s.product_id=id)")
     private Double avgRating;
 
-    @Enumerated(EnumType.STRING)
-    private ProductStatus status;
+    @Column(name = "status")
+    private String status;
 
     @Column(name = "active")
     @Builder.Default

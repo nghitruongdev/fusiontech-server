@@ -8,7 +8,7 @@ public enum OrderStatusGroup {
     PROCESSING("Đang xử lý"),
     ON_DELIVERY("Đang giao"),
     COMPLETED("Hoàn thành"),
-    FAILED("Không thành công"),
+    FAILED("Trả hàng"),
     CANCELLED("Đã huỷ");
     
     private final String detailName;

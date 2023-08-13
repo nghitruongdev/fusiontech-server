@@ -8,6 +8,7 @@ import com.vnco.fusiontech.order.web.rest.request.CreateOrderRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @RepositoryRestController
+@Slf4j
 public class OrderRestController {
     
     private final OrderService service;

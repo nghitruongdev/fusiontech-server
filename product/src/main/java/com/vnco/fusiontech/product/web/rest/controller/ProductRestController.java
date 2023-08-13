@@ -1,12 +1,16 @@
 package com.vnco.fusiontech.product.web.rest.controller;
 
 import com.vnco.fusiontech.product.entity.projection.DynamicProductInfo;
+import com.vnco.fusiontech.product.repository.ProductRepository;
 import com.vnco.fusiontech.product.service.ProductService;
 import com.vnco.fusiontech.product.web.rest.request.CreateProductRequest;
 import com.vnco.fusiontech.product.web.rest.request.UpdateProductRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 public class ProductRestController {
 
     private final ProductService productService;
+    private final ProductRepository repository;
 
     // them moi san pham
     @PostMapping("/products")
@@ -58,10 +63,17 @@ public class ProductRestController {
     public ResponseEntity<?> getProductSpecifications(@PathVariable("id") Long productId) {
         return ResponseEntity.ok(productService.getProductSpecifications(productId));
     }
-    
+
     @GetMapping("/products/search/dynamic")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<DynamicProductInfo> getDynamicInfo(@RequestParam("id") Long productId){
+    public ResponseEntity<DynamicProductInfo> getDynamicInfo(@RequestParam("id") Long productId) {
         return ResponseEntity.of(productService.getProductDynamicInfo(productId));
     }
+
+    @GetMapping("/products/search/find-all-status")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<List<String>> findProductStatus() {
+        return ResponseEntity.ok(repository.findAllProductStatus());
+    }
+
 }

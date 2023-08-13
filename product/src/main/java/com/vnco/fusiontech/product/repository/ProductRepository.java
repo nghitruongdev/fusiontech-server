@@ -19,57 +19,67 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
         @RestResource(path = "favorites", rel = "favorites")
         List<Product> findAllByFavorites_Id(@Param("uid") Long userId);
-        
-        @Query (
-                """
-                         SELECT COALESCE(SUM (oi.quantity), 0) FROM OrderItem oi JOIN Order o ON oi.order = o
-                         WHERE oi.variant.id IN (SELECT v.id FROM Variant v WHERE v.product.id =:productId) AND
-                         o.status = 'DELIVERED_SUCCESS'
-                """
-        )
-        @RestResource (path = "countProductSold", rel = "countProductSold")
-        Long countProductNumberSold(@Param ("productId") Long productId);
-        
-        @Query (
-                """
-                SELECT COALESCE(SUM(get_available_quantity(v.id)), 0) FROM Variant v WHERE v.product.id =:id
-                AND v.active = TRUE
-                """
-        )
+
+        @Query("""
+                                 SELECT COALESCE(SUM (oi.quantity), 0) FROM OrderItem oi JOIN Order o ON oi.order = o
+                                 WHERE oi.variant.id IN (SELECT v.id FROM Variant v WHERE v.product.id =:productId) AND
+                                 o.status = 'DELIVERED_SUCCESS'
+                        """)
+        @RestResource(path = "countProductSold", rel = "countProductSold")
+        Long countProductNumberSold(@Param("productId") Long productId);
+
+        @Query("""
+                        SELECT COALESCE(SUM(get_available_quantity(v.id)), 0) FROM Variant v WHERE v.product.id =:id
+                        AND v.active = TRUE
+                        """)
         @RestResource(path = "availableQuantityByProduct", rel = "availableQuantityByProduct")
         Long getAvailableQuantityByProduct(@Param("id") Long productId);
-        
-        @RestResource (path = "all", rel = "all")
-        @Query ("from Product ")
+
+        @RestResource(path = "all", rel = "all")
+        @Query("from Product ")
         List<Product> findAllWithoutPage();
-        
-        @RestResource (path = "many", rel = "many")
-        List<Product> findAllByIdIn(@Param ("ids") List<Long> ids);
-        
-        @Query (
-                """
-                SELECT  v2.product FROM OrderItem oi1
-                JOIN OrderItem oi2 ON oi1.order = oi2.order
-                JOIN Variant v1 ON v1.id = oi1.variant.id
-                JOIN Variant v2 ON v2.id = oi2.variant.id
-                WHERE v1.product.id =:id AND v1.product.id <> v2.product.id
-                GROUP BY v2.product
-                ORDER BY COUNT(v2.product.id) DESC
-                """
-        )
-        Slice<Product> findTopFrequentBoughtTogether(@Param ("id") Long productId, Pageable pageable);
-        
-//        @Query (
-//                """
-//                SELECT new com.vnco.fusiontech.product.entity.projection.DynamicProductInfo(
-//                p.discount,
-//                p.status,
-//                p.active,
-//                get_product_available_quantity(p.id),
-//                get_product_min_price(p.id),
-//                get_product_max_price(p.id)
-//                ) FROM Product p WHERE p.id =:id
-//                """
-//        )
-//        DynamicProductInfo getDynamicProductInfo(@Param ("id") Long productId);
+
+        @RestResource(path = "many", rel = "many")
+        List<Product> findAllByIdIn(@Param("ids") List<Long> ids);
+
+        @Query("""
+                        SELECT p FROM Product p
+                        WHERE UPPER(p.name) LIKE CONCAT('%', UPPER(:name),'%') """)
+        @RestResource(path = "findByNameLike", rel = "findByNameLike")
+        List<Product> findByNameLikeIgnoreCase(@Param("name") String name);
+
+        @RestResource(path = "find-by-name", rel = "findByName")
+        Product findFirstByNameIgnoreCase(@Param("name") String name);
+
+        @RestResource(path = "find-by-slug", rel = "findBySlug")
+        Product findFirstBySlugIgnoreCase(@Param("slug") String slug);
+
+        @Query("""
+                        SELECT DISTINCT p.status FROM Product p""")
+        List<String> findAllProductStatus();
+
+        @Query("""
+                        SELECT  v2.product FROM OrderItem oi1
+                        JOIN OrderItem oi2 ON oi1.order = oi2.order
+                        JOIN Variant v1 ON v1.id = oi1.variant.id
+                        JOIN Variant v2 ON v2.id = oi2.variant.id
+                        WHERE v1.product.id =:id AND v1.product.id <> v2.product.id
+                        GROUP BY v2.product
+                        ORDER BY COUNT(v2.product.id) DESC
+                        """)
+        Slice<Product> findTopFrequentBoughtTogether(@Param("id") Long productId, Pageable pageable);
+
+        // @Query (
+        // """
+        // SELECT new com.vnco.fusiontech.product.entity.projection.DynamicProductInfo(
+        // p.discount,
+        // p.status,
+        // p.active,
+        // get_product_available_quantity(p.id),
+        // get_product_min_price(p.id),
+        // get_product_max_price(p.id)
+        // ) FROM Product p WHERE p.id =:id
+        // """
+        // )
+        // DynamicProductInfo getDynamicProductInfo(@Param ("id") Long productId);
 }

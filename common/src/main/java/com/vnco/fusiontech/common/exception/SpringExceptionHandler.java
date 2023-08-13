@@ -99,17 +99,25 @@ public class SpringExceptionHandler extends ResponseEntityExceptionHandler {
             return ProblemDetail.forStatusAndDetail(CONFLICT, getMessage(constraintEx));
         }
         return ProblemDetail.forStatusAndDetail(CONFLICT,ex.getMessage());
+        
     }
     private String getMessage(org.hibernate.exception.ConstraintViolationException ex){
         var sqlCode = ex.getSQLState();
+        var errorCode = ex.getErrorCode();
         var constraint = ex.getSQLException().getMessage();
+        if(errorCode == 1451){
+            if(constraint.contains("FK_inventory_detail_inventory"))
+                return """
+                       Lỗi ràng buộc dữ liệu: %s - [%s].
+                       """.formatted("phiếu nhập kho vẫn còn chi tiết nhập kho liên quan", errorCode);
+        }
         var error = "";
         if(constraint.startsWith("Duplicate")){
             String  regex   = "'.+?'"; // Regular expression to match inside single quotes
             Pattern pattern = Pattern.compile(regex);
             Matcher matcher = pattern.matcher(constraint);
             if(matcher.find()){
-                return String.format("Lỗi trùng lặp dữ liệu: %s - [%s]", matcher.group(),  sqlCode);
+                return String.format("Lỗi trùng lặp dữ liệu: %s - [%s]", matcher.group(),  errorCode);
             }
         }
 //        else{
@@ -158,4 +166,15 @@ public class SpringExceptionHandler extends ResponseEntityExceptionHandler {
     ProblemDetail handleExists(RecordExistsException ex) {
         return ProblemDetail.forStatusAndDetail(CONFLICT, ex.getMessage());
     }
+    
+    @ExceptionHandler(UnauthorizedException.class)
+    ProblemDetail handleUnauthorized(UnauthorizedException ex) {
+        return ProblemDetail.forStatusAndDetail(UNAUTHORIZED, ex.getMessage());
+    }
+    
+    @ExceptionHandler(NotAcceptedRequestException.class)
+    ProblemDetail handleNotAccepted(NotAcceptedRequestException ex) {
+        return ProblemDetail.forStatusAndDetail(NOT_ACCEPTABLE, ex.getMessage());
+    }
+    
 }

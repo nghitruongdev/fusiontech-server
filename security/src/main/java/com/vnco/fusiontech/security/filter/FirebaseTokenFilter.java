@@ -52,7 +52,7 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } catch (FirebaseAuthException e) {
             log.error("Firebase authentication failed", e);
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Firebase authentication failed");
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "You're unauthorized to access.");
         }
     }
 }

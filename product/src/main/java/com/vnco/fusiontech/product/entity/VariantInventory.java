@@ -1,7 +1,11 @@
 package com.vnco.fusiontech.product.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.vnco.fusiontech.common.entity.AbstractAuditingEntity;
 import com.vnco.fusiontech.common.constant.DBConstant;
+import com.vnco.fusiontech.common.entity.AppUser;
+import com.vnco.fusiontech.product.event.InventoryListener;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
@@ -19,6 +23,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @ToString
 @Entity
+@EntityListeners(InventoryListener.class)
 @Table (name = DBConstant.VARIANT_INVENTORY_TABLE)
 public class VariantInventory extends AbstractAuditingEntity<Long> {
     private interface FORMULA{
@@ -35,7 +40,8 @@ public class VariantInventory extends AbstractAuditingEntity<Long> {
     private Integer totalQuantity;
 
     @NotEmpty
-    @OneToMany (mappedBy = "inventory", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany (mappedBy = "inventory", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH,
+                                                   CascadeType.DETACH})
     @Builder.Default
     @ToString.Exclude
     List<VariantInventoryDetail> items = new ArrayList<>();
@@ -45,6 +51,19 @@ public class VariantInventory extends AbstractAuditingEntity<Long> {
         if (items != null) {
             items.forEach(item -> item.setInventory(this));
         }
+    }
+    
+    @Override
+    @JsonIncludeProperties({"id", "firstName"})
+    public AppUser getCreatedBy() {
+        return super.getCreatedBy();
+    }
+    
+    @Override
+    @JsonIncludeProperties({"id", "firstName"})
+    @JsonIgnore
+    public AppUser getLastModifiedBy() {
+        return super.getLastModifiedBy();
     }
     
     @Override

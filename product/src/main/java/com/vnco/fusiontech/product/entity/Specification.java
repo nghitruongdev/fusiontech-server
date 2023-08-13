@@ -20,7 +20,6 @@ import java.util.Set;
 @Entity
 @Table(name = DBConstant.SPEC_TABLE, uniqueConstraints = @UniqueConstraint(columnNames = { "name",
     "specification_value" }))
-// @Table(name = DBConstant.SPEC_TABLE)
 public class Specification {
   @Id
   @Column (name = "id")
@@ -46,8 +45,6 @@ public class Specification {
 
     Specification that = (Specification) o;
 
-    if (!Objects.equals(id, that.id))
-      return false;
     if (!Objects.equals(name, that.name))
       return false;
     return Objects.equals(value, that.value);

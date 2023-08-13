@@ -36,7 +36,7 @@ public class MailServiceImpl implements MailService {
     
  
     
-    @Scheduled (timeUnit = TimeUnit.SECONDS, fixedRate = 30)
+    @Scheduled (timeUnit = TimeUnit.SECONDS, fixedRate = 10)
     private void createMail(){
 //        log.debug("There are {} going to be created", mailRequests.size());
     
@@ -45,13 +45,13 @@ public class MailServiceImpl implements MailService {
         }
     }
     
-    @Scheduled (timeUnit = TimeUnit.SECONDS, fixedRate = 60)
+    @Scheduled (timeUnit = TimeUnit.SECONDS, fixedRate = 10)
     private void sendMail(){
         //        log.debug("There are {} going to be sent", messages.size());
         emailSender.send(messages.toArray(new MimeMessage[]{}));
         messages.clear();
     }
-    
+
     private MimeMessage createMessage(MailRequest request) {
         MimeMessage       message = emailSender.createMimeMessage();
         MimeMessageHelper helper  = null;

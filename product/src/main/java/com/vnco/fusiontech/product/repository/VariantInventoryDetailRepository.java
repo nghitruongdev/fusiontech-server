@@ -6,8 +6,8 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 @RepositoryRestResource (
         path = "inventory-details",
-        collectionResourceRel = "inventoryDetails",
-        itemResourceRel = "inventoryDetail",
+        collectionResourceRel = "inventory-details",
+        itemResourceRel = "inventory-detail",
         exported = true)
 public interface VariantInventoryDetailRepository extends CrudRepository<VariantInventoryDetail, Long> {
 }

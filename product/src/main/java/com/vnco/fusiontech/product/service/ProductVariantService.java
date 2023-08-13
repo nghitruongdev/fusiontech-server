@@ -1,12 +1,15 @@
 package com.vnco.fusiontech.product.service;
 
 import com.vnco.fusiontech.common.service.PublicProductVariantService;
+import com.vnco.fusiontech.product.entity.Product;
 import com.vnco.fusiontech.product.entity.Variant;
 import com.vnco.fusiontech.product.entity.VariantInventory;
 import com.vnco.fusiontech.product.web.rest.request.VariantRequest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Transactional
 public interface ProductVariantService extends PublicProductVariantService {
     List<Variant> getAllProductVariants();
 
@@ -27,4 +30,6 @@ public interface ProductVariantService extends PublicProductVariantService {
     void updateVariant(Long id, VariantRequest request);
     
     void generateSku(List<Variant> variants);
+    
+    void generateSku(Product product);
 }

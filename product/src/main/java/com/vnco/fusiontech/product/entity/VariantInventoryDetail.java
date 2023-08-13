@@ -1,6 +1,7 @@
 package com.vnco.fusiontech.product.entity;
 
 import com.vnco.fusiontech.common.constant.DBConstant;
+import com.vnco.fusiontech.product.event.InventoryDetailListener;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -16,6 +17,7 @@ import java.util.Objects;
 @ToString
 @Entity
 @Table (name = DBConstant.VARIANT_INVENTORY_DETAIL_TABLE)
+@EntityListeners(InventoryDetailListener.class)
 public class VariantInventoryDetail {
     @Id
     @Column(name = "id")

@@ -14,7 +14,12 @@ import java.util.List;
 
 public interface SpecificationRepository extends JpaRepository<Specification, Long> {
 
-    @RestResource(path = "findByName")
+    @RestResource (path = "findByName")
+    @Query (
+            """
+            SELECT DISTINCT s FROM Specification s WHERE UPPER(s.name) =UPPER(:name)
+            """
+    )
     List<Specification> findDistinctByNameLikeIgnoreCase(@Param("name") String name);
 
     @Query("SELECT DISTINCT s.name FROM Specification s")

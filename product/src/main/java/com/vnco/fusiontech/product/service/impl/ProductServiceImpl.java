@@ -75,6 +75,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<Product> searchProductByCategoryId(Integer cid) {
+        // tìm kiếm sản phẩm theo category
+        List<Product> products = productRepository.searchByCategoryId(cid);
+        return products;
+}
+
+    @Override
     public void addUserFavoriteProduct(@NonNull Long productId, @NonNull Long uid) {
         // completed: whatif product not exists
         // completed: whatif product has exists

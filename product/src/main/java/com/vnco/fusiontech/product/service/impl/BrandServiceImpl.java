@@ -24,13 +24,7 @@ public class BrandServiceImpl implements BrandService {
         return brandRepository.save(brand);
     }
     
-    /* Optional là gì?
-            - Optional là 1 lớp được dùng để giải quyết vấn đề về gtri null
-            - Optional giải quyết vấn đề null bằng cách bọc giá trị của biến trong 1 đối tượng Optional
-                + Nếu gtri của biến là null -> Optional sẽ không có giá trị.
-                + Nếu gtri != null -> Optinal sẽ chứa đối tượng đó.
-            - Optinal sẽ ktra gtri có tồn tại hay không trước khi truy xuất đến nó. Tránh lỗi NullPointerException -> dẽ đọc hơn
-     * */
+
     @Override
     public Brand update(Brand brand, Integer id) {
         /*

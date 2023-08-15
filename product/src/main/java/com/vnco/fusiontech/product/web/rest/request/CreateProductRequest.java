@@ -15,6 +15,9 @@ public record CreateProductRequest(
                 List<String> images,
                 String summary,
                 String description,
+                Boolean active,
+                String status,
+                Byte discount,
                 List<String> features,
                 List<ListSpecificationRequest> specifications) {
 }

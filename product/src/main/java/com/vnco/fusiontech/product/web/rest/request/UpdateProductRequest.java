@@ -17,7 +17,10 @@ public record UpdateProductRequest(
         String summary,
         String description,
         List<String> features,
-        List<Specification> specifications) {
+        List<Specification> specifications,
+        Boolean active,
+        String status
+) {
     public UpdateProductRequest {
         log.warn("Specifications have not been processed");
     }

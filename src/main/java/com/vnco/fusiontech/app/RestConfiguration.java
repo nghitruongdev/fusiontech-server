@@ -22,28 +22,29 @@ public class RestConfiguration implements RepositoryRestConfigurer {
     @Override
     public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config, CorsRegistry cors) {
         config.exposeIdsFor(em.getMetamodel().getEntities()
-                              .stream().map(Type::getJavaType).toArray(Class[]::new));
-    
+                .stream().map(Type::getJavaType).toArray(Class[]::new));
+
         var exposure = config.getExposureConfiguration();
         exposure.forDomainType(VariantInventory.class)
                 .withCollectionExposure(((metadata, httpMethods) -> httpMethods.disable(POST, PUT)))
                 .withItemExposure(((metadata, httpMethods) -> httpMethods.disable(PUT, PATCH)))
                 .disablePutForCreation();
-        
+
         exposure.forDomainType(VariantInventoryDetail.class)
-                        .withCollectionExposure(((metdata, httpMethods) ->
-                                                         ConfigurableHttpMethods.NONE.enable(GET)))
-                        .withItemExposure(((metdata, httpMethods) ->
-                                                   ConfigurableHttpMethods.NONE.enable(GET, PATCH)));
-    
-    
+                .withCollectionExposure(((metdata, httpMethods) ->
+                        ConfigurableHttpMethods.NONE.enable(GET)))
+                .withItemExposure(((metdata, httpMethods) ->
+                        ConfigurableHttpMethods.NONE.enable(GET, PATCH)));
+
+
         cors.addMapping("/**")
-            .allowedOrigins("http://localhost:3000")
-            //            .allowedMethods("GET", "POST", "PATCH", "DELETE")
-            .allowedMethods("*")
-            .allowCredentials(false)
-            .maxAge(3600);
+                .allowedOrigins("*")
+                //            .allowedMethods("GET", "POST", "PATCH", "DELETE")
+                .allowedMethods("*")
+                .allowCredentials(false)
+                .allowedHeaders("*")
+                .maxAge(3600);
     }
-    
-    
+
+
 }

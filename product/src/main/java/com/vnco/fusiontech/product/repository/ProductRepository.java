@@ -68,7 +68,25 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                         ORDER BY COUNT(v2.product.id) DESC
                         """)
         Slice<Product> findTopFrequentBoughtTogether(@Param("id") Long productId, Pageable pageable);
+        @Query("""
+                    FROM Product p
+                    WHERE p.active = true
+                    AND p.discount > 0
+                    ORDER BY p.discount DESC
+                """)
+        @RestResource(path = "discount-products")
+        Slice<Product> getDiscountProducts(Pageable pageable);
 
+        @Query("""
+                FROM Product p
+                ORDER BY p.id desc
+        """)
+        @RestResource(path = "latest-products")
+        Slice<Product> getLatestAddedProducts(Pageable pageable);
+
+        @Query("SELECT p FROM Product p WHERE p.status LIKE 'HOT'")
+        @RestResource(path = "hot-products")
+        Slice<Product> getHotProducts(Pageable pageable);
         // @Query (
         // """
         // SELECT new com.vnco.fusiontech.product.entity.projection.DynamicProductInfo(
@@ -82,4 +100,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
         // """
         // )
         // DynamicProductInfo getDynamicProductInfo(@Param ("id") Long productId);
+
 }

@@ -17,8 +17,9 @@ public record VariantRequest(
         @NotNull(groups = OnCreate.class) @Positive Double price,
         List<String> images,
         @NotEmpty(groups = OnCreate.class) @NullOrNotEmpty(groups = OnUpdate.class) List<@Valid VariantAttributeRequest> attributes,
-
-        @NotNull(groups = OnCreate.class) @JsonIncludeProperties("id") Product product) {
+        @NotNull(groups = OnCreate.class) @JsonIncludeProperties("id") Product product,
+        Boolean active
+        ) {
 
     public VariantRequest {
         if (sku != null)

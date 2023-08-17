@@ -21,10 +21,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
         List<Product> findAllByFavorites_Id(@Param("uid") Long userId);
 
         @Query("""
-                                 SELECT COALESCE(SUM (oi.quantity), 0) FROM OrderItem oi JOIN Order o ON oi.order = o
-                                 WHERE oi.variant.id IN (SELECT v.id FROM Variant v WHERE v.product.id =:productId) AND
-                                 o.status = 'DELIVERED_SUCCESS'
-                        """)
+                        SELECT COALESCE(SUM (get_sold_count(v.id)), 0)
+                        FROM Variant v WHERE v.product.id=:productId
+               """)
         @RestResource(path = "countProductSold", rel = "countProductSold")
         Long countProductNumberSold(@Param("productId") Long productId);
 
@@ -79,6 +78,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
         @Query("""
                 FROM Product p
+                WHERE p.active = true
                 ORDER BY p.id desc
         """)
         @RestResource(path = "latest-products")

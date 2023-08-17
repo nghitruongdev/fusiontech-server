@@ -20,7 +20,8 @@ public record UpdateProductRequest(
         List<String> features,
         List<Specification> specifications,
         Boolean active,
-        String status
+        String status,
+        Byte discount
 ) {
     public UpdateProductRequest {
     }

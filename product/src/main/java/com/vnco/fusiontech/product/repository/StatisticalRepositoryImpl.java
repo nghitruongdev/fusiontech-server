@@ -36,20 +36,42 @@ public class StatisticalRepositoryImpl implements StatisticalRepository {
     }
 
     @Override
-    public List<Object> getDiscountProducts() {
+    public List<Object> getRevenueAllYear() {
         var list = manager.createNativeQuery("""
-                            call get_discount_products()
+                        call get_revenue_all_year()
                         """, Tuple.class)
                 .getResultList();
         return TupleUtils.convertToJsonNode(list);
     }
 
     @Override
-    public List<Object> getRevenueAllYear() {
+    public List<Object> getBestCustomer(Integer size) {
         var list = manager.createNativeQuery("""
-                call get_revenue_all_year()
-                """, Tuple.class)
+                        call get_best_customer(:size)
+                        """, Tuple.class)
+                .setParameter("size", size)
                 .getResultList();
         return TupleUtils.convertToJsonNode(list);
     }
+
+    @Override
+    public List<Object> getRevenueByDay(LocalDate currentDate) {
+        var list = manager.createNativeQuery("""
+                        call get_revenue_by_day(:currentDate);
+                        """, Tuple.class)
+                .setParameter("currentDate", currentDate)
+                .getResultList();
+        return TupleUtils.convertToJsonNode(list);
+    }
+
+    @Override
+    public List<Object> getAvailableInventory() {
+        var list = manager.createNativeQuery("""
+                call get_available_inventory()
+                """,Tuple.class)
+                .getResultList();
+        return TupleUtils.convertToJsonNode(list);
+    }
+
+
 }

@@ -7,8 +7,9 @@ import java.util.List;
 public interface StatisticalRepository {
     List<Object> getRevenue();
     List<Object> getBestSellerOfYear(LocalDate startDate, LocalDate endDate, Integer size);
-
-    List<Object> getDiscountProducts();
-
     List<Object> getRevenueAllYear();
+    List<Object> getBestCustomer(Integer size);
+
+    List<Object> getRevenueByDay(LocalDate currentDate);
+    List<Object> getAvailableInventory();
 }

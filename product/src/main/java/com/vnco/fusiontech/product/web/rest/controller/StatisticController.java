@@ -1,7 +1,10 @@
 package com.vnco.fusiontech.product.web.rest.controller;
 
 import com.vnco.fusiontech.product.repository.StatisticalRepository;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
+import org.springframework.cglib.core.Local;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,7 +15,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/stat")
+@RequestMapping("/api/statistical")
 @RequiredArgsConstructor
 public class StatisticController {
     private final StatisticalRepository repository;
@@ -35,6 +38,24 @@ public class StatisticController {
     @GetMapping("/revenue/all")
     public ResponseEntity<?> getRevenueAllYear() {
         var ok = repository.getRevenueAllYear();
+        return ResponseEntity.ok(ok);
+    }
+    @GetMapping("/revenue/day")
+    public ResponseEntity<?> getRevenueByDay(@RequestParam(name = "currentDate", required = false) LocalDate currentDate) {
+        if (currentDate == null) {
+            currentDate = LocalDate.now();
+        }
+        var ok = repository.getRevenueByDay(currentDate);
+        return ResponseEntity.ok(ok);
+    }
+    @GetMapping("/best-customer")
+    public ResponseEntity<?> getBestCustomer(@RequestParam(name = "size", defaultValue = "5") Integer size) {
+        var ok = repository.getBestCustomer(size);
+        return ResponseEntity.ok(ok);
+    }
+    @GetMapping("/inventories")
+    public ResponseEntity<?> getAvailableInventory() {
+        var ok = repository.getAvailableInventory();
         return ResponseEntity.ok(ok);
     }
 }

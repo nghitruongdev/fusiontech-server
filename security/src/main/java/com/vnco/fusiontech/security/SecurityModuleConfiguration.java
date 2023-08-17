@@ -6,6 +6,7 @@ import lombok.SneakyThrows;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -42,8 +43,16 @@ public class SecurityModuleConfiguration {
 //        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.csrf().disable();
         http.httpBasic().disable();
-        http.authorizeHttpRequests().requestMatchers("/**")
-                .permitAll();
+        http.authorizeHttpRequests().requestMatchers("*").permitAll();
+//                .requestMatchers(HttpMethod.GET,
+//                        "/api/brands",
+//                        "/api/products",
+//                        "/api/categories",
+//                        "/api/reviews",
+//                        "").permitAll()
+//                .requestMatchers("/api/auth/register").permitAll()
+//                .requestMatchers("/api/**").hasRole("ADMIN")
+//                .anyRequest().authenticated();
         addFilters(http);
         return http.build();
         //    addFilters(http);
@@ -56,8 +65,8 @@ public class SecurityModuleConfiguration {
 
     }
 
-      @Bean
-      public CorsConfigurationSource corsConfigurationSource() {
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
         var config = new CorsConfiguration();
         config.addAllowedOrigin("*");
         config.setAllowedHeaders(List.of("*"));
@@ -71,7 +80,7 @@ public class SecurityModuleConfiguration {
         var source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
-      }
+    }
 
 
     @SneakyThrows

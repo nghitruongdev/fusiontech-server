@@ -95,6 +95,7 @@ public class ProductVariantServiceImpl implements ProductVariantService {
     public void updateVariant(Long id, VariantRequest request) {
         var variant = repository.findById(id).orElseThrow();
         mapper.partialUpdateVariant(request, variant);
+        updateVariantMultiSpec(request.specifications(), variant);
     }
 
     @Override
@@ -102,46 +103,58 @@ public class ProductVariantServiceImpl implements ProductVariantService {
         throw new UnsupportedOperationException();
     }
 
-    @Override
+        @Override
     public void generateSku(@NotEmpty List<Variant> variants) {
         var names = productService.getProductSpecifications(variants.get(0).getProduct().getId());
         generateSku(variants, names);
     }
-    
+
     @Override
-    public void generateSku(Product product){
-       var specs =  productService.getProductSpecifications(product.getId());
-       var variants = product.getVariants();
-       generateSku(variants, product.getId(), specs);
+    public void generateSku(Product product) {
+        var specs = productService.getProductSpecifications(product.getId());
+        var variants = product.getVariants();
+        generateSku(variants, product.getId(), specs);
+
     }
-    
-    private void generateSku(@NotEmpty List<Variant> variants,Long productId, List<ProductSpecificationDTO> specs) {
+
+    private void generateSku(@NotEmpty List<Variant> variants,
+                             Long productId,
+                             List<ProductSpecificationDTO> specs) {
         StringBuilder skuBuilder = new StringBuilder();
         var names = specs.stream()
-                         .filter(item -> item.values().size() > 1)
-                         .map(ProductSpecificationDTO::name).toList();
+                .filter(item -> item.values().size() > 1)
+                .map(ProductSpecificationDTO::name).toList();
         Product product = em.find(Product.class, productId);
         skuBuilder.append(productId);
         if (product.getCategory() != null)
             skuBuilder.append("-")
-                      .append(subName(em.find(Category.class, product.getCategory().getId()).getName()));
+                    .append(subName(em.find(Category.class, product.getCategory().getId()).getName()));
         if (product.getBrand() != null)
             skuBuilder.append("-").append(subName(em.find(Brand.class, product.getBrand().getId()).getName()));
         if (product.getName() != null)
             skuBuilder.append("-").append(subName(product.getName()));
-        
+
         Function<Variant, String> getSpecCode = variant -> variant.getSpecifications().stream()
-                                                                  .filter(spec -> names.contains(spec.getName()))
-                                                                  .map(this::convertSpecToSkuCode)
-                                                                  .collect(Collectors.joining("-"));
+                .filter(spec -> names.contains(spec.getName()))
+                .map(this::convertSpecToSkuCode)
+                .collect(Collectors.joining("-"));
         var sku = skuBuilder.toString();
         variants.forEach(variant -> {
             var specCode = getSpecCode.apply(variant);
-            specCode = StringUtils.hasText(specCode)? specCode : String.valueOf(product.getVariants().size());
+            specCode = StringUtils.hasText(specCode) ? specCode : String.valueOf(product.getVariants().size());
             variant.setSku(String.format("%s%s", sku, StringUtils.hasText(specCode) ? "-" + specCode : ""));
         });
+//        variants.forEach(variant -> {
+//            var specCode = getSpecCode.apply(variant);
+//            specCode = StringUtils.hasText(specCode) ? specCode : String.valueOf(product.getVariants().size());
+//            String finalSku = String.format("%s%s", sku, StringUtils.hasText(specCode) ? "-" + specCode : "");
+//            variant.setSku(finalSku);
+//            System.out.println("Generated SKU: " + finalSku); // logging the generated SKU
+//        });
     }
-    private void generateSku(@NotEmpty List<Variant> variants, List<ProductSpecificationDTO> specs) {
+
+    private void generateSku(@NotEmpty List<Variant> variants,
+                             List<ProductSpecificationDTO> specs) {
         StringBuilder skuBuilder = new StringBuilder();
         var names = specs.stream()
                 .filter(item -> item.values().size() > 1)
@@ -156,7 +169,7 @@ public class ProductVariantServiceImpl implements ProductVariantService {
             skuBuilder.append("-").append(subName(em.find(Brand.class, product.getBrand().getId()).getName()));
         if (product.getName() != null)
             skuBuilder.append("-").append(subName(product.getName()));
-        
+
         Function<Variant, String> getSpecCode = variant -> variant.getSpecifications().stream()
                 .filter(spec -> names.contains(spec.getName()))
                 .map(this::convertSpecToSkuCode)
@@ -173,17 +186,26 @@ public class ProductVariantServiceImpl implements ProductVariantService {
         String value = subName(spec.getValue());
         return String.format("%s%s", name, value);
     }
-    
+
+
     @Override
     public List<VariantWithProductInfoDTO> getVariantOrProductImages(List<Long> variantIds) {
-      return  repository.findVariantsWithProductInfo(variantIds);
+        return repository.findVariantsWithProductInfo(variantIds);
     }
-    
-    private String subName(String name){
-        if(StringUtils.hasText(name)){
+
+    private String subName(String name) {
+        if (StringUtils.hasText(name)) {
             var clean = name.trim();
-           return clean.substring(0, Math.min(clean.length(), 3)).trim().toUpperCase();
+            return clean.substring(0, Math.min(clean.length(), 3)).trim().toUpperCase();
         }
         return name;
+    }
+
+    private void updateVariantMultiSpec(List<Specification> specifications, Variant variant) {
+        if(specifications == null || specifications.isEmpty()) return;
+        specifications.forEach(spec -> {
+            variant.removeSpecification(spec.getName());
+            variant.addSpecification(spec);
+        });
     }
 }

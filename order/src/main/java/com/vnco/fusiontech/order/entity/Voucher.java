@@ -1,7 +1,9 @@
 package com.vnco.fusiontech.order.entity;
 
 import com.vnco.fusiontech.common.constant.DBConstant;
+import com.vnco.fusiontech.order.listener.VoucherListener;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -13,6 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity
 @Table (name = DBConstant.VOUCHER_TABLE)
+@EntityListeners(VoucherListener.class)
 public class Voucher {
     private interface FORMULA {
         String VOUCHER_USAGE = """
@@ -28,18 +31,23 @@ public class Voucher {
     private Long id;
     
     @Column (name = "code", nullable = false, unique = true)
+    @NotBlank
     private String code;
     
     @Column (name = "description")
     private String description;
     
     @Column(name = "discount")
+    @NotNull
+    @Positive
     private Byte discount;
     
     @Column(name = "min_order_amount")
+    @Positive
     private Double minOrderAmount;
     
     @Column(name = "max_discount_amount")
+    @Positive
     private Double maxDiscountAmount;
     
     @Column(name = "start_date")
@@ -49,9 +57,11 @@ public class Voucher {
     private LocalDateTime expirationDate;
     
     @Column (name = "limit_usage")
+    @Positive
     private Integer limitUsage;
     
     @Column (name = "user_limit_usage")
+    @Positive
     private Short userLimitUsage;
     
 //    @Formula (FORMULA.VOUCHER_USAGE)

@@ -136,7 +136,7 @@ public class AuthServiceImpl implements AuthService {
             mailService.sendMail(MailRequest.builder()
                                          .mail(email)
                                          .subject("Xác thực email FusionTech")
-                                         .body("Truy cập đường link sau để xác thực email của bạn: \n\n" + message)
+                                         .body("Truy cập đường li=nk sau để xác thực email của bạn: \n\n" + message)
                                          .build());
             return "URL to verify: " + message;
         } catch (FirebaseAuthException e) {

@@ -24,5 +24,4 @@ public interface VoucherRepository extends JpaRepository<Voucher, Long> {
     )
     @RestResource(path = "usage")
     Long countVoucherUsageByCode(@Param ("code") String code);
-    
 }

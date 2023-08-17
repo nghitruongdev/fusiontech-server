@@ -24,7 +24,14 @@ public class UserRestController {
     public ResponseEntity<?> createUser(@RequestBody @Valid UserRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.createUser(request));
     }
-    
+
+    @PatchMapping("/users/{id}")
+    @Validated(UserRequest.OnUpdate.class)
+    public ResponseEntity<?> updateUser(@RequestBody @Valid UserRequest request,
+                                        @PathVariable("id") Long userId) {
+        service.updateUser(request, userId);
+        return ResponseEntity.ok().build();
+    }
     
     @PatchMapping ("/users/{id}/defaultAddress/{aid}")
     public ResponseEntity<Void> updateDefaultAddress(@PathVariable ("id") Long userId,

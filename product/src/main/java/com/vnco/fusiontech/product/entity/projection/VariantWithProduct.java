@@ -9,7 +9,7 @@ public interface VariantWithProduct {
 
         Product getProduct();
 
-        int getAvailableQuantity();
+        Integer getAvailableQuantity();
 
         Long getId();
 
@@ -17,7 +17,9 @@ public interface VariantWithProduct {
 
         Object getImages();
 
-        double getPrice();
+        Double getPrice();
 
         Boolean getActive();
+
+        Long getSoldCount();
 }

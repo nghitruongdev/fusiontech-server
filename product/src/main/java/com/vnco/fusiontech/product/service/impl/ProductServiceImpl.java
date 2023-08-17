@@ -22,6 +22,7 @@ import jakarta.validation.Valid;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +37,7 @@ public class ProductServiceImpl implements ProductService {
     private final PublicUserService userService;
     private final ProductMapper mapper;
     private final SpecificationRepository specificationRepository;
+
     @Override
     public List<Product> getAllProducts() {
         return productRepository.findAll();
@@ -52,9 +54,12 @@ public class ProductServiceImpl implements ProductService {
         var product = mapper.toProduct(request);
         productRepository.save(product);
         var variants = createProductVariant(product, request.specifications());
+        variants.forEach(v->{
+            v.setPrice(request.price());
+        });
         product.setVariants(variants);
         BeanUtils.getBean(ProductVariantService.class)
-                         .generateSku(variants);
+                .generateSku(variants);
         variants.stream().flatMap(variant -> variant.getSpecifications().stream())
                 .filter(specification -> Objects.isNull(specification.getId()))
                 .forEach(specificationRepository::save);
@@ -113,6 +118,7 @@ public class ProductServiceImpl implements ProductService {
     public void updateProduct(Long id, @Valid UpdateProductRequest req) {
         var product = productRepository.findById(id).orElseThrow(RecordNotFoundException::new);
         mapper.partialUpdateProduct(req, product);
+        updateVariantSpec(req, product);
     }
 
     @Override
@@ -130,18 +136,18 @@ public class ProductServiceImpl implements ProductService {
             return new ProductSpecificationDTO(name, values);
         }).toList();
     }
-    
+
     @Override
     public Optional<DynamicProductInfo> getProductDynamicInfo(Long productId) {
 //        return  Optional.of(productRepository.getDynamicProductInfo(productId));
-        throw new  UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 
     public List<Variant> createProductVariant(Product product, List<ListSpecificationRequest> specs) {
         if (specs == null || specs.isEmpty()) {
-            return  List.of(Variant.builder().build());
+            return List.of(Variant.builder().build());
         }
-        
+
         List<ListSpecificationRequest> multipleValueSpecs = new ArrayList<>();
         List<ListSpecificationRequest> singleValueSpecs = new ArrayList<>();
         specs.forEach(spec -> {
@@ -190,5 +196,25 @@ public class ProductServiceImpl implements ProductService {
             return variant;
         }).toList();
     }
-    
+
+    private void updateVariantSpec(UpdateProductRequest req, Product product) {
+        var reqSpecs = req.specifications();
+        if (reqSpecs == null) return;
+        var specs = getProductSpecifications(product.getId())
+                .stream().filter(item -> item.values().size() == 1).map(item -> item.name()).toList();
+        var removedSpecs = new ArrayList<String>();
+        specs.stream()
+                .forEach(name -> {
+                            var isRemoved = reqSpecs.stream().noneMatch(spec -> spec.getName().equalsIgnoreCase(name));
+                            if (isRemoved) removedSpecs.add(name);
+                        }
+                );
+
+        Hibernate.initialize(product.getVariants());
+        var variants = product.getVariants();
+        variants.forEach(v -> {
+            reqSpecs.forEach(v::addSpecification);
+            removedSpecs.forEach(v::removeSpecification);
+        });
+    }
 }

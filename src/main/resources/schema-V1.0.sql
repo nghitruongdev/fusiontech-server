@@ -41,6 +41,9 @@ DELIMITER ;
 ALTER TABLE VOUCHER
     ADD COLUMN DISCOUNT TINYINT UNSIGNED NOT NULL;
 
+ALTER TABLE product_variant MODIFY COLUMN PRICE DOUBLE PRECISION DEFAULT 0;
+
+
 DROP VIEW IF EXISTS order_item_info;
 CREATE VIEW order_item_info AS
 SELECT OI.ID AS id, p.NAME AS name, PV.SKU AS sku, COALESCE(PV.IMAGES, P.IMAGES) AS images, OI.PRICE AS price, OI.QUANTITY AS quantity, P.DISCOUNT AS discount
@@ -57,3 +60,6 @@ alter table VARIANT_INVENTORY_DETAIL
     ADD constraint FK_inventory_detail_inventory
         foreign key (INVENTORY_ID) references PRODUCT_VARIANT_INVENTORY (ID)
             on update cascade on DELETE NO ACTION;
+
+UPDATE APP_USER SET PHONE_NUMBER = REPLACE(PHONE_NUMBER, '+84', '0');
+

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.vnco.fusiontech.common.constraint.NullOrNotBlank;
 import com.vnco.fusiontech.common.constraint.NullOrNotEmpty;
 import com.vnco.fusiontech.product.entity.Product;
+import com.vnco.fusiontech.product.entity.Specification;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -16,7 +17,9 @@ public record VariantRequest(
         @NullOrNotBlank(groups = OnUpdate.class) String sku,
         @NotNull(groups = OnCreate.class) @Positive Double price,
         List<String> images,
-        @NotEmpty(groups = OnCreate.class) @NullOrNotEmpty(groups = OnUpdate.class) List<@Valid VariantAttributeRequest> attributes,
+        @NotEmpty(groups = OnCreate.class) @NullOrNotEmpty(groups = OnUpdate.class)
+        List<@Valid Specification> specifications,
+        List<@Valid VariantAttributeRequest> attributes,
         @NotNull(groups = OnCreate.class) @JsonIncludeProperties("id") Product product,
         Boolean active
         ) {

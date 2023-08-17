@@ -10,6 +10,7 @@ import static org.mapstruct.NullValuePropertyMappingStrategy.IGNORE;
                                                                                         ReportingPolicy.WARN,
         nullValuePropertyMappingStrategy = IGNORE)
 public interface FirebaseMapper {
+    String DEFAULT_IMAGE = "https://shorturl.at/gpqC9";
 
     @Mapping(target = "uid", ignore = true)
     @Mapping(target = "emailVerified", ignore = true)

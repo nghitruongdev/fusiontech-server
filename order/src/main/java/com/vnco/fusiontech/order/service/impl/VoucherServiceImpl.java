@@ -1,6 +1,5 @@
 package com.vnco.fusiontech.order.service.impl;
 
-import com.vnco.fusiontech.common.exception.RecordNotFoundException;
 import com.vnco.fusiontech.order.repository.VoucherRepository;
 import com.vnco.fusiontech.order.service.VoucherService;
 import lombok.RequiredArgsConstructor;
@@ -12,4 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class VoucherServiceImpl implements VoucherService {
     private final VoucherRepository repository;
+
+
 }

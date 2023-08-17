@@ -22,11 +22,4 @@ public class VariantInventoryRestController {
         var created = service.createInventory(inventory);
         return ResponseEntity.ok(created);
     }
-    
-   
-
-//    @DeleteMapping ("/inventories/{id}")
-//    public ResponseEntity<?> deleteInventory(@PathVariable Long id) {
-//        return ResponseEntity.ok().build();
-//    }
 }

@@ -86,3 +86,9 @@ BEGIN
     LIMIT targetSize;
 END;
 CALL get_latest_product(5);
+
+SELECT *
+FROM product_variant
+WHERE SKU = '28-TIV-ASU-ALI';
+
+# ALTER table product_variant DROP CONSTRAINT UK_variant_sku;

@@ -9,7 +9,7 @@ import java.util.List;
 @Projection(name = Variant.PROJECTION.WITH_SPECS, types = Variant.class)
 public interface VariantWithSpecs extends VariantBasic {
 
-        int getAvailableQuantity();
+        Integer getAvailableQuantity();
 
         List<Specification> getSpecifications();
 }

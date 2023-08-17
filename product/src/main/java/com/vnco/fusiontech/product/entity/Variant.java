@@ -32,6 +32,7 @@ public class Variant implements Serializable {
 
     private interface FORMULA {
         String AVAILABLE_QUANTITY = "(SELECT get_available_quantity(id))";
+        String SOLD_COUNT = "(SELECT get_sold_count(id))";
     }
 
     @Id
@@ -40,7 +41,7 @@ public class Variant implements Serializable {
     private Long id;
 
     @Column(name = "sku")
-    @NaturalId(mutable = true)
+//    @NaturalId(mutable = true)
     private String sku;
 
     @Type(JsonType.class)
@@ -54,6 +55,9 @@ public class Variant implements Serializable {
 
     @Formula(FORMULA.AVAILABLE_QUANTITY)
     private Integer availableQuantity;
+
+    @Formula(FORMULA.SOLD_COUNT)
+    private Long soldCount;
 
     @Column(name = "active")
     @Builder.Default
@@ -87,6 +91,22 @@ public class Variant implements Serializable {
         spec.getVariants().remove(this);
     }
 
+    public void removeSpecification(String name){
+        specifications.stream().filter(item -> item.getName().equalsIgnoreCase(name))
+                        .forEach(spec -> removeSpecification(spec));
+    }
+
+    public void setSpecification(List<Specification> specifications){
+
+        if(this.specifications != null) {
+            var list = new ArrayList<Specification>(this.specifications);
+            for (int i = 0; i < this.specifications.size(); i++) {
+                removeSpecification(list.get(i));
+            }
+            this.specifications.forEach(this::removeSpecification);
+        }
+        specifications.forEach(this::addSpecification);
+    }
     public void addInventory(VariantInventoryDetail inventory) {
         inventory.setVariant(this);
         inventories.add(inventory);

@@ -13,12 +13,14 @@ public interface VariantBasic {
 
   Object getImages();
 
-  double getPrice();
+  Double getPrice();
 
   @JsonIncludeProperties({ "id" })
   Product getProduct();
 
-  int getAvailableQuantity();
+  Integer getAvailableQuantity();
+
+  Long getSoldCount();
 
   Boolean getActive();
 }

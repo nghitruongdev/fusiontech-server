@@ -10,7 +10,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CategoryRepository extends JpaRepository<Category, Integer> {
-    
+
+    @RestResource(path = "find-by-slug", rel = "findBySlug")
     Optional<Category> findBySlug(@Param("slug") String slug);
     
     @RestResource (path = "all", rel = "all")

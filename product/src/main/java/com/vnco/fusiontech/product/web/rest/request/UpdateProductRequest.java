@@ -1,5 +1,6 @@
 package com.vnco.fusiontech.product.web.rest.request;
 
+import com.vnco.fusiontech.common.constraint.NullOrNotBlank;
 import com.vnco.fusiontech.product.entity.Brand;
 import com.vnco.fusiontech.product.entity.Category;
 import com.vnco.fusiontech.product.entity.Specification;
@@ -9,8 +10,8 @@ import java.util.List;
 
 @Slf4j
 public record UpdateProductRequest(
-        String name,
-        String slug,
+        @NullOrNotBlank String name,
+        @NullOrNotBlank String slug,
         Category category,
         Brand brand,
         List<String> images,
@@ -22,7 +23,6 @@ public record UpdateProductRequest(
         String status
 ) {
     public UpdateProductRequest {
-        log.warn("Specifications have not been processed");
     }
 
 }

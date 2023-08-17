@@ -1,5 +1,24 @@
 USE fusiontech;
 
+-- get revenue from all years
+DROP PROCEDURE IF EXISTS get_revenue_all_year;
+CREATE
+    DEFINER = root@localhost PROCEDURE get_revenue_all_year()
+BEGIN
+    SELECT COUNT(o.ID)                 AS totalSales,
+           SUM(oi.PRICE * oi.QUANTITY) AS totalRevenue,
+           AVG(oi.PRICE)               AS averagePrice
+    FROM APP_ORDER o
+             JOIN
+         ORDER_ITEM oi ON o.ID = oi.ORDER_ID
+             JOIN
+         PAYMENT p on o.PAYMENT_ID = p.ID
+    WHERE o.STATUS = 'COMPLETED'
+      AND p.STATUS = 'COMPLETED';
+END;
+call get_revenue_all_year();
+
+
 -- get revenue from that every years
 DROP PROCEDURE IF EXISTS get_revenue;
 CREATE
@@ -18,6 +37,7 @@ BEGIN
     AND p.STATUS = 'COMPLETED'
     GROUP BY saleYear;
 END;
+
 
 -- GET MOST SELLING PRODUCTS BY DATE RANGE
 DROP PROCEDURE IF EXISTS get_best_selling_products;
@@ -40,6 +60,8 @@ BEGIN
 #     HAVING SUM(oi.QUANTITY) > 0
     LIMIT size;
 END;
+
+
 CALL get_best_selling_products('2023-08-08', '2023-08-30', 10);
 
 DROP PROCEDURE IF EXISTS get_slow_selling_products;
@@ -63,6 +85,7 @@ BEGIN
     LIMIT size;
 END;
 
+
 DROP PROCEDURE IF EXISTS get_discount_products;
 CREATE
     DEFINER = root@localhost PROCEDURE get_discount_products()
@@ -78,6 +101,7 @@ BEGIN
 END;
 CALL get_discount_products();
 
+
 DROP PROCEDURE IF EXISTS get_latest_product;
 CREATE
     DEFINER = root@localhost PROCEDURE get_latest_product(IN targetSize int)
@@ -90,6 +114,7 @@ BEGIN
     LIMIT targetSize;
 END;
 CALL get_latest_product(5);
+
 
 # SELECT *
 # FROM product_variant
@@ -107,3 +132,4 @@ FLUSH PRIVILEGES;
 -- GRANT ALTER, ALTER ROUTINE, CREATE, CREATE ROUTINE, CREATE TEMPORARY TABLES, CREATE VIEW, DELETE, DROP, EVENT, EXECUTE, INDEX, INSERT, LOCK TABLES, REFERENCES, SELECT, SHOW VIEW, TRIGGER, UPDATE ON FUSIONTECH.* TO fusiontech_admin@'%';
 
 USE FUSIONTECH;
+

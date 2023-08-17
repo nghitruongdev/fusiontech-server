@@ -43,4 +43,13 @@ public class StatisticalRepositoryImpl implements StatisticalRepository {
                 .getResultList();
         return TupleUtils.convertToJsonNode(list);
     }
+
+    @Override
+    public List<Object> getRevenueAllYear() {
+        var list = manager.createNativeQuery("""
+                call get_revenue_all_year()
+                """, Tuple.class)
+                .getResultList();
+        return TupleUtils.convertToJsonNode(list);
+    }
 }

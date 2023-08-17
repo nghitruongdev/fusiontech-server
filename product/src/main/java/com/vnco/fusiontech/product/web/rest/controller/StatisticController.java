@@ -31,4 +31,10 @@ public class StatisticController {
         var ok = repository.getBestSellerOfYear(startDate, endDate, size.orElse(5));
         return ResponseEntity.ok(ok);
     }
+
+    @GetMapping("/revenue/all")
+    public ResponseEntity<?> getRevenueAllYear() {
+        var ok = repository.getRevenueAllYear();
+        return ResponseEntity.ok(ok);
+    }
 }

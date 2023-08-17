@@ -10,4 +10,5 @@ public interface StatisticalRepository {
 
     List<Object> getDiscountProducts();
 
+    List<Object> getRevenueAllYear();
 }

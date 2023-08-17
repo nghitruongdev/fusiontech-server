@@ -121,4 +121,10 @@ public class UserServiceImpl implements UserService {
         }
         user.setDefaultAddress(new ShippingAddress(addressId));
     }
+
+    @Override
+    public Long countUsers() {
+        return repository.countAllUsers();
+    }
+
 }

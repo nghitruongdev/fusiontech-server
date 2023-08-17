@@ -12,6 +12,10 @@ BEGIN
     FROM APP_ORDER o
              JOIN
          ORDER_ITEM oi ON o.ID = oi.ORDER_ID
+             JOIN
+         PAYMENT p on o.PAYMENT_ID = p.ID
+    WHERE o.STATUS = 'COMPLETED'
+    AND p.STATUS = 'COMPLETED'
     GROUP BY saleYear;
 END;
 
@@ -87,8 +91,19 @@ BEGIN
 END;
 CALL get_latest_product(5);
 
-SELECT *
-FROM product_variant
-WHERE SKU = '28-TIV-ASU-ALI';
+# SELECT *
+# FROM product_variant
+# WHERE SKU = '28-TIV-ASU-ALI';
 
 # ALTER table product_variant DROP CONSTRAINT UK_variant_sku;
+
+DROP USER IF EXISTS 'fusiontech_user'@'%';
+
+CREATE USER IF NOT EXISTS 'fusiontech_user'@'%' IDENTIFIED WITH mysql_native_password BY 'password';
+
+GRANT ALL PRIVILEGES ON FUSIONTECH.* TO 'fusiontech_user'@'%';
+
+FLUSH PRIVILEGES;
+-- GRANT ALTER, ALTER ROUTINE, CREATE, CREATE ROUTINE, CREATE TEMPORARY TABLES, CREATE VIEW, DELETE, DROP, EVENT, EXECUTE, INDEX, INSERT, LOCK TABLES, REFERENCES, SELECT, SHOW VIEW, TRIGGER, UPDATE ON FUSIONTECH.* TO fusiontech_admin@'%';
+
+USE FUSIONTECH;

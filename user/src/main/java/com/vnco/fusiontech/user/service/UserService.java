@@ -16,4 +16,6 @@ public interface UserService extends PublicUserService {
 
     void setActiveUser(Long id, boolean isDisabled);
     // todo: remove favorite product when deleting user
+
+    Long countUsers();
 }

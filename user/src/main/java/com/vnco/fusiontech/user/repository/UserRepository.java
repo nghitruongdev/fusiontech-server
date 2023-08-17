@@ -4,6 +4,7 @@ import com.vnco.fusiontech.user.entity.User;
 import org.hibernate.boot.model.source.spi.Sortable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -46,4 +47,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @RestResource(path = "find-by-phone")
     Optional<User> findUserByPhoneNumber(@Param("phoneNumber") String phoneNumber);
+
+    @Query("SELECT COUNT(u.id) FROM User u WHERE u.isDisabled = false")
+    Long countAllUsers();
+
 }

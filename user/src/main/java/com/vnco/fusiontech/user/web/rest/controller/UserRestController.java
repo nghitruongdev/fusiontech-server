@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserRestController {
     
     private final UserService service;
-    
+
     @PostMapping ("/users")
     @Validated(UserRequest.OnCreate.class)
     public ResponseEntity<?> createUser(@RequestBody @Valid UserRequest request) {
@@ -47,5 +47,11 @@ public class UserRestController {
                                               @RequestParam("isDisabled") boolean isDisabled){
         service.setActiveUser(id, isDisabled);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/users/count")
+    public ResponseEntity<?> countUsers() {
+        var ok = service.countUsers();
+        return ResponseEntity.ok(ok);
     }
 }

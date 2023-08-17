@@ -9,5 +9,6 @@ public interface OrderService extends PublicOrderService {
     Long createOrder(@Valid CreateOrderRequest request);
     
     void updateOrderStatus(Long oid, OrderStatus newStatus);
-    
+
+    Long countOrderByStatus(OrderStatus status);
 }

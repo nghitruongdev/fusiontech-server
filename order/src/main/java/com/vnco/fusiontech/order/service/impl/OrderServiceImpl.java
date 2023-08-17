@@ -79,7 +79,12 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus(newStatus);
         updatePayment(order);
     }
-    
+
+    @Override
+    public Long countOrderByStatus(OrderStatus status) {
+        return repository.countOrderByStatus(status);
+    }
+
     private void checkUpdateOrder(Order order, OrderStatus newStatus){
         var status = order.getStatus();
         var payment = order.getPayment();

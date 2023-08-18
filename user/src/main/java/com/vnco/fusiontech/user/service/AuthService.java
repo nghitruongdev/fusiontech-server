@@ -11,22 +11,26 @@ import java.util.List;
 @Validated
 public interface AuthService {
     UserRecord registerWithEmailProvider(UserRequest request);
-    
+
     UserRecord registerWithGoogleProvider(String firebaseId);
-    
+
     String setInitialClaims(Long id, String firebaseId);
-    
+
     void updateProfile(User user, UserRequest request, String firebaseId);
-    
+
     void updatePassword(String password, String firebaseId);
-    
+
     void deleteAccount(String firebaseId);
-    
+
     void setActiveAccount(@NotEmpty String firebaseId, boolean isDisabled);
-    
+
     List<UserRecord> findAll();
-    
+
     Boolean verifyEmail(String email);
-    
+
     String generateVerifyLink(String email);
+
+    void updateUserRole(String roleName, String firebaseId);
+
+    void removeUserRole(String roleName, String firebaseId);
 }

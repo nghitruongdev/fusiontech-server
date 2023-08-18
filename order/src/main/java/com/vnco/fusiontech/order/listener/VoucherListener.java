@@ -1,6 +1,7 @@
 package com.vnco.fusiontech.order.listener;
 
 import com.vnco.fusiontech.common.exception.InvalidRequestException;
+import com.vnco.fusiontech.order.entity.Order;
 import com.vnco.fusiontech.order.entity.Voucher;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;

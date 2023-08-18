@@ -1,5 +1,6 @@
 package com.vnco.fusiontech.user.web.rest.controller;
 
+import com.vnco.fusiontech.user.service.AuthService;
 import com.vnco.fusiontech.user.service.UserService;
 import com.vnco.fusiontech.user.web.rest.request.UserRequest;
 import jakarta.validation.Valid;
@@ -8,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserRestController {
     
     private final UserService service;
+    private final AuthService authService;
 
     @PostMapping ("/users")
     @Validated(UserRequest.OnCreate.class)
@@ -53,5 +56,19 @@ public class UserRestController {
     public ResponseEntity<?> countUsers() {
         var ok = service.countUsers();
         return ResponseEntity.ok(ok);
+    }
+
+    @PatchMapping("/users/role/{firebaseUid}")
+    public ResponseEntity<?> updateUserRole(@PathVariable(name = "firebaseUid") String firebaseUid,
+                                            @RequestBody String roleName) {
+        authService.updateUserRole(roleName, firebaseUid);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/users/role/{firebaseUid}")
+    public ResponseEntity<?> removeUserRole(@PathVariable(name = "firebaseUid") String firebaseUid,
+                                            @RequestBody String roleName) {
+        authService.removeUserRole(roleName, firebaseUid);
+        return ResponseEntity.ok().build();
     }
 }

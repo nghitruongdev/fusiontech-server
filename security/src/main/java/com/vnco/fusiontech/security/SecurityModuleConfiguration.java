@@ -6,10 +6,12 @@ import lombok.SneakyThrows;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -40,18 +42,20 @@ public class SecurityModuleConfiguration {
                 .csrf()
                 .ignoringRequestMatchers("/h2-console/**");
 //        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.csrf().disable();
-        http.httpBasic().disable();
-        http.authorizeHttpRequests().requestMatchers("*").permitAll();
-//                .requestMatchers(HttpMethod.GET,
-//                        "/api/brands",
-//                        "/api/products",
-//                        "/api/categories",
-//                        "/api/reviews",
-//                        "").permitAll()
-//                .requestMatchers("/api/auth/register").permitAll()
-//                .requestMatchers("/api/**").hasRole("ADMIN")
-//                .anyRequest().authenticated();
+        http.csrf().disable(); // be careful when disable this
+        http.httpBasic().disable(); // disable HTTP basic authentication
+        http.authorizeHttpRequests()
+                .requestMatchers("**").permitAll()
+                .requestMatchers(HttpMethod.PATCH, "/api/auth/update-profile").authenticated()
+                .requestMatchers(HttpMethod.GET,
+                        "/api/brands",
+                        "/api/products",
+                        "/api/categories",
+                        "/api/reviews",
+                        "/api/variants").permitAll()
+                .requestMatchers("/api/auth/register").permitAll()
+                .anyRequest().hasRole("ADMIN");
+
         addFilters(http);
         return http.build();
         //    addFilters(http);

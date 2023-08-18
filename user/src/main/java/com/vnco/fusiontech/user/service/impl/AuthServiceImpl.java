@@ -14,6 +14,7 @@ import com.vnco.fusiontech.user.repository.UserRepository;
 import com.vnco.fusiontech.user.service.AuthService;
 import com.vnco.fusiontech.user.web.rest.request.FirebaseMapper;
 import com.vnco.fusiontech.user.web.rest.request.UserRequest;
+import jakarta.persistence.Tuple;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,16 +27,18 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
-    private static  FirebaseAuth auth (){
+    private static FirebaseAuth auth() {
         return FirebaseAuth.getInstance();
     }
+
     private final FirebaseMapper mapper;
     private final PublicMailService mailService;
     private final UserRepository userRepository;
+
     @Override
     public UserRecord registerWithEmailProvider(UserRequest request) {
         try {
-            var        user       = mapper.toFirebaseCreateRequest(request);
+            var user = mapper.toFirebaseCreateRequest(request);
             var newUser = FirebaseAuth.getInstance().createUser(user);
             generateVerifyLink(newUser.getEmail());
             return newUser;
@@ -44,7 +47,7 @@ public class AuthServiceImpl implements AuthService {
             return null;
         }
     }
-    
+
     @Override
     public UserRecord registerWithGoogleProvider(String firebaseId) {
         try {
@@ -54,7 +57,7 @@ public class AuthServiceImpl implements AuthService {
             return null;
         }
     }
-    
+
     @Override
     public String setInitialClaims(Long id, String firebaseId) {
         try {
@@ -65,19 +68,19 @@ public class AuthServiceImpl implements AuthService {
         }
         return null;
     }
-    
+
     @Override
     public void updateProfile(User user, UserRequest request, String firebaseId) {
         var updateRequest = new UserRecord.UpdateRequest(firebaseId);
-        var mapped = mapper.toFirebaseUpdateRequest(request,user, updateRequest);
-        
+        var mapped = mapper.toFirebaseUpdateRequest(request, user, updateRequest);
+
         try {
             FirebaseAuth.getInstance().updateUser(mapped);
         } catch (FirebaseAuthException e) {
             handleFirebaseAuthException(e);
         }
     }
-    
+
     @Override
     public void updatePassword(String password, String firebaseId) {
         UserRecord.UpdateRequest user = new UserRecord.UpdateRequest(firebaseId);
@@ -90,7 +93,7 @@ public class AuthServiceImpl implements AuthService {
             handleFirebaseAuthException(e);
         }
     }
-    
+
     @Override
     public void deleteAccount(String firebaseId) {
         log.warn("About to delete user {}", firebaseId);
@@ -101,7 +104,7 @@ public class AuthServiceImpl implements AuthService {
             handleFirebaseAuthException(e);
         }
     }
-    
+
     @Override
     public void setActiveAccount(String firebaseId, boolean isDisabled) {
         try {
@@ -110,41 +113,84 @@ public class AuthServiceImpl implements AuthService {
             handleFirebaseAuthException(e);
         }
     }
-    
+
     @Override
     public List<UserRecord> findAll() {
-        List<UserRecord> users   = new ArrayList<>(1000);
-        boolean              hasNext = true;
+        List<UserRecord> users = new ArrayList<>(1000);
+        boolean hasNext = true;
         String token = null;
         try {
-            do{
-                var listPage =  FirebaseAuth.getInstance().listUsers(token);
+            do {
+                var listPage = FirebaseAuth.getInstance().listUsers(token);
                 users.addAll(listPage.streamAll().toList());
                 hasNext = listPage.hasNextPage();
                 token = listPage.getNextPageToken();
-            }while (hasNext);
+            } while (hasNext);
         } catch (FirebaseAuthException e) {
             handleFirebaseAuthException(e);
         }
         return users;
     }
-    
+
     @Override
     public String generateVerifyLink(String email) {
         try {
-            var message =  FirebaseAuth.getInstance().generateEmailVerificationLink(email);
+            var message = FirebaseAuth.getInstance().generateEmailVerificationLink(email);
             mailService.sendMail(MailRequest.builder()
-                                         .mail(email)
-                                         .subject("Xác thực email FusionTech")
-                                         .body("Truy cập đường li=nk sau để xác thực email của bạn: \n\n" + message)
-                                         .build());
+                    .mail(email)
+                    .subject("Xác thực email FusionTech")
+                    .body("Truy cập đường li=nk sau để xác thực email của bạn: \n\n" + message)
+                    .build());
             return "URL to verify: " + message;
         } catch (FirebaseAuthException e) {
             handleFirebaseAuthException(e);
         }
         return "Sent successfully";
     }
-    
+
+    @Override
+    public void updateUserRole(String roleName, String firebaseId) {
+        try {
+            UserRecord userRecord = auth().getUser(firebaseId);
+            var claims = userRecord.getCustomClaims().get(AuthoritiesConstant.ROLE_NAME);
+
+            List<String> list;
+
+            if (claims instanceof List<?>)
+                list = (List<String>) claims;
+            else
+                throw new InvalidRequestException("INVALID ROLE " + roleName);
+
+            if (list.contains(roleName))
+                throw new InvalidRequestException("ROLE EXISTS " + roleName);
+            else {
+                list.add(roleName);
+                log.info("user claims: {}", claims);
+                auth().setCustomUserClaims(userRecord.getUid(), Map.of(AuthoritiesConstant.ROLE_NAME, list));
+            }
+        } catch (FirebaseAuthException e) {
+            handleFirebaseAuthException(e);
+        }
+    }
+
+    @Override
+    public void removeUserRole(String roleName, String firebaseId) {
+        try {
+            UserRecord userRecord = auth().getUser(firebaseId);
+            var claims = userRecord.getCustomClaims().get(AuthoritiesConstant.ROLE_NAME);
+            List<String> list = new ArrayList<>();
+
+            if (claims instanceof List<?>)
+                list = (List<String>) claims;
+
+            list.remove(roleName);
+            log.info("User roles: {}", claims);
+            auth().setCustomUserClaims(userRecord.getUid(), Map.of(AuthoritiesConstant.ROLE_NAME, list));
+        } catch (FirebaseAuthException e) {
+            handleFirebaseAuthException(e);
+        }
+    }
+
     @Override
     public Boolean verifyEmail(String email) {
         try {
@@ -162,20 +208,17 @@ public class AuthServiceImpl implements AuthService {
         }
         return false;
     }
-    
+
     private Map<String, Object> getInitialClaims(Long id) {
-        return Map.of(AuthoritiesConstant.ROLE_NAME, List.of(AuthoritiesConstant.USER), "id", id);
+        return Map.of(AuthoritiesConstant.ROLE_NAME, List.of(AuthoritiesConstant.STAFF), "id", id);
     }
-    
-    private void handleFirebaseAuthException(FirebaseAuthException ex) throws RuntimeException{
-        var authCode = ex.getAuthErrorCode()!= null? ex.getAuthErrorCode().name() : "";
-        switch (ex.getErrorCode()){
-            case ALREADY_EXISTS ->
-                    throw new RecordExistsException(authCode);
-            case NOT_FOUND ->
-                    throw new RecordNotFoundException(authCode);
-            case INVALID_ARGUMENT ->
-                    throw new InvalidRequestException(authCode);
+
+    private void handleFirebaseAuthException(FirebaseAuthException ex) throws RuntimeException {
+        var authCode = ex.getAuthErrorCode() != null ? ex.getAuthErrorCode().name() : "";
+        switch (ex.getErrorCode()) {
+            case ALREADY_EXISTS -> throw new RecordExistsException(authCode);
+            case NOT_FOUND -> throw new RecordNotFoundException(authCode);
+            case INVALID_ARGUMENT -> throw new InvalidRequestException(authCode);
         }
         throw new RuntimeException(ex);
     }

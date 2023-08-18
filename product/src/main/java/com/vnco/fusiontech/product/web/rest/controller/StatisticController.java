@@ -30,7 +30,7 @@ public class StatisticController {
     public ResponseEntity<?> getBestSellerOfYear(
             @RequestParam(name = "startDate", required = false) LocalDate startDate,
             @RequestParam(name = "endDate", required = false) LocalDate endDate,
-            @RequestParam(name = "size", required = false) Optional<Integer> size) {
+            @RequestParam(name = "size", required = false, defaultValue = "10") Optional<Integer> size) {
         var ok = repository.getBestSellerOfYear(startDate, endDate, size.orElse(5));
         return ResponseEntity.ok(ok);
     }

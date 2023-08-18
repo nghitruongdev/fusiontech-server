@@ -17,4 +17,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findAllByUserIdAndStatusIn(@Param ("uid") Long userId, @Param ("st") List<OrderStatus> statusList);
 
     Long countOrderByStatus(OrderStatus status);
+
+    Boolean existsByVoucherCode(String voucher);
 }

@@ -26,7 +26,7 @@ CREATE
 BEGIN
 
     SELECT COUNT(o.ID)          AS totalSales,
-           SUM(AMOUNT)        AS totalRevenue,
+           SUM(AMOUNT)          AS totalRevenue,
            YEAR(o.PURCHASED_AT) as saleYear
     FROM APP_ORDER o
              JOIN
@@ -154,15 +154,36 @@ DROP PROCEDURE IF EXISTS get_available_inventory;
 CREATE
     DEFINER = root@localhost PROCEDURE get_available_inventory()
 BEGIN
-    SELECT
-        pv.ID AS variant_id,
-        get_available_quantity(pv.ID) AS quantity
-    FROM
-        PRODUCT_VARIANT pv
+    SELECT pv.ID                         AS variant_id,
+           get_available_quantity(pv.ID) AS quantity
+    FROM PRODUCT_VARIANT pv
     GROUP BY pv.ID
     ORDER BY quantity DESC;
 END;
 CALL get_available_inventory();
+
+DROP FUNCTION IF EXISTS get_voucher_usage;
+DELIMITER //
+CREATE FUNCTION get_voucher_usage(code VARCHAR(255))
+    RETURNS BIGINT
+    READS SQL DATA
+BEGIN
+    DECLARE usage_count INT;
+
+    SELECT COALESCE(COUNT(o.VOUCHER_ID), 0) INTO usage_count
+    FROM APP_ORDER o
+             JOIN VOUCHER v ON o.VOUCHER_ID = v.ID
+    WHERE v.CODE COLLATE utf8mb4_unicode_ci = code COLLATE utf8mb4_unicode_ci;
+
+    RETURN usage_count;
+END //
+DELIMITER ;
+# SELECT get_voucher_usage('CLEARANCE50') AS usageCount;
+
+# SELECT COALESCE(COUNT(o.VOUCHER_ID), 0) AS usage_count
+# FROM APP_ORDER o
+#          JOIN VOUCHER v on o.VOUCHER_ID = v.ID
+# WHERE V.CODE = 'CLEARANCE50';
 
 # SELECT *
 # FROM product_variant
@@ -180,3 +201,8 @@ FLUSH PRIVILEGES;
 -- GRANT ALTER, ALTER ROUTINE, CREATE, CREATE ROUTINE, CREATE TEMPORARY TABLES, CREATE VIEW, DELETE, DROP, EVENT, EXECUTE, INDEX, INSERT, LOCK TABLES, REFERENCES, SELECT, SHOW VIEW, TRIGGER, UPDATE ON FUSIONTECH.* TO fusiontech_admin@'%';
 
 USE FUSIONTECH;
+
+SELECT COALESCE(COUNT(o.VOUCHER_ID), 0)
+FROM APP_ORDER o
+         JOIN VOUCHER v on o.VOUCHER_ID = v.ID
+WHERE v.CODE = 'SUMMER10'

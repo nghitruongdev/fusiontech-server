@@ -5,6 +5,7 @@ import com.vnco.fusiontech.order.listener.VoucherListener;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import org.hibernate.annotations.Formula;
 
 import java.time.LocalDateTime;
 
@@ -18,11 +19,7 @@ import java.time.LocalDateTime;
 @EntityListeners(VoucherListener.class)
 public class Voucher {
     private interface FORMULA {
-        String VOUCHER_USAGE = """
-                               SELECT COALESCE(COUNT(o.VOUCHER_ID), 0) AS usage
-                               FROM APP_ORDER o JOIN VOUCHER V on o.VOUCHER_ID = V.ID
-                               WHERE V.CODE =code
-                               """;
+        String VOUCHER_USAGE = "(SELECT get_voucher_usage(code))";
     }
     
     @Id
@@ -64,8 +61,8 @@ public class Voucher {
     @Positive
     private Short userLimitUsage;
     
-//    @Formula (FORMULA.VOUCHER_USAGE)
-//    private Integer usage;
+    @Formula(FORMULA.VOUCHER_USAGE)
+    private Integer usage;
 //
 //    private Double getUsagePercent(){
 //        return usage != null ? ( usage.doubleValue() / limitUsage) * 100 : 0;

@@ -110,6 +110,10 @@ public class SpringExceptionHandler extends ResponseEntityExceptionHandler {
                 return """
                        Lỗi ràng buộc dữ liệu: %s - [%s].
                        """.formatted("phiếu nhập kho vẫn còn chi tiết nhập kho liên quan", errorCode);
+            if(constraint.contains("FK_order_voucher"))
+                return """
+                       Lỗi ràng buộc dữ liệu: %s - [%s].
+                       """.formatted("Voucher đã được sử dụng", errorCode);
         }
         var error = "";
         if(constraint.startsWith("Duplicate")){

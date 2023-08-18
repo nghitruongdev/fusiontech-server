@@ -11,6 +11,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RestResource;
 
 import java.util.List;
+import java.util.Map;
+
 
 public interface SpecificationRepository extends JpaRepository<Specification, Long> {
 
@@ -31,6 +33,7 @@ public interface SpecificationRepository extends JpaRepository<Specification, Lo
     @Transactional
     @RestResource(exported = false)
     void updateName(@Param("oldName") String oldName, @Param("newName") String newName);
+    
     // @Query (
     // """
     // SELECT DISTINCT new

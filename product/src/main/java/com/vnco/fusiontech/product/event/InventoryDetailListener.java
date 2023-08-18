@@ -3,12 +3,15 @@ package com.vnco.fusiontech.product.event;
 
 import com.vnco.fusiontech.common.entity.AppUser;
 import com.vnco.fusiontech.common.exception.UnauthorizedException;
+import com.vnco.fusiontech.common.utils.BeanUtils;
 import com.vnco.fusiontech.common.utils.SecurityUtils;
 import com.vnco.fusiontech.product.entity.VariantInventoryDetail;
+import com.vnco.fusiontech.product.repository.VariantInventoryRepository;
 import jakarta.persistence.*;
+import org.hibernate.Hibernate;
+import org.springframework.data.auditing.AuditingHandler;
 
 public class InventoryDetailListener {
-    private AppUser auditUser;
     
     @PrePersist
     public void prePersist(Object o) {
@@ -16,28 +19,24 @@ public class InventoryDetailListener {
     }
     
     @PreUpdate
-    public void preUpdate(Object o) {
-//        getAuditUser();
+    public void preUpdate(VariantInventoryDetail o) {
     }
     
     @PreRemove
     public void preRemove(Object o) {
-//        getAuditUser();
     }
     
     @PostLoad
-    public void postLoad(Object o) {
-    
+    public void postLoad(VariantInventoryDetail o) {
     }
     
     @PostRemove
     public void postRemove(VariantInventoryDetail o) {
-//        o.getInventory().setLastModifiedBy(auditUser);
     }
     
     @PostUpdate
     public void postUpdate(VariantInventoryDetail o) {
-//        o.getInventory().setLastModifiedBy(auditUser);
+        updateLastModified(o);
     }
     
     @PostPersist
@@ -45,7 +44,10 @@ public class InventoryDetailListener {
     
     }
     
-    private void getAuditUser() {
-        auditUser = SecurityUtils.getCurrentUserLogin().orElseThrow(UnauthorizedException::new);
+    private AppUser getAuditUser() {
+        return SecurityUtils.getCurrentUserLogin().orElseThrow(UnauthorizedException::new);
+    }
+    
+    private void updateLastModified(VariantInventoryDetail o) {
     }
 }

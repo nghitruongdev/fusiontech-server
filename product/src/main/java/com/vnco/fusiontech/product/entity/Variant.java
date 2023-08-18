@@ -7,7 +7,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.Formula;
-import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 
 import java.io.Serializable;
@@ -91,11 +90,6 @@ public class Variant implements Serializable {
         spec.getVariants().remove(this);
     }
 
-    public void removeSpecification(String name){
-        specifications.stream().filter(item -> item.getName().equalsIgnoreCase(name))
-                        .forEach(spec -> removeSpecification(spec));
-    }
-
     public void setSpecification(List<Specification> specifications){
 
         if(this.specifications != null) {
@@ -111,11 +105,6 @@ public class Variant implements Serializable {
         inventory.setVariant(this);
         inventories.add(inventory);
     }
-
-    // public long getAvailableQuantity() {
-    // var service = BeanUtils.getBean(ProductVariantService.class);
-    // return service.getAvailableQuantity(this.id);
-    // }
 
     @Override
     public boolean equals(Object o) {

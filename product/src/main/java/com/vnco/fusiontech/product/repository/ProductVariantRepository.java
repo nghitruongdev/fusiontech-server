@@ -42,4 +42,11 @@ public interface ProductVariantRepository extends JpaRepository<Variant, Long> {
             """
     )
     List<VariantWithProductInfoDTO> findVariantsWithProductInfo(@Param ("ids") List<Long> ids);
+    
+    @Query(
+            """
+    SELECT CASE WHEN COUNT(i) > 0 THEN TRUE ELSE FALSE END FROM VariantInventoryDetail i WHERE i.variant.id =:id
+""")
+    @RestResource(path = "has-import-inventory")
+    Boolean hasImportInventory(@Param("id") Long id);
 }

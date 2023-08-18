@@ -17,7 +17,7 @@ import java.util.Objects;
 @ToString
 @Entity
 @Table (name = DBConstant.VARIANT_INVENTORY_DETAIL_TABLE)
-@EntityListeners(InventoryDetailListener.class)
+@EntityListeners({InventoryDetailListener.class})
 public class VariantInventoryDetail {
     @Id
     @Column(name = "id")

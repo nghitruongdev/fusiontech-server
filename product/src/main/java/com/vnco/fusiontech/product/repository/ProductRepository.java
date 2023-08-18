@@ -27,10 +27,12 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
         @RestResource(path = "countProductSold", rel = "countProductSold")
         Long countProductNumberSold(@Param("productId") Long productId);
 
-        @Query("""
-                        SELECT COALESCE(SUM(get_available_quantity(v.id)), 0) FROM Variant v WHERE v.product.id =:id
-                        AND v.active = TRUE
-                        """)
+        @Query(
+                """
+                SELECT COALESCE(SUM(get_available_quantity(v.id)), 0)
+                 FROM Variant v WHERE v.product.id =:id
+                AND v.active = TRUE
+                """)
         @RestResource(path = "availableQuantityByProduct", rel = "availableQuantityByProduct")
         Long getAvailableQuantityByProduct(@Param("id") Long productId);
 
@@ -87,6 +89,14 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
         @Query("SELECT p FROM Product p WHERE p.status LIKE 'HOT'")
         @RestResource(path = "hot-products")
         Slice<Product> getHotProducts(Pageable pageable);
+        
+        @Query(
+                """
+        SELECT CASE WHEN COUNT(i) > 0 THEN TRUE ELSE FALSE END FROM VariantInventoryDetail i WHERE i.variant.product.id =:id
+""")
+        @RestResource(path = "has-import-inventory")
+        Boolean hasImportInventory(@Param("id") Long id);
+        
         // @Query (
         // """
         // SELECT new com.vnco.fusiontech.product.entity.projection.DynamicProductInfo(

@@ -39,19 +39,27 @@ public abstract class AbstractAuditingEntity<T> implements Serializable {
     @ManyToOne
     @JoinColumn (name = "created_by", nullable = false, updatable = false)
     @JsonIncludeProperties({"id, firstName"})
-    private AppUser createdBy;
+    protected AppUser createdBy;
 
     @CreatedDate
     @Column(name = "created_date", updatable = false)
-    private LocalDateTime createdDate = LocalDateTime.now();
+    protected LocalDateTime createdDate = LocalDateTime.now();
 
     @LastModifiedBy
     @ManyToOne
     @JoinColumn(name = "last_modified_by")
     @JsonIncludeProperties({"id", "name"})
-    private AppUser lastModifiedBy;
+    protected AppUser lastModifiedBy;
 
     @LastModifiedDate
     @Column(name = "last_modified_date")
-    private LocalDateTime lastModifiedDate = LocalDateTime.now();
+    protected LocalDateTime lastModifiedDate = LocalDateTime.now();
+    
+    public void setLastModifiedBy(AppUser lastModifiedBy) {
+        this.lastModifiedBy = lastModifiedBy;
+    }
+    
+    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
+    }
 }

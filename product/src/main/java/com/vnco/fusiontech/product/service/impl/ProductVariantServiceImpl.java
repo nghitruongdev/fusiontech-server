@@ -7,6 +7,7 @@ import com.vnco.fusiontech.product.entity.projection.ProductSpecificationDTO;
 import com.vnco.fusiontech.product.repository.ProductVariantRepository;
 import com.vnco.fusiontech.product.service.ProductService;
 import com.vnco.fusiontech.product.service.ProductVariantService;
+import com.vnco.fusiontech.product.service.SpecificationService;
 import com.vnco.fusiontech.product.web.rest.request.VariantRequest;
 import com.vnco.fusiontech.product.web.rest.request.mapper.VariantMapper;
 import jakarta.persistence.EntityManager;
@@ -36,8 +37,9 @@ public class ProductVariantServiceImpl implements ProductVariantService {
     private final VariantMapper mapper;
 
     private final ProductService productService;
-
-    private final EntityManager em;
+    
+    private final EntityManager        em;
+    private final SpecificationService specificationService;
 
     @Autowired
     @Lazy
@@ -60,27 +62,28 @@ public class ProductVariantServiceImpl implements ProductVariantService {
         var variant = mapper.toVariant(request);
         var productSpecs = productService.getProductSpecifications(variant.getProduct().getId());
         productSpecs.stream()
-                .filter(spec -> spec.values().size() == 1)
-                .forEach(spec -> variant.addSpecification(spec.values().get(0)));
-
+                    .filter(spec -> spec.values().size() == 1)
+                    .forEach(spec -> variant.addSpecification(spec.values().get(0)));
+    
         if (variant.getSku() == null) {
             generateSku(List.of(variant), productSpecs);
         }
+        specificationService.persistSpecifications(variant.getSpecifications());
         return repository.save(variant);
     }
-
-    @Override
-    public Variant updateProductVariant(Variant productVariant) {
-        return repository.save(productVariant);
-    }
-
+    
+    //    @Override
+    //    public Variant updateProductVariant(Variant productVariant) {
+    //        return repository.save(productVariant);
+    //    }
+    
     @Override
     public void deleteProductVariant(Long id) {
         repository.deleteById(id);
     }
-
+    
     @Override
-    @Transactional(readOnly = true)
+    @Transactional (readOnly = true)
     public long getTotalQuantity(Long variantId) {
         throw new UnsupportedOperationException();
     }
@@ -202,10 +205,12 @@ public class ProductVariantServiceImpl implements ProductVariantService {
     }
 
     private void updateVariantMultiSpec(List<Specification> specifications, Variant variant) {
-        if(specifications == null || specifications.isEmpty()) return;
-        specifications.forEach(spec -> {
-            variant.removeSpecification(spec.getName());
-            variant.addSpecification(spec);
-        });
+        if (specifications == null || specifications.isEmpty()) return;
+        specificationService.persistSpecifications(specifications);
+        var names   = specifications.stream().map(Specification::getName).toList();
+        var removed = variant.getSpecifications().stream().filter(item -> names.contains(item.getName())).toList();
+        removed.forEach(variant::removeSpecification);
+        specifications.forEach(variant::addSpecification);
+        generateSku(List.of(variant));
     }
 }

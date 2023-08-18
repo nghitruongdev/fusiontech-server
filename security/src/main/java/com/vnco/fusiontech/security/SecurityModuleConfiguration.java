@@ -6,7 +6,6 @@ import lombok.SneakyThrows;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -72,7 +71,7 @@ public class SecurityModuleConfiguration {
         config.setAllowedHeaders(List.of("*"));
         //    config.addAllowedOriginPattern("*");
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("Access-Control-Allow-Origin", "Content-Type"));
+        config.setAllowedHeaders(List.of("Access-Control-Allow-Origin", "Content-Type", "Authorization"));
         config.setExposedHeaders(List.of("Content-Type", "Origin"));
         config.setAllowCredentials(false);
         config.setMaxAge(3600L);

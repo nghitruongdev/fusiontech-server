@@ -1,5 +1,6 @@
 package com.vnco.fusiontech.user.web.rest.controller;
 
+import com.vnco.fusiontech.user.entity.User;
 import com.vnco.fusiontech.user.service.UserService;
 import com.vnco.fusiontech.user.web.rest.request.UserRequest;
 import jakarta.validation.Valid;
@@ -40,5 +41,11 @@ public class UserRestController {
                                               @RequestParam("isDisabled") boolean isDisabled){
         service.setActiveUser(id, isDisabled);
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/users/updateUser/{uid}")
+    public ResponseEntity<User> updateUser(@PathVariable String uid, @RequestBody User user) {
+        User updatedUser = service.updateUserForm(uid, user);
+        return ResponseEntity.ok(updatedUser);
     }
 }

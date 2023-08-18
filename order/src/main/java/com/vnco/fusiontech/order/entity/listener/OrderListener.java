@@ -60,7 +60,7 @@ public class OrderListener {
                 var request = OrderRequest.builder()
                             .mail(o.getEmail()).subject("Thông báo thay đổi tình trạng đơn hàng")
                             .body( """
-                                                                          Đơn hàng đã được cập nhật trạng thái từ
+                                                                          Don hàng đã được cập nhật trạng thái từ
                                                                            %s sang %s
                                                                            Xin chân thành cám ơn.
                                                                             """.formatted(loadedOrder.getStatus(), o.getStatus()))
@@ -76,7 +76,7 @@ public class OrderListener {
 //        if(o.getEmail() != null){
 //           var request =  OrderRequest.builder()
 //                                      .mail(o.getEmail())
-//                                      .subject("Đặt hàng thành công")
+//                                      .subject("Dat hàng thành công")
 //                                  .orderId(o.getId())
 ////                                  .name(o.getUser())
 //                                      .build();

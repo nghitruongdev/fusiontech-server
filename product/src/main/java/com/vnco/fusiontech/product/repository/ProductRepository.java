@@ -17,6 +17,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
         @Query("SELECT p FROM Product p WHERE p.name LIKE %:keyword% OR p.description LIKE %:keyword%")
         List<Product> searchByKeyword(@Param("keyword") String keyword);
 
+        @RestResource(path = "byCategoryId", rel = "category")
+        @Query("SELECT p FROM Product p WHERE p.category.id = :cid ")
+        List<Product> searchByCategoryId(@Param("cid") Integer cid);
+
         @RestResource(path = "favorites", rel = "favorites")
         List<Product> findAllByFavorites_Id(@Param("uid") Long userId);
 

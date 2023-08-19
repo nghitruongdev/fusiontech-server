@@ -1,5 +1,6 @@
 package com.vnco.fusiontech.user.web.rest.controller;
 
+import com.vnco.fusiontech.user.entity.User;
 import com.vnco.fusiontech.user.service.AuthService;
 import com.vnco.fusiontech.user.service.UserService;
 import com.vnco.fusiontech.user.web.rest.request.UserRequest;
@@ -9,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -70,5 +70,11 @@ public class UserRestController {
                                             @RequestBody String roleName) {
         authService.removeUserRole(roleName, firebaseUid);
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/users/updateUser/{uid}")
+    public ResponseEntity<User> updateUser(@PathVariable String uid, @RequestBody User user) {
+        User updatedUser = service.updateUserForm(uid, user);
+        return ResponseEntity.ok(updatedUser);
     }
 }

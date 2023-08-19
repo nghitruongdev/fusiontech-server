@@ -127,4 +127,40 @@ public class UserServiceImpl implements UserService {
         return repository.countAllUsers();
     }
 
+
+    @Override
+    public User updateUserForm(String uid, User user) {
+        Optional<User> userOptional = repository.findByFirebaseUid(uid);
+        if (userOptional.isPresent()) {
+            User userStore = userOptional.get();
+            userStore.setFirebaseUid(user.getFirebaseUid());
+            userStore.setFirstName(user.getFullName());
+            userStore.setEmail(user.getEmail());
+            userStore.setPhoneNumber(user.getPhoneNumber());
+            userStore.setDateOfBirth(user.getDateOfBirth());
+            userStore.setGender(user.getGender());
+            return repository.save(userStore);
+        } else {
+            throw new RecordNotFoundException("User not found with ID: " + uid);
+        }
+    }
+
+    @Override
+    public ShippingAddress createShippingAddress(Long uid, ShippingAddress shippingAddress) {
+        Optional<User> userOptional = repository.findById(uid);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            ShippingAddress shippingAddressStore = new ShippingAddress();
+            shippingAddressStore.setUser(user);
+            shippingAddressStore.setName(shippingAddress.getName());
+            shippingAddressStore.setPhone(shippingAddress.getPhone());
+            shippingAddressStore.setProvince(shippingAddress.getProvince());
+            shippingAddressStore.setDistrict(shippingAddress.getDistrict());
+            shippingAddressStore.setWard(shippingAddress.getWard());
+            shippingAddressStore.setAddress(shippingAddress.getAddress());
+            return addressRepository.save(shippingAddressStore);
+        } else {
+            throw new RecordNotFoundException("User not found with ID: " + uid);
+        }
+    }
 }

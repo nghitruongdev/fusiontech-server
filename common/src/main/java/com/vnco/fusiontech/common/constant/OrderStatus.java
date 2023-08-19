@@ -6,14 +6,14 @@ import java.util.Map;
 import java.util.Set;
 
 public enum OrderStatus {
-    PLACED(OrderStatusGroup.VERIFY, "Chờ xác nhận"),
-    VERIFIED(OrderStatusGroup.PROCESSING, "Đã xác nhận"),
-    PREPARED(OrderStatusGroup.PROCESSING, "Đang chuẩn bị"),
-    ON_DELIVERY(OrderStatusGroup.ON_DELIVERY, "Đang giao"),
+    PLACED(OrderStatusGroup.VERIFY, "Cho xác nhận"),
+    VERIFIED(OrderStatusGroup.PROCESSING, "Da xác nhận"),
+    PREPARED(OrderStatusGroup.PROCESSING, "Dang chuẩn bị"),
+    ON_DELIVERY(OrderStatusGroup.ON_DELIVERY, "Dang giao"),
     COMPLETED(OrderStatusGroup.COMPLETED, "Giao thành công"),
-    FAILED(OrderStatusGroup.FAILED, "Trả hàng"),
-    CANCELLED(OrderStatusGroup.CANCELLED, "Đã huỷ"),
-    DENIED(OrderStatusGroup.CANCELLED, "Đã huỷ bởi hệ thống");
+    FAILED(OrderStatusGroup.FAILED, "Tra hàng"),
+    CANCELLED(OrderStatusGroup.CANCELLED, "Da huỷ"),
+    DENIED(OrderStatusGroup.CANCELLED, "Da huỷ bởi hệ thống");
     
     private final OrderStatusGroup group;
     private final String           detailName;

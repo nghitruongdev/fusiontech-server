@@ -3,7 +3,9 @@ package com.vnco.fusiontech.order.entity;
 import com.vnco.fusiontech.common.constant.DBConstant;
 import com.vnco.fusiontech.order.listener.VoucherListener;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 import org.hibernate.annotations.Formula;
 
@@ -19,7 +21,7 @@ import java.time.LocalDateTime;
 @EntityListeners(VoucherListener.class)
 public class Voucher {
     private interface FORMULA {
-        String VOUCHER_USAGE = "(SELECT get_voucher_usage(code))";
+        String VOUCHER_USAGE = "(get_voucher_usage(code))";
     }
     
     @Id
@@ -61,10 +63,10 @@ public class Voucher {
     @Positive
     private Short userLimitUsage;
     
-    @Formula(FORMULA.VOUCHER_USAGE)
+    @Formula (FORMULA.VOUCHER_USAGE)
     private Integer usage;
-//
-//    private Double getUsagePercent(){
-//        return usage != null ? ( usage.doubleValue() / limitUsage) * 100 : 0;
-//    }
+    //
+    //    private Double getUsagePercent(){
+    //        return usage != null ? ( usage.doubleValue() / limitUsage) * 100 : 0;
+    //    }
 }

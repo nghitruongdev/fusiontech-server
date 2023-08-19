@@ -147,10 +147,19 @@ public class SpringExceptionHandler extends ResponseEntityExceptionHandler {
     
     @ExceptionHandler(TransactionSystemException.class)
     ProblemDetail handleTransaction(TransactionSystemException ex) {
-
+        var cause = ex.getCause().getCause();
+        if(cause instanceof RuntimeException runtimeCause){
+            var response =  handleRuntimeException(runtimeCause);
+            if(response != null) return response;
+        }
         return ProblemDetail.forStatusAndDetail(CONFLICT, ex.getMessage());
     }
 
+    private ProblemDetail handleRuntimeException(RuntimeException ex){
+       if(ex instanceof InvalidRequestException subEx) return handleInvalid(subEx);
+       if(ex instanceof NotAcceptedRequestException subEx) return handleNotAccepted(subEx);
+       return null;
+    }
     @ExceptionHandler(RecordNotFoundException.class)
     ProblemDetail handleResourceNotFound(RecordNotFoundException ex) {
         return ProblemDetail.forStatusAndDetail(NOT_FOUND, ex.getMessage());

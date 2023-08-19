@@ -9,6 +9,6 @@ import com.vnco.fusiontech.product.entity.Variant;
 @Projection(name = Variant.PROJECTION.PRODUCT_NAME, types = { Variant.class })
 public interface VariantWithProductName extends VariantWithProduct {
 
-  @JsonIncludeProperties({ "id", "name" })
+  @JsonIncludeProperties({ "id", "name", "images" })
   Product getProduct();
 }

@@ -1,10 +1,10 @@
 package com.vnco.fusiontech.security.filter;
 
 
-import com.google.firebase.auth.AuthErrorCode;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
+import com.vnco.fusiontech.common.exception.UnauthorizedException;
 import com.vnco.fusiontech.security.service.SecurityService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -52,7 +51,8 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } catch (IllegalArgumentException | FirebaseAuthException e) {
             log.error("Firebase authentication failed: {}", e.getMessage());
-            response.sendError(AuthErrorCode.EXPIRED_ID_TOKEN.ordinal(), "You're unauthorized to access.");
+//            response.sendError(AuthErrorCode.EXPIRED_ID_TOKEN.ordinal(), "You're unauthorized to access.");
+            throw new UnauthorizedException();
         }
     }
 }

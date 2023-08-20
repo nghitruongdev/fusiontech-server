@@ -1,6 +1,7 @@
 package com.vnco.fusiontech.security;
 
-import com.google.firebase.auth.FirebaseToken;
+import com.vnco.fusiontech.common.constant.AuthoritiesConstant;
+import com.vnco.fusiontech.security.config.Patterns;
 import com.vnco.fusiontech.security.filter.FirebaseTokenFilter;
 import com.vnco.fusiontech.security.service.SecurityService;
 import lombok.RequiredArgsConstructor;
@@ -9,20 +10,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -44,20 +40,31 @@ public class SecurityModuleConfiguration {
 //        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.csrf().disable(); // be careful when disable this
         http.httpBasic().disable(); // disable HTTP basic authentication
-        http.authorizeHttpRequests()
-//                .requestMatchers("**").permitAll();
-                .requestMatchers(HttpMethod.PATCH, "/api/auth/update-profile").authenticated()
-                .requestMatchers(HttpMethod.GET,
-                        "/api/brands",
-                        "/api/products/**",
-                        "/api/categories/**",
-                        "/api/reviews/**",
-                        "/api/vouchers/**",
-                        "/api/variants/**").permitAll()
-                .requestMatchers("/api/statistical/best-seller").permitAll()
-                .requestMatchers("/api/auth/register").permitAll()
-                .requestMatchers("/api/**").hasAnyRole("ADMIN")
-                .anyRequest().authenticated();
+
+        http.authorizeHttpRequests(request -> {
+            for (Patterns pattern : Patterns.values()) {
+                if (pattern.getRole().equalsIgnoreCase("anonymous"))
+                    request.requestMatchers(HttpMethod.GET, pattern.getPattern()).permitAll();
+                if (pattern.getRole().equalsIgnoreCase("user"))
+                    request.requestMatchers(pattern.getPattern()).authenticated();
+                if (pattern.getRole().equalsIgnoreCase("admin"))
+                    request.requestMatchers(pattern.getPattern()).hasAnyRole("ADMIN");
+            }
+        });
+////                .requestMatchers("**").permitAll();
+//                .requestMatchers(HttpMethod.PATCH, "/api/auth/update-profile/**").authenticated()
+//                .requestMatchers(HttpMethod.GET,
+//                        "/api/brands/**",
+//                        "/api/products/**",
+//                        "/api/categories/**",
+//                        "/api/reviews/**",
+//                        "/api/vouchers/**",
+//                        "/api/variants/**").permitAll()
+//                .requestMatchers("/api/statistical/best-seller").permitAll()
+//                .requestMatchers("/api/auth/register").permitAll()
+//                .requestMatchers("/api/orders/**").authenticated()
+//                .requestMatchers("/api/**").hasAnyRole("ADMIN")
+//                .anyRequest().authenticated();
         addFilters(http);
         return http.build();
     }

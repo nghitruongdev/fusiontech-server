@@ -1,6 +1,7 @@
 package com.vnco.fusiontech.product.repository;
 
 import com.vnco.fusiontech.product.entity.Product;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -80,7 +81,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                     ORDER BY p.discount DESC
                 """)
         @RestResource(path = "discount-products")
-        Slice<Product> getDiscountProducts(Pageable pageable);
+        Page<Product> getDiscountProducts(Pageable pageable);
 
         @Query("""
                 FROM Product p
@@ -88,11 +89,11 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                 ORDER BY p.id desc
         """)
         @RestResource(path = "latest-products")
-        Slice<Product> getLatestAddedProducts(Pageable pageable);
+        Page<Product> getLatestAddedProducts(Pageable pageable);
 
         @Query("SELECT p FROM Product p WHERE p.status LIKE 'HOT'")
         @RestResource(path = "hot-products")
-        Slice<Product> getHotProducts(Pageable pageable);
+        Page<Product> getHotProducts(Pageable pageable);
         
         @Query(
                 """

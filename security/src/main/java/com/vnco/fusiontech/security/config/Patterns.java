@@ -4,7 +4,6 @@ import com.vnco.fusiontech.common.constant.AuthoritiesConstant;
 
 public enum Patterns {
     // ANONYMOUS - permitAll()
-
     PRODUCTS(AuthoritiesConstant.ANONYMOUS, "/api/products/**"),
     BRANDS(AuthoritiesConstant.ANONYMOUS, "/api/brands/**"),
     CATEGORIES(AuthoritiesConstant.ANONYMOUS, "/api/categories/**"),

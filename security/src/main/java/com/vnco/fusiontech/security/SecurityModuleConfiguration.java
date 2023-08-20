@@ -50,6 +50,7 @@ public class SecurityModuleConfiguration {
                 if (pattern.getRole().equalsIgnoreCase("admin"))
                     request.requestMatchers(pattern.getPattern()).hasAnyRole("ADMIN");
             }
+            request.anyRequest().authenticated();
         });
 ////                .requestMatchers("**").permitAll();
 //                .requestMatchers(HttpMethod.PATCH, "/api/auth/update-profile/**").authenticated()

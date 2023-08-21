@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.vnco.fusiontech.product.entity.Brand;
 import com.vnco.fusiontech.product.entity.Category;
 import com.vnco.fusiontech.product.entity.Product;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.rest.core.config.Projection;
 
 @Projection(name = Product.PROJECTION.BASIC, types = { Product.class })
@@ -36,4 +37,8 @@ public interface ProductBasic {
 
   @JsonIncludeProperties("id")
   Category getCategory();
+
+  @Value("#{target.variants.size()}")
+  Integer getVariantCount();
+
 }

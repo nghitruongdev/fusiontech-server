@@ -10,27 +10,33 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
+import java.util.List;
 
 @RestController
 @Slf4j
 @RequiredArgsConstructor
 public class MailController {
-    
+
     private final PublicMailService mailService;
-    
-    @GetMapping ("/sendmail/test")
+
+    @GetMapping("/sendmail/test")
     public ResponseEntity<?> sendOrderSuccess() {
         OrderRequest rq = OrderRequest.builder()
-                                      .subject("Order success")
-                                      .mail("nxhao3003@gmail.com")
-                                      .orderId(3L)
-                                      .date(Instant.now())
-                                      .name("Xuân ahor")
-                                      .phone("0373038293")
-                                      //                                      .items(List.of(new OrderItemDTO()))
-                                      .orderTotal(300D)
-                                      .template(MailTemplate.ORDER_SUCCESS)
-                                      .build();
+                .subject("Order success")
+                .mail("nxhao3003@gmail.com")
+                .orderId(3L)
+                .items(List.of())
+                .date(Instant.now())
+                .name("Xuân ahor")
+                .phone("0373038293")
+                .shipping(21D)
+                .date(Instant.now())
+                .subtotal(123D)
+                .address("Truong trung hoc pho thong FPT")
+                .paymentStatus("NGAN HANG CHO VAY NANG LAI")
+                .orderTotal(300D)
+                .template(MailTemplate.ORDER_SUCCESS)
+                .build();
         //        OrderRequest rq = new OrderRequest();
         mailService.sendMail(rq);
         log.info("{}", rq);

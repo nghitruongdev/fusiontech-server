@@ -7,7 +7,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.Formula;
-import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 
 import java.io.Serializable;
@@ -32,6 +31,7 @@ public class Variant implements Serializable {
 
     private interface FORMULA {
         String AVAILABLE_QUANTITY = "(SELECT get_available_quantity(id))";
+        String SOLD_COUNT = "(SELECT get_sold_count(id))";
     }
 
     @Id
@@ -40,7 +40,7 @@ public class Variant implements Serializable {
     private Long id;
 
     @Column(name = "sku")
-    @NaturalId(mutable = true)
+//    @NaturalId(mutable = true)
     private String sku;
 
     @Type(JsonType.class)
@@ -54,6 +54,9 @@ public class Variant implements Serializable {
 
     @Formula(FORMULA.AVAILABLE_QUANTITY)
     private Integer availableQuantity;
+
+    @Formula(FORMULA.SOLD_COUNT)
+    private Long soldCount;
 
     @Column(name = "active")
     @Builder.Default
@@ -87,15 +90,21 @@ public class Variant implements Serializable {
         spec.getVariants().remove(this);
     }
 
+    public void setSpecification(List<Specification> specifications){
+
+        if(this.specifications != null) {
+            var list = new ArrayList<Specification>(this.specifications);
+            for (int i = 0; i < this.specifications.size(); i++) {
+                removeSpecification(list.get(i));
+            }
+            this.specifications.forEach(this::removeSpecification);
+        }
+        specifications.forEach(this::addSpecification);
+    }
     public void addInventory(VariantInventoryDetail inventory) {
         inventory.setVariant(this);
         inventories.add(inventory);
     }
-
-    // public long getAvailableQuantity() {
-    // var service = BeanUtils.getBean(ProductVariantService.class);
-    // return service.getAvailableQuantity(this.id);
-    // }
 
     @Override
     public boolean equals(Object o) {

@@ -37,7 +37,7 @@ public class SpringExceptionHandler extends ResponseEntityExceptionHandler {
     ProblemDetail handleNotFound(EntityNotFoundException ex) {
         return ProblemDetail.forStatusAndDetail(NOT_FOUND, ex.getMessage());
     }
-    
+
     @ExceptionHandler(ConstraintViolationException.class)
     ProblemDetail handleConstraintViolation(ConstraintViolationException ex) {
         var errors = ex
@@ -57,7 +57,7 @@ public class SpringExceptionHandler extends ResponseEntityExceptionHandler {
         problem.setProperty("errors", errors);
         return problem;
     }
-    
+
     private String convertString(@Nullable Object invalid) {
         if (ObjectUtils.isArray(invalid)) {
             return Arrays.toString((ObjectUtils.toObjectArray(invalid)));
@@ -66,7 +66,7 @@ public class SpringExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(@NotNull  MethodArgumentNotValidException ex,
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(@NotNull MethodArgumentNotValidException ex,
             HttpHeaders headers, HttpStatusCode status,
             WebRequest request) {
         var errors = ex
@@ -94,57 +94,75 @@ public class SpringExceptionHandler extends ResponseEntityExceptionHandler {
         var cause = ex.getCause();
         var root = ex.getRootCause();
         var specific = ex.getMostSpecificCause();
-                if (cause instanceof org.hibernate.exception.ConstraintViolationException constraintEx) {
-                    log.debug(constraintEx.getConstraintName());
+        if (cause instanceof org.hibernate.exception.ConstraintViolationException constraintEx) {
+            log.debug(constraintEx.getConstraintName());
             return ProblemDetail.forStatusAndDetail(CONFLICT, getMessage(constraintEx));
         }
-        return ProblemDetail.forStatusAndDetail(CONFLICT,ex.getMessage());
-        
+        return ProblemDetail.forStatusAndDetail(CONFLICT, ex.getMessage());
+
     }
-    private String getMessage(org.hibernate.exception.ConstraintViolationException ex){
+
+    private String getMessage(org.hibernate.exception.ConstraintViolationException ex) {
         var sqlCode = ex.getSQLState();
         var errorCode = ex.getErrorCode();
         var constraint = ex.getSQLException().getMessage();
-        if(errorCode == 1451){
-            if(constraint.contains("FK_inventory_detail_inventory"))
+        if (errorCode == 1451) {
+            if (constraint.contains("FK_inventory_detail_inventory"))
                 return """
-                       Lỗi ràng buộc dữ liệu: %s - [%s].
-                       """.formatted("phiếu nhập kho vẫn còn chi tiết nhập kho liên quan", errorCode);
+                        Lỗi ràng buộc dữ liệu: %s - [%s].
+                        """.formatted("phiếu nhập kho vẫn còn chi tiết nhập kho liên quan", errorCode);
+            if (constraint.contains("FK_order_voucher"))
+                return """
+                        Lỗi ràng buộc dữ liệu: %s - [%s].
+                        """.formatted("Voucher đã được sử dụng", errorCode);
         }
         var error = "";
-        if(constraint.startsWith("Duplicate")){
-            String  regex   = "'.+?'"; // Regular expression to match inside single quotes
+        if (constraint.startsWith("Duplicate")) {
+            String regex = "'.+?'"; // Regular expression to match inside single quotes
             Pattern pattern = Pattern.compile(regex);
             Matcher matcher = pattern.matcher(constraint);
-            if(matcher.find()){
-                return String.format("Lỗi trùng lặp dữ liệu: %s - [%s]", matcher.group(),  errorCode);
+            if (matcher.find()) {
+                return String.format("Lỗi trùng lặp dữ liệu: %s - [%s]", matcher.group(), errorCode);
             }
         }
-//        else{
-//            error = constraint.substring(0, constraint.indexOf(";"))
-//                              .replace("\"", "");
-//        }
-//        switch (sqlCode) {
-//            case "23502" -> {
-//                var exMessage = constraintEx.getConstraintName();
-//                errorMessage = String.format("%s - [%s]",
-//                                             exMessage.substring(0, exMessage.indexOf(";")).replace("\"", "'"),
-//                                             sqlCode);
-//            }
-//            case "23506" -> errorMessage = String.format("""
-//                                                             Lỗi tính toàn vẹn dữ liệu (liên kết khoá ngoại [%s]): %s.
-//                                                             """,
-//                                                         sqlCode,
-//                                                         constraintEx.getConstraintName());
-//            default -> errorMessage = constraintEx.getSQLException().getMessage();
-//        }
-        return String.format("%s - [%s]", StringUtils.hasText(error)? error: constraint, sqlCode);
+        // else{
+        // error = constraint.substring(0, constraint.indexOf(";"))
+        // .replace("\"", "");
+        // }
+        // switch (sqlCode) {
+        // case "23502" -> {
+        // var exMessage = constraintEx.getConstraintName();
+        // errorMessage = String.format("%s - [%s]",
+        // exMessage.substring(0, exMessage.indexOf(";")).replace("\"", "'"),
+        // sqlCode);
+        // }
+        // case "23506" -> errorMessage = String.format("""
+        // Lỗi tính toàn vẹn dữ liệu (liên kết khoá ngoại [%s]): %s.
+        // """,
+        // sqlCode,
+        // constraintEx.getConstraintName());
+        // default -> errorMessage = constraintEx.getSQLException().getMessage();
+        // }
+        return String.format("%s - [%s]", StringUtils.hasText(error) ? error : constraint, sqlCode);
     }
-    
+
     @ExceptionHandler(TransactionSystemException.class)
     ProblemDetail handleTransaction(TransactionSystemException ex) {
+        var cause = ex.getCause().getCause();
+        if (cause instanceof RuntimeException runtimeCause) {
+            var response = handleRuntimeException(runtimeCause);
+            if (response != null)
+                return response;
+        }
+        return ProblemDetail.forStatusAndDetail(CONFLICT, ex.getCause().getCause().getMessage());
+    }
 
-        return ProblemDetail.forStatusAndDetail(CONFLICT, ex.getMessage());
+    private ProblemDetail handleRuntimeException(RuntimeException ex) {
+        if (ex instanceof InvalidRequestException subEx)
+            return handleInvalid(subEx);
+        if (ex instanceof NotAcceptedRequestException subEx)
+            return handleNotAccepted(subEx);
+        return null;
     }
 
     @ExceptionHandler(RecordNotFoundException.class)
@@ -156,25 +174,30 @@ public class SpringExceptionHandler extends ResponseEntityExceptionHandler {
     ProblemDetail handleDuplicateKey(DuplicateKeyException ex) {
         return ProblemDetail.forStatusAndDetail(CONFLICT, ex.getMessage());
     }
-    
+
     @ExceptionHandler(InvalidRequestException.class)
     ProblemDetail handleInvalid(InvalidRequestException ex) {
         return ProblemDetail.forStatusAndDetail(BAD_REQUEST, ex.getMessage());
     }
-    
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    ProblemDetail handleInvalid(IllegalArgumentException ex) {
+        return ProblemDetail.forStatusAndDetail(BAD_REQUEST, ex.getMessage());
+    }
+
     @ExceptionHandler(RecordExistsException.class)
     ProblemDetail handleExists(RecordExistsException ex) {
         return ProblemDetail.forStatusAndDetail(CONFLICT, ex.getMessage());
     }
-    
+
     @ExceptionHandler(UnauthorizedException.class)
     ProblemDetail handleUnauthorized(UnauthorizedException ex) {
         return ProblemDetail.forStatusAndDetail(UNAUTHORIZED, ex.getMessage());
     }
-    
+
     @ExceptionHandler(NotAcceptedRequestException.class)
     ProblemDetail handleNotAccepted(NotAcceptedRequestException ex) {
         return ProblemDetail.forStatusAndDetail(NOT_ACCEPTABLE, ex.getMessage());
     }
-    
+
 }

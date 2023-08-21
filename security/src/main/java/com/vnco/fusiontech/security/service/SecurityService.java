@@ -12,5 +12,9 @@ public interface SecurityService {
     List<GrantedAuthority> getAuthorities(Map<String, Object> claims);
     
     AppUser getCurrentUser(FirebaseToken token);
+
+    void updateUserRole(String roleName, String firebaseId);
+
+    void removeUserRole(String roleName, String firebaseId);
     
 }

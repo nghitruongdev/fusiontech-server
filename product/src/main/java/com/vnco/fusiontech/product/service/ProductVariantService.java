@@ -17,7 +17,7 @@ public interface ProductVariantService extends PublicProductVariantService {
 
     Variant createVariant(VariantRequest request);
 
-    Variant updateProductVariant(Variant productVariant);
+//    Variant updateProductVariant(Variant productVariant);
 
     void deleteProductVariant(Long id);
 

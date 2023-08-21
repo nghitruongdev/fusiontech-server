@@ -9,4 +9,6 @@ public interface ProductWithSpecs extends ProductBasic {
 
   @Value("#{@productServiceImpl.getProductSpecifications(target.id)}")
   Object getSpecifications();
+
+
 }

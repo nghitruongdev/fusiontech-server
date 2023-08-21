@@ -20,6 +20,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RepositoryRestController
 @Slf4j
+@CrossOrigin("*")
 public class OrderRestController {
     
     private final OrderService service;
@@ -57,5 +58,11 @@ public class OrderRestController {
         var list = Arrays.stream(OrderStatusGroup.values()).map(OrderStatusGroup::getFullDetail).toList();
         return ResponseEntity.ok(list);
     }
-    
+
+    @GetMapping("/orders/count")
+    public ResponseEntity<?> countOrders(@RequestParam(name = "status", defaultValue = "COMPLETED") String status) {
+        OrderStatus os = OrderStatus.valueOf(status.toUpperCase());
+        var ok = service.countOrderByStatus(os);
+        return ResponseEntity.ok(ok);
+    }
 }

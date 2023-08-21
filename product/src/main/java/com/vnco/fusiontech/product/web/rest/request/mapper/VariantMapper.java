@@ -14,6 +14,7 @@ public interface VariantMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "inventories", ignore = true)
+    @Mapping(target = "specifications", ignore = true)
     void partialUpdateVariant(VariantRequest req, @MappingTarget Variant entity);
     
 }

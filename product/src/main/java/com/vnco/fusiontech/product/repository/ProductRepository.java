@@ -1,6 +1,7 @@
 package com.vnco.fusiontech.product.repository;
 
 import com.vnco.fusiontech.product.entity.Product;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,21 +18,26 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
         @Query("SELECT p FROM Product p WHERE p.name LIKE %:keyword% OR p.description LIKE %:keyword%")
         List<Product> searchByKeyword(@Param("keyword") String keyword);
 
+        @RestResource(path = "byCategoryId", rel = "category")
+        @Query("SELECT p FROM Product p WHERE p.category.id = :cid ")
+        List<Product> searchByCategoryId(@Param("cid") Integer cid);
+
         @RestResource(path = "favorites", rel = "favorites")
         List<Product> findAllByFavorites_Id(@Param("uid") Long userId);
 
         @Query("""
-                                 SELECT COALESCE(SUM (oi.quantity), 0) FROM OrderItem oi JOIN Order o ON oi.order = o
-                                 WHERE oi.variant.id IN (SELECT v.id FROM Variant v WHERE v.product.id =:productId) AND
-                                 o.status = 'DELIVERED_SUCCESS'
-                        """)
+                        SELECT COALESCE(SUM (get_sold_count(v.id)), 0)
+                        FROM Variant v WHERE v.product.id=:productId
+               """)
         @RestResource(path = "countProductSold", rel = "countProductSold")
         Long countProductNumberSold(@Param("productId") Long productId);
 
-        @Query("""
-                        SELECT COALESCE(SUM(get_available_quantity(v.id)), 0) FROM Variant v WHERE v.product.id =:id
-                        AND v.active = TRUE
-                        """)
+        @Query(
+                """
+                SELECT COALESCE(SUM(get_available_quantity(v.id)), 0)
+                 FROM Variant v WHERE v.product.id =:id
+                AND v.active = TRUE
+                """)
         @RestResource(path = "availableQuantityByProduct", rel = "availableQuantityByProduct")
         Long getAvailableQuantityByProduct(@Param("id") Long productId);
 
@@ -75,18 +81,27 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                     ORDER BY p.discount DESC
                 """)
         @RestResource(path = "discount-products")
-        Slice<Product> getDiscountProducts(Pageable pageable);
+        Page<Product> getDiscountProducts(Pageable pageable);
 
         @Query("""
                 FROM Product p
+                WHERE p.active = true
                 ORDER BY p.id desc
         """)
         @RestResource(path = "latest-products")
-        Slice<Product> getLatestAddedProducts(Pageable pageable);
+        Page<Product> getLatestAddedProducts(Pageable pageable);
 
         @Query("SELECT p FROM Product p WHERE p.status LIKE 'HOT'")
         @RestResource(path = "hot-products")
-        Slice<Product> getHotProducts(Pageable pageable);
+        Page<Product> getHotProducts(Pageable pageable);
+        
+        @Query(
+                """
+        SELECT CASE WHEN COUNT(i) > 0 THEN TRUE ELSE FALSE END FROM VariantInventoryDetail i WHERE i.variant.product.id =:id
+""")
+        @RestResource(path = "has-import-inventory")
+        Boolean hasImportInventory(@Param("id") Long id);
+        
         // @Query (
         // """
         // SELECT new com.vnco.fusiontech.product.entity.projection.DynamicProductInfo(

@@ -1,5 +1,7 @@
 package com.vnco.fusiontech.user.service.impl;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.vnco.fusiontech.common.entity.AppUser;
 import com.vnco.fusiontech.common.exception.InvalidRequestException;
 import com.vnco.fusiontech.common.exception.RecordNotFoundException;
@@ -16,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -120,5 +123,47 @@ public class UserServiceImpl implements UserService {
             throw new InvalidRequestException("Address was not found with user");
         }
         user.setDefaultAddress(new ShippingAddress(addressId));
+    }
+
+    @Override
+    public Long countUsers() {
+        return repository.countAllUsers();
+    }
+
+
+    @Override
+    public User updateUserForm(String uid, User user) {
+        Optional<User> userOptional = repository.findByFirebaseUid(uid);
+        if (userOptional.isPresent()) {
+            User userStore = userOptional.get();
+            userStore.setFirebaseUid(user.getFirebaseUid());
+            userStore.setFirstName(user.getFullName());
+            userStore.setEmail(user.getEmail());
+            userStore.setPhoneNumber(user.getPhoneNumber());
+            userStore.setDateOfBirth(user.getDateOfBirth());
+            userStore.setGender(user.getGender());
+            return repository.save(userStore);
+        } else {
+            throw new RecordNotFoundException("User not found with ID: " + uid);
+        }
+    }
+
+    @Override
+    public ShippingAddress createShippingAddress(Long uid, ShippingAddress shippingAddress) {
+        Optional<User> userOptional = repository.findById(uid);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            ShippingAddress shippingAddressStore = new ShippingAddress();
+            shippingAddressStore.setUser(user);
+            shippingAddressStore.setName(shippingAddress.getName());
+            shippingAddressStore.setPhone(shippingAddress.getPhone());
+            shippingAddressStore.setProvince(shippingAddress.getProvince());
+            shippingAddressStore.setDistrict(shippingAddress.getDistrict());
+            shippingAddressStore.setWard(shippingAddress.getWard());
+            shippingAddressStore.setAddress(shippingAddress.getAddress());
+            return addressRepository.save(shippingAddressStore);
+        } else {
+            throw new RecordNotFoundException("User not found with ID: " + uid);
+        }
     }
 }

@@ -17,7 +17,7 @@ import java.util.Objects;
 @ToString
 @Entity
 @Table (name = DBConstant.VARIANT_INVENTORY_DETAIL_TABLE)
-@EntityListeners(InventoryDetailListener.class)
+@EntityListeners({InventoryDetailListener.class})
 public class VariantInventoryDetail {
     @Id
     @Column(name = "id")
@@ -29,11 +29,11 @@ public class VariantInventoryDetail {
     @Column(name = "quantity")
     private Integer quantity;
     
-    @Column(name = "variant_id",nullable = false)
+    @Column(name = "variant_id",nullable = false, insertable = false, updatable = false)
     private Long variantId;
     
     @ManyToOne (fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_inventory_variant"), insertable = false, updatable = false)
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_inventory_variant"))
     @ToString.Exclude
     private Variant variant;
     

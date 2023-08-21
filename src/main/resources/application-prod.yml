@@ -1,8 +1,9 @@
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/fusiontech
-    username: root
-    password: root#Haro02
+    # url: jdbc:mysql://100.82.6.136:3306/fusiontech
+    username: fusiontech_user
+    password: password
   jpa:
     hibernate:
       ddl-auto: validate

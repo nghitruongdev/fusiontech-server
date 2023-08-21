@@ -36,7 +36,6 @@ public class RestConfiguration implements RepositoryRestConfigurer {
                 .withItemExposure(((metdata, httpMethods) ->
                         ConfigurableHttpMethods.NONE.enable(GET, PATCH)));
 
-
         cors.addMapping("/**")
                 .allowedOrigins("*")
                 //            .allowedMethods("GET", "POST", "PATCH", "DELETE")

@@ -12,10 +12,14 @@ public enum Patterns {
     VARIANTS(AuthoritiesConstant.ANONYMOUS, "/api/variants/**"),
     REGISTRATION(AuthoritiesConstant.ANONYMOUS, "/api/auth/register/**"),
     BEST_SELLER(AuthoritiesConstant.ANONYMOUS, "/api/statistical/best-seller"),
+    ORDERS_STATUS(AuthoritiesConstant.ANONYMOUS, "/api/orders/statuses/**"),
 
     // CUSTOMER - authenticated()
     ORDERS(AuthoritiesConstant.USER, "/api/orders/**"),
     UPDATE_PROFILE(AuthoritiesConstant.USER, "/api/auth/update-profile/**"),
+    SEARCH_ADDRESS(AuthoritiesConstant.USER, "/api/shippingAddress/search/**"),
+    SEARCH_USER(AuthoritiesConstant.USER, "/api/users/search/**"),
+    CHECKOUT_CART(AuthoritiesConstant.USER, "/api/cart/**"),
 
     // STAFF
 

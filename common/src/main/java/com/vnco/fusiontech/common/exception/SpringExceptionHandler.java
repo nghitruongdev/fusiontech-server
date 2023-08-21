@@ -180,6 +180,11 @@ public class SpringExceptionHandler extends ResponseEntityExceptionHandler {
         return ProblemDetail.forStatusAndDetail(BAD_REQUEST, ex.getMessage());
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    ProblemDetail handleInvalid(IllegalArgumentException ex) {
+        return ProblemDetail.forStatusAndDetail(BAD_REQUEST, ex.getMessage());
+    }
+
     @ExceptionHandler(RecordExistsException.class)
     ProblemDetail handleExists(RecordExistsException ex) {
         return ProblemDetail.forStatusAndDetail(CONFLICT, ex.getMessage());

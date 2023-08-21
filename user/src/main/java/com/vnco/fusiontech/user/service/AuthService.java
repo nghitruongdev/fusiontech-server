@@ -2,11 +2,14 @@ package com.vnco.fusiontech.user.service;
 
 import com.google.firebase.auth.UserRecord;
 import com.vnco.fusiontech.user.entity.User;
+import com.vnco.fusiontech.user.entity.roles.Roles;
 import com.vnco.fusiontech.user.web.rest.request.UserRequest;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
+import java.util.Map;
 
 @Validated
 public interface AuthService {
@@ -30,7 +33,8 @@ public interface AuthService {
 
     String generateVerifyLink(String email);
 
-    void updateUserRole(String roleName, String firebaseId);
+    void updateRole(String firebaseUid, @NotNull List<Roles> roles);
 
-    void removeUserRole(String roleName, String firebaseId);
+    List<String> getUserRoles(String firebaseUid);
+
 }

@@ -51,4 +51,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT COUNT(u.id) FROM User u WHERE u.isDisabled = false")
     Long countAllUsers();
 
+    @Query("SELECT u.firebaseUid FROM User u WHERE u.id = :id")
+    @RestResource(path = "find-firebaseid")
+    Optional<String> getFirebaseId(Long id);
 }

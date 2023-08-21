@@ -4,6 +4,7 @@ import com.vnco.fusiontech.common.constant.AuthoritiesConstant;
 
 public enum Patterns {
     // ANONYMOUS - permitAll()
+//    OK(AuthoritiesConstant.ANONYMOUS, "/api/**"),
     PRODUCTS(AuthoritiesConstant.ANONYMOUS, "/api/products/**"),
     BRANDS(AuthoritiesConstant.ANONYMOUS, "/api/brands/**"),
     CATEGORIES(AuthoritiesConstant.ANONYMOUS, "/api/categories/**"),
@@ -13,13 +14,17 @@ public enum Patterns {
     REGISTRATION(AuthoritiesConstant.ANONYMOUS, "/api/auth/register/**"),
     BEST_SELLER(AuthoritiesConstant.ANONYMOUS, "/api/statistical/best-seller"),
     ORDERS_STATUS(AuthoritiesConstant.ANONYMOUS, "/api/orders/statuses/**"),
+    SPECIFICATION(AuthoritiesConstant.ANONYMOUS, "/api/specifications"),
+    SEARCH_USER(AuthoritiesConstant.ANONYMOUS, "/api/users/**"),
 
     // CUSTOMER - authenticated()
     ORDERS(AuthoritiesConstant.USER, "/api/orders/**"),
-    UPDATE_PROFILE(AuthoritiesConstant.USER, "/api/auth/update-profile/**"),
-    SEARCH_ADDRESS(AuthoritiesConstant.USER, "/api/shippingAddress/search/**"),
-    SEARCH_USER(AuthoritiesConstant.USER, "/api/users/search/**"),
+    PRODUCT_USER(AuthoritiesConstant.USER, "/api/products/**"),
+    PAYMENT(AuthoritiesConstant.USER, "/api/payments/**"),
+    UPDATE_PROFILE(AuthoritiesConstant.USER, "/api/auth/update-profile"),
+    SEARCH_ADDRESS(AuthoritiesConstant.USER, "/api/shippingAddresses/**"),
     CHECKOUT_CART(AuthoritiesConstant.USER, "/api/cart/**"),
+
 
     // STAFF
 

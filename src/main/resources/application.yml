@@ -4,7 +4,11 @@ server:
     whitelabel:
       enabled: false
   forward-headers-strategy: framework
-
+  servlet:
+    encoding:
+      enabled: true
+      charset: UTF-8
+      force: true
 #App properties
 spring:
   application:

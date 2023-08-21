@@ -20,6 +20,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RepositoryRestController
 @Slf4j
+@CrossOrigin("*")
 public class OrderRestController {
     
     private final OrderService service;

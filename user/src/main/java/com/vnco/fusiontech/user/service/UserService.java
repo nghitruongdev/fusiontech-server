@@ -5,6 +5,8 @@ import com.vnco.fusiontech.user.entity.ShippingAddress;
 import com.vnco.fusiontech.user.entity.User;
 import com.vnco.fusiontech.user.web.rest.request.UserRequest;
 
+import java.util.List;
+
 public interface UserService extends PublicUserService {
     void updateDefaultShippingAddress(Long userId, Long addressId);
 

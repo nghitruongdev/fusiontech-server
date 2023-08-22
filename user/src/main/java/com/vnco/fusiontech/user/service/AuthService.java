@@ -37,4 +37,6 @@ public interface AuthService {
 
     List<String> getUserRoles(String firebaseUid);
 
+//    void updateVerifyEmail(Boolean verified, String firebaseUid);
+
 }

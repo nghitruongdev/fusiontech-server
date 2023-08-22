@@ -183,6 +183,13 @@ public class AuthServiceImpl implements AuthService {
         return null;
     }
 
+//    @Override
+//    public void updateVerifyEmail(Boolean verified) {
+//        try {
+//            var user = auth()
+//        }
+//    }
+
     @Override
     public Boolean verifyEmail(String email) {
         try {

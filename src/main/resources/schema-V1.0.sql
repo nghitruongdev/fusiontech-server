@@ -60,5 +60,3 @@ alter table VARIANT_INVENTORY_DETAIL
     ADD constraint FK_inventory_detail_inventory
         foreign key (INVENTORY_ID) references PRODUCT_VARIANT_INVENTORY (ID)
             on update cascade on DELETE NO ACTION;
-
-UPDATE APP_USER SET PHONE_NUMBER = REPLACE(PHONE_NUMBER, '+84', '0');

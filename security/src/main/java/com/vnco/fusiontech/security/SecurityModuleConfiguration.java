@@ -47,6 +47,7 @@ public class SecurityModuleConfiguration {
             for (Patterns pattern : Patterns.values()) {
                 if (pattern.getRole().equalsIgnoreCase("anonymous"))
                     request.requestMatchers(HttpMethod.GET, pattern.getPattern()).permitAll();
+                request.requestMatchers(Patterns.REGISTRATION.getPattern()).permitAll();
                 if (pattern.getRole().equalsIgnoreCase("user"))
                     request.requestMatchers(pattern.getPattern()).authenticated();
                 if (pattern.getRole().equalsIgnoreCase("admin"))

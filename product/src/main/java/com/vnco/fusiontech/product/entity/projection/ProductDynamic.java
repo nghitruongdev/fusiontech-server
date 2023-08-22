@@ -8,8 +8,7 @@ import org.springframework.data.rest.core.config.Projection;
 public interface ProductDynamic {
     Double getDiscount();
     String getStatus();
-    Boolean isActive();
-    Integer getAvailableQuantity();
+    Boolean getActive();
     Double getMinPrice();
     Double getMaxPrice();
 }

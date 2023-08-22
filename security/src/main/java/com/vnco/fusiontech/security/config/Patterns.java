@@ -11,9 +11,9 @@ public enum Patterns {
     REVIEWS(AuthoritiesConstant.ANONYMOUS, "/api/reviews/**"),
     VOUCHERS(AuthoritiesConstant.ANONYMOUS, "/api/vouchers/**"),
     VARIANTS(AuthoritiesConstant.ANONYMOUS, "/api/variants/**"),
-    REGISTRATION(AuthoritiesConstant.ANONYMOUS, "/api/auth/register/**"),
+    REGISTRATION(AuthoritiesConstant.ANONYMOUS, "/api/auth/register"),
     BEST_SELLER(AuthoritiesConstant.ANONYMOUS, "/api/statistical/best-seller"),
-    ORDERS_STATUS(AuthoritiesConstant.ANONYMOUS, "/api/orders/statuses/**"),
+    ORDERS_STATUS(AuthoritiesConstant.ANONYMOUS, "/api/orders/**"),
     SPECIFICATION(AuthoritiesConstant.ANONYMOUS, "/api/specifications"),
     SEARCH_USER(AuthoritiesConstant.ANONYMOUS, "/api/users/**"),
 

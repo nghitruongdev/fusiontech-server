@@ -17,7 +17,7 @@ public record CreateOrderRequest(
         @NotNull Long addressId,
         @NotNull @Valid PaymentRequest payment,
         OrderStatus status,
-        @NotEmpty @Validated @Valid List<OrderItemRequest> items,
+        @NotEmpty @Validated @Valid List<@Valid OrderItemRequest> items,
         Voucher voucher
 ) {
     public CreateOrderRequest {

@@ -11,39 +11,40 @@ import java.util.stream.Collectors;
 
 @Component
 public class OrderMapper {
-    
+
     public Order toOrder(CreateOrderRequest request) {
-        Set<OrderItem> items   = request.items().stream().map(this::toOrderItem).collect(Collectors.toSet());
-        var            payment = toPayment(request.payment());
+        Set<OrderItem> items = request.items().stream().map(this::toOrderItem).collect(Collectors.toSet());
+        var payment = toPayment(request.payment());
         var order = Order.builder()
-                         .email(request.email())
-                         .note(request.note())
-                         .userId(request.userId())
-                         .addressId(request.addressId())
-                         .payment(payment)
-                         .status(request.status())
-                         .voucher(request.voucher())
-                         .build();
+                .email(request.email())
+                .note(request.note())
+                .userId(request.userId())
+                .addressId(request.addressId())
+                .payment(payment)
+                .status(request.status())
+                .voucher(request.voucher())
+                .build();
         order.setOrderItems(items);
         return order;
     }
-    
-    
+
+
     OrderItem toOrderItem(OrderItemRequest request) {
         return OrderItem.builder()
-                        .variant(new OrderVariant(request.variantId()))
-                        .price(request.price())
-                        .quantity(request.quantity())
-                        .build();
+                .variant(new OrderVariant(request.variantId()))
+                .price(request.price())
+                .quantity(request.quantity())
+                .discount(request.discount())
+                .build();
     }
-    
+
     Payment toPayment(PaymentRequest request) {
         return Payment.builder()
-                      .amount(request.amount())
-                      .status(request.status())
-                      .method(request.method())
-                      .paidAt(request.paidAt())
-                      .build();
+                .amount(request.amount())
+                .status(request.status())
+                .method(request.method())
+                .paidAt(request.paidAt())
+                .build();
     }
-    
+
 }

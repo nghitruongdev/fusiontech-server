@@ -14,6 +14,10 @@ public interface ProductBasic {
 
   String getName();
 
+  Byte getDiscount();
+
+  Boolean getActive();
+
   String getSlug();
 
   String getSummary();

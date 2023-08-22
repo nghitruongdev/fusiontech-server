@@ -12,6 +12,8 @@ public interface ProductNameAndVariantCount {
 
     String getName();
 
+    Boolean getActive();
+
     @Value("#{target.variants.size()}")
     Integer getVariantCount();
 

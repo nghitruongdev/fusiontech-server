@@ -30,6 +30,9 @@ public class OrderItem implements Serializable, ManyToOneRelation<Order> {
     @Column(name = "price")
     private Double price;
 
+    @Column(name = "discount")
+    private Byte discount;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
     @ToString.Exclude

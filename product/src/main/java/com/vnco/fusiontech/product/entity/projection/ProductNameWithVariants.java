@@ -12,5 +12,7 @@ public interface ProductNameWithVariants {
 
   String getName();
 
+  Boolean getActive();
+
   List<VariantBasic> getVariants();
 }

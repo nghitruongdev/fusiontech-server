@@ -7,6 +7,7 @@ import com.vnco.fusiontech.common.exception.InvalidRequestException;
 import com.vnco.fusiontech.common.exception.RecordNotFoundException;
 import com.vnco.fusiontech.user.entity.ShippingAddress;
 import com.vnco.fusiontech.user.entity.User;
+import com.vnco.fusiontech.user.entity.roles.Roles;
 import com.vnco.fusiontech.user.repository.ShippingAddressRepository;
 import com.vnco.fusiontech.user.repository.UserRepository;
 import com.vnco.fusiontech.user.service.AuthService;
@@ -41,14 +42,14 @@ public class UserServiceImpl implements UserService {
             authService.deleteAccount(record.getUid());
             throw e;
         }
-        return authService.setInitialClaims(user.getId(), record.getUid());
+        return authService.setInitialClaims(user.getId(), record.getUid(), Roles.USER);
     }
     
     @Override
     public String registerWithGoogle(String firebaseId) {
         var record = authService.registerWithGoogleProvider(firebaseId);
         var user = repository.save(mapper.toUser(record));
-        return authService.setInitialClaims(user.getId(), record.getUid());
+        return authService.setInitialClaims(user.getId(), record.getUid(), Roles.USER);
     }
     
     @Override

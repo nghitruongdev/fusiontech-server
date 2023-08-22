@@ -30,15 +30,16 @@ public interface FirebaseMapper {
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "photoUrl", source = "request.image", conditionExpression = "java(request.image() != null)")
     @Mapping(target = "email", source = "request.email")
-    @Mapping(target = "phoneNumber", source = "request.phoneNumber", conditionExpression = "java(request.phoneNumber" +
-                                                                                           "() != null)")
-    
-    // @Mapping (target = "email", source = "request.email", conditionExpression =
-    // "java(request.email() != null && " +
-    // "!request.email().equalsIgnoreCase(user.getEmail()))")
-    // @Mapping (target = "phoneNumber", source = "request.phoneNumber",
-    // conditionExpression = "java(request.phoneNumber()!=null &&
-    // !request.phoneNumber().equals(user.getPhoneNumber()))")
+//    @Mapping(target = "phoneNumber", source = "request.phoneNumber", conditionExpression = "java(request.phoneNumber" +
+//                                                                                           "() != null)")
+
+//     @Mapping (target = "email", source = "request.email", conditionExpression =
+//     "java(request.email() != null && " +
+//     "!request.email().equalsIgnoreCase(user.getEmail()))")
+//     @Mapping (target = "phoneNumber", source = "request.phoneNumber",
+//     conditionExpression = "java(request.phoneNumber()!=null &&
+//     !request.phoneNumber().equals(user.getPhoneNumber()))")
+    @Mapping(target = "phoneNumber", ignore = true)
     @Mapping(target = "displayName", expression = """
                                                   java(
                                                   com.vnco.fusiontech.common.utils.FirebaseUtils.composeFullName(request.firstName(),request.lastName(),user.getFirstName(), user.getLastName())

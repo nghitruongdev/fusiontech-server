@@ -18,6 +18,8 @@ public enum Patterns {
     SEARCH_USER(AuthoritiesConstant.ANONYMOUS, "/api/users/**"),
 
     // CUSTOMER - authenticated()
+    UPDATE_USER(AuthoritiesConstant.USER, "/api/users/**"),
+    USER_REVIEW(AuthoritiesConstant.USER, "/api/reviews/**"),
     ORDERS(AuthoritiesConstant.USER, "/api/orders/**"),
     PRODUCT_USER(AuthoritiesConstant.USER, "/api/products/**"),
     PAYMENT(AuthoritiesConstant.USER, "/api/payments/**"),
@@ -27,7 +29,6 @@ public enum Patterns {
 
 
     // STAFF
-
 
     // ADMIN - hasAnyRole('ADMIN')
     ADMIN_PATTERN(AuthoritiesConstant.ADMIN, "/api/**");

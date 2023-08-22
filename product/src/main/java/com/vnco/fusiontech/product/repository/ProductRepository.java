@@ -91,7 +91,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
         @RestResource(path = "latest-products")
         Page<Product> getLatestAddedProducts(Pageable pageable);
 
-        @Query("SELECT p FROM Product p WHERE p.status LIKE 'HOT'")
+        @Query("SELECT p FROM Product p WHERE p.status LIKE 'HOT' AND p.active = true")
         @RestResource(path = "hot-products")
         Page<Product> getHotProducts(Pageable pageable);
         

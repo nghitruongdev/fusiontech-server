@@ -6,7 +6,7 @@ import com.vnco.fusiontech.common.constant.PaymentStatus;
 import java.time.LocalDateTime;
 
 public record PaymentRequest(
-         Double amount,
+        Double amount,
         PaymentMethod method,
         PaymentStatus status,
         LocalDateTime paidAt

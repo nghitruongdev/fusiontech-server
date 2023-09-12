@@ -8,7 +8,9 @@ import com.vnco.fusiontech.common.constant.AuthoritiesConstant;
 import com.vnco.fusiontech.common.exception.InvalidRequestException;
 import com.vnco.fusiontech.common.exception.RecordExistsException;
 import com.vnco.fusiontech.common.exception.RecordNotFoundException;
+import com.vnco.fusiontech.common.exception.UnauthorizedException;
 import com.vnco.fusiontech.common.service.PublicMailService;
+import com.vnco.fusiontech.common.utils.FirebaseUtils;
 import com.vnco.fusiontech.common.web.request.mail.MailRequest;
 import com.vnco.fusiontech.user.entity.User;
 import com.vnco.fusiontech.user.entity.roles.Roles;
@@ -18,15 +20,13 @@ import com.vnco.fusiontech.user.web.rest.request.FirebaseMapper;
 import com.vnco.fusiontech.user.web.rest.request.UserRequest;
 import jakarta.persistence.Tuple;
 import jakarta.validation.constraints.NotNull;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.query.sqm.sql.ConversionException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -64,10 +64,11 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String setInitialClaims(Long id, String firebaseId) {
+    public String setInitialClaims(Long id, String firebaseId, Roles...roles) {
+        var claims = getInitialClaims(id, roles);
         try {
-            auth().setCustomUserClaims(firebaseId, getInitialClaims(id));
-            return FirebaseAuth.getInstance().createCustomToken(firebaseId, getInitialClaims(id));
+            auth().setCustomUserClaims(firebaseId, claims);
+            return FirebaseAuth.getInstance().createCustomToken(firebaseId, claims);
         } catch (FirebaseAuthException e) {
             handleFirebaseAuthException(e);
         }
@@ -78,6 +79,8 @@ public class AuthServiceImpl implements AuthService {
     public void updateProfile(User user, UserRequest request, String firebaseId) {
         var updateRequest = new UserRecord.UpdateRequest(firebaseId);
         var mapped = mapper.toFirebaseUpdateRequest(request, user, updateRequest);
+        if (request.phoneNumber() != null)
+            updateRequest.setPhoneNumber(FirebaseUtils.convertToE164Format(request.phoneNumber()));
 
         try {
             FirebaseAuth.getInstance().updateUser(mapped);
@@ -144,7 +147,7 @@ public class AuthServiceImpl implements AuthService {
             mailService.sendMail(MailRequest.builder()
                     .mail(email)
                     .subject("Xác thực email FusionTech")
-                    .body("Truy cập đường li /=nk sau để xác thực email của bạn: \n\n" + message)
+                    .body("Truy cập đường link sau để xác thực email của bạn: \n\n" + message)
                     .build());
             return "URL to verify: " + message;
         } catch (FirebaseAuthException e) {
@@ -161,7 +164,7 @@ public class AuthServiceImpl implements AuthService {
             list.add(0, Roles.USER.name());
         try {
             auth().setCustomUserClaims(firebaseUid, Map.of(AuthoritiesConstant.ROLE_NAME, list));
-            log.info("{}", auth().getUser(firebaseUid).getCustomClaims().get("roles"));
+            log.info("{}", auth().getUser(firebaseUid).getCustomClaims().get(AuthoritiesConstant.ROLE_NAME));
         } catch (FirebaseAuthException e) {
             handleFirebaseAuthException(e);
         }
@@ -174,10 +177,18 @@ public class AuthServiceImpl implements AuthService {
             var claims = user.getCustomClaims().get(AuthoritiesConstant.ROLE_NAME);
             return (List<String>) claims;
         } catch (FirebaseAuthException e) {
-            handleFirebaseAuthException(e);
+            log.error(e.getMessage());
+//            handleFirebaseAuthException(e);
         }
         return null;
     }
+
+//    @Override
+//    public void updateVerifyEmail(Boolean verified) {
+//        try {
+//            var user = auth()
+//        }
+//    }
 
     @Override
     public Boolean verifyEmail(String email) {
@@ -197,8 +208,9 @@ public class AuthServiceImpl implements AuthService {
         return false;
     }
 
-    private Map<String, Object> getInitialClaims(Long id) {
-        return Map.of(AuthoritiesConstant.ROLE_NAME, List.of(AuthoritiesConstant.STAFF), "id", id);
+    private Map<String, Object> getInitialClaims(Long id, @NonNull Roles...roles) {
+        var list = Arrays.stream(roles).map(Enum::name).toList();
+        return Map.of(AuthoritiesConstant.ROLE_NAME, list, "id", id);
     }
 
     private void handleFirebaseAuthException(FirebaseAuthException ex) throws RuntimeException {
@@ -207,6 +219,13 @@ public class AuthServiceImpl implements AuthService {
             case ALREADY_EXISTS -> throw new RecordExistsException(authCode);
             case NOT_FOUND -> throw new RecordNotFoundException(authCode);
             case INVALID_ARGUMENT -> throw new InvalidRequestException(authCode);
+        }
+        switch(ex.getAuthErrorCode()){
+            case USER_NOT_FOUND, EMAIL_NOT_FOUND -> throw new RecordNotFoundException(authCode);
+            case EMAIL_ALREADY_EXISTS, UID_ALREADY_EXISTS -> throw new RecordExistsException(authCode);
+            case INVALID_ID_TOKEN -> throw new InvalidRequestException(authCode);
+            case EXPIRED_ID_TOKEN, USER_DISABLED -> throw new RuntimeException(authCode);
+            case UNAUTHORIZED_CONTINUE_URL -> throw new UnauthorizedException();
         }
         throw new RuntimeException(ex);
     }

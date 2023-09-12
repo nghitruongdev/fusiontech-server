@@ -36,6 +36,10 @@ public interface ProductFullDetails {
 
     Double getMaxPrice();
 
+    Byte getDiscount();
+
+    Boolean getActive();
+
     @JsonIncludeProperties({ "id", "name" })
     Brand getBrand();
 
@@ -44,8 +48,6 @@ public interface ProductFullDetails {
 
     @JsonIncludeProperties({ "id", "price" })
     List<Variant> getVariants();
-
-    Byte getDiscount();
 
     @Value("#{@productServiceImpl.getProductSpecifications(target.id)}")
     Object getSpecifications();

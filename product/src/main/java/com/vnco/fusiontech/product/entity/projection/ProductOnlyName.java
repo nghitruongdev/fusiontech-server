@@ -9,6 +9,7 @@ public interface ProductOnlyName {
 
     Long getId();
     String getName();
+    Boolean getActive();
     @Value("#{target.variants.size()}")
     Integer getVariantCount();
 }

@@ -29,7 +29,8 @@ public class TupleUtils {
             ObjectNode one = mapper.createObjectNode();
 
             for (TupleElement col : cols) {
-                one.put(col.getAlias(), t.get(col.getAlias()).toString());
+                if(col == null) continue;;
+                one.put(col.getAlias(),String.valueOf(t.get(col.getAlias())));
             }
 
             json.add(one);

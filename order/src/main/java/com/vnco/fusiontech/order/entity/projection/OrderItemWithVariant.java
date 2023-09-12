@@ -14,6 +14,8 @@ public interface OrderItemWithVariant {
 
   Double getPrice();
 
+  Byte getDiscount();
+
   @JsonIncludeProperties({ "id" })
   OrderVariant getVariant();
 }

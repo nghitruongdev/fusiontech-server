@@ -1,8 +1,8 @@
 package com.vnco.fusiontech.user.web.rest.request;
 
-import com.vnco.fusiontech.common.constant.UserRole;
 import com.vnco.fusiontech.common.constraint.NullOrNotBlank;
 import com.vnco.fusiontech.user.entity.User.Gender;
+import com.vnco.fusiontech.user.entity.roles.Roles;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Null;
@@ -25,7 +25,7 @@ public record UserRequest(
         Date dateOfBirth,
         @NullOrNotBlank String image,
         @NotBlank (groups = {OnRegister.class}) @Null (groups = {OnCreate.class, OnUpdate.class}) String password,
-        List<UserRole> roles){
+        List<Roles> roles){
 
   public interface OnRegister {
 

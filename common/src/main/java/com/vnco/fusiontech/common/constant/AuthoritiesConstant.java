@@ -3,10 +3,10 @@ package com.vnco.fusiontech.common.constant;
 import java.util.List;
 
 public interface AuthoritiesConstant {
-    String ADMIN = "admin";
-    String USER = "user";
-    String ANONYMOUS = "anonymous";
-    String STAFF = "staff";
+    String ADMIN = "ADMIN";
+    String USER = "USER";
+    String ANONYMOUS = "ANONYMOUS";
+    String STAFF = "STAFF";
 
     String SYSTEM = "SYSTEM";
     String ROLE_NAME = "roles";

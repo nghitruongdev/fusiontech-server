@@ -1,7 +1,8 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/fusiontech
-    # url: jdbc:mysql://100.82.6.136:3306/fusiontech
+#    url: jdbc:mysql://localhost:3306/fusiontech
+#    url: jdbc:mysql://100.107.243.14:3306/fusiontech
+    url: jdbc:mysql://100.82.6.136:3306/fusiontech
     username: fusiontech_user
     password: password
   jpa:

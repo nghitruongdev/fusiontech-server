@@ -17,7 +17,7 @@ public interface AuthService {
 
     UserRecord registerWithGoogleProvider(String firebaseId);
 
-    String setInitialClaims(Long id, String firebaseId);
+    String setInitialClaims(Long id, String firebaseId, Roles... roles);
 
     void updateProfile(User user, UserRequest request, String firebaseId);
 
@@ -36,5 +36,7 @@ public interface AuthService {
     void updateRole(String firebaseUid, @NotNull List<Roles> roles);
 
     List<String> getUserRoles(String firebaseUid);
+
+//    void updateVerifyEmail(Boolean verified, String firebaseUid);
 
 }

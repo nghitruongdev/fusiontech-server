@@ -1,0 +1,5 @@
+.requestMatchers( HttpMethod.GET,
+"/api/brands", "/api/products", "/api/categories").permitAll()
+.requestMatchers("/api/auth/register").permitAll()
+.requestMatchers("/api/**").hasRole("ADMIN")
+.anyRequest().authenticated();

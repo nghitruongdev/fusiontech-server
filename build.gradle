@@ -1,0 +1,183 @@
+import org.springframework.boot.gradle.plugin.SpringBootPlugin
+
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.0.6'
+    id 'io.spring.dependency-management' version '1.1.0'
+    id 'io.reflectoring.spring-boot-devtools' version '0.0.2' // <---
+}
+
+group = 'com.vnco.fusiontech'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+allprojects {
+    ext {
+        jjwtVersion = '0.11.5'
+        structVersion = "1.5.3.Final"
+        structExtVersion = "0.1.2"
+        hibernateTypesVersion = "3.0.1"
+        springCloudVersion = "2022.0.0-RC2"
+        firebaseAdminVersion = "9.2.0"
+        queryDslVersion = '5.0.0'
+        javaxVersion = '1.3.2'
+    }
+
+    apply plugin: 'java'
+    apply plugin: 'java-library'
+    apply plugin: 'io.spring.dependency-management'
+//    apply plugin: 'com.ewerk.gradle.plugins.querydsl'
+
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
+//        querydsl.extendsFrom implementation, compileOnly, runtimeOnly, annotationProcessor
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom SpringBootPlugin.BOM_COORDINATES
+        }
+    }
+    dependencies {
+        implementation project(":common")
+        implementation "org.springframework.boot:spring-boot-starter-security"
+        compileOnly "org.projectlombok:lombok"
+        annotationProcessor "org.projectlombok:lombok"
+        annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
+        // QueryDSL
+//        compileOnly "com.querydsl:querydsl-jpa:${queryDslVersion}"
+//        annotationProcessor("com.querydsl:querydsl-apt:${queryDslVersion}")
+
+//        api 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+//        annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'
+
+//        annotationProcessor "jakarta.annotation:jakarta.annotation-api:1.3.5",
+
+        implementation "org.springframework.boot:spring-boot-starter-web"
+//        implementation "org.springframework.boot:spring-boot-starter-data.orig-jpa"
+//        implementation "org.springframework.boot:spring-boot-starter-data.orig-rest"
+//        implementation "org.springframework.boot:spring-boot-starter-hateoas"
+//        implementation "org.springframework.boot:spring-boot-starter-validation"
+
+        // https://mvnrepository.com/artifact/io.hypersistence/hypersistence-utils-hibernate-60
+        implementation 'io.hypersistence:hypersistence-utils-hibernate-60:3.5.1'
+
+//        implementation group: 'com.querydsl', name: 'querydsl-jpa', version: '5.0.0', classifier: 'jakarta'
+//        annotationProcessor group: 'com.querydsl', name: 'querydsl-apt', version: '5.0.0', classifier: 'jakarta'
+//        annotationProcessor group: 'jakarta.persistence', name: 'jakarta.persistence-api', version: '3.1.0'
+
+        implementation "org.mapstruct:mapstruct:${structVersion}"
+        annotationProcessor "org.mapstruct:mapstruct-processor:${structVersion}"
+        implementation "org.mapstruct.extensions.spring:mapstruct-spring-annotations:${structExtVersion}"
+        annotationProcessor "org.mapstruct.extensions.spring:mapstruct-spring-extensions:${structExtVersion}"
+        // If you are using MapStruct Spring Extensions in test code
+        testAnnotationProcessor "org.mapstruct.extensions.spring:mapstruct-spring-extensions:${structExtVersion}"
+
+        testImplementation "org.springframework.boot:spring-boot-starter-test"
+//        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+//        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    }
+
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-parameters"
+    }
+//    configurations {
+//        querydsl.extendsFrom compileClasspath
+//    }
+//    compileQuerydsl {
+//        options.annotationProcessorPath = configurations.querydsl
+//    }
+
+    //querydsl 추가 시작
+//    def querydslDir = "$buildDir/generated/querydsl"
+//    querydsl {
+//        jpa = true
+//        querydslSourcesDir = querydslDir
+//    }
+//    sourceSets {
+//        main.java.srcDir querydslDir
+//    }
+}
+
+dependencies {
+    implementation project(":product")
+    implementation project(":user")
+    implementation project(":security")
+    implementation project(":order")
+    implementation project(":mail")
+    implementation project(":storage-service")
+    developmentOnly "org.springframework.boot:spring-boot-devtools"
+    implementation('com.github.javafaker:javafaker:1.0.2') {
+        exclude group: 'org.yaml', module: 'snakeyaml'
+    }
+
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+    implementation "org.springframework.boot:spring-boot-starter-data-rest"
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
+
+    developmentOnly "com.h2database:h2"
+    runtimeOnly "com.mysql:mysql-connector-j"
+    implementation "com.google.firebase:firebase-admin:${firebaseAdminVersion}"
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs += ['-parameters']
+}
+//tasks.withType(JavaCompile) {
+//    options.compilerArgs << ['-parameters']
+//}
+
+bootRun {
+    dependsOn 'classes'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+springBoot {
+    mainClass = 'com.vnco.fusiontech.app.FusionTechApplication'
+    // Replace with the fully qualified name of your main class
+}
+//
+//tasks.withType(JavaCompile) {
+//    options.encoding = "UTF-8"
+//}
+
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
+
+//compileJava.options.encoding("UTF-8")
+//compileTestJava.options.encoding("UTF-8")
+
+jar {
+    manifest {
+        attributes(
+                "Main-Class": "com.vnco.fusiontech.app.FusionTechApplication"
+        )
+    }
+}
+
+//    querydsl {
+//        jpa = true
+//        library = 'com.querydsl:querydsl-apt:5.0.0'
+////        querydslSourcesDir = "$buildDir/generated/sources/annotationProcessor/java/main"
+//    }
+
+//    compileQuerydsl {
+//        options.annotationProcessorPath = configurations.querydsl
+//    }

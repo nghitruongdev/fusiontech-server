@@ -1,0 +1,9 @@
+rootProject.name = 'app'
+include 'product'
+include 'common'
+include 'user'
+include 'order'
+include 'security'
+include 'mail'
+include 'storage-service'
+
